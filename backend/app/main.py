@@ -5,6 +5,7 @@ from fastapi.exceptions import RequestValidationError
 from fastapi.responses import JSONResponse
 from starlette.requests import Request
 
+from app.api.api_keys import router as api_keys_router
 from app.api.channels import router as channels_router
 from app.api.devices import router as devices_router
 from app.api.pings import router as pings_router
@@ -19,6 +20,7 @@ def create_app() -> FastAPI:
     app.include_router(devices_router)
     app.include_router(pings_router)
     app.include_router(worker_router)
+    app.include_router(api_keys_router)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error_handler(

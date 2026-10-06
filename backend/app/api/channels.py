@@ -9,17 +9,19 @@
 #   - responses never include signing_key (narrow response models)
 #   - one channel per creator (MVP rule, 409)
 #   - handle uniqueness across channels (409)
+#   - POST /channels/{id}/live accepts either JWT (creator) or X-Channel-Key (machine)
 import logging
 import secrets
 import time
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import CreatorClaims, get_current_creator, get_current_creator_id
+from app.core.channel_auth import authorize_channel_access
 from app.db.repositories import ChannelRepo, CreatorRepo, PingRepo
 from app.db.session import get_session
 from app.models.schemas import (
@@ -123,13 +125,10 @@ async def set_live(
     channel_id: str,
     req: GoLiveRequest,
     session: Annotated[AsyncSession, Depends(get_session)],
-    creator_id: Annotated[str, Depends(get_current_creator_id)],
+    x_channel_key: Annotated[str | None, Header()] = None,
+    authorization: Annotated[str | None, Header()] = None,
 ) -> GoLiveResponse:
-    channel = await ChannelRepo(session).get(channel_id)
-    if channel is None:
-        raise HTTPException(404, "Channel not found")
-    if str(channel.creator_id) != creator_id:
-        raise HTTPException(403, "Not your channel")
+    channel = await authorize_channel_access(session, channel_id, x_channel_key, authorization)
 
     if req.live and not channel.is_live:
         # Going live

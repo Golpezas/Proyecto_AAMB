@@ -92,6 +92,12 @@ class ChannelRepo:
         )
         return res.scalar_one_or_none()
 
+    async def get_by_api_key_hash(self, digest: str) -> Channel | None:
+        res = await self._session.execute(
+            select(Channel).where(Channel.api_key_hash == digest)
+        )
+        return res.scalar_one_or_none()
+
     async def get_by_creator(
         self, creator_id: str | uuid.UUID
     ) -> Channel | None:
@@ -101,6 +107,20 @@ class ChannelRepo:
             .order_by(Channel.created_at)
         )
         return res.scalars().first()
+
+    async def set_api_key_hash(
+        self, channel_id: str | uuid.UUID, hash: str | None, commit: bool = True
+    ) -> Channel | None:
+        channel = await self.get(channel_id)
+        if channel is None:
+            return None
+        channel.api_key_hash = hash
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
+        await self._session.refresh(channel)
+        return channel
 
     async def create(
         self,

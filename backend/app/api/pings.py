@@ -2,10 +2,11 @@
 # Ping creation with quota, stats, and fan-out (ADR 0006).
 from typing import Annotated
 
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, Header, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.auth import get_current_creator_id
+from app.core.channel_auth import authorize_channel_access
 from app.db.repositories import AnonymousLinkRepo, ChannelRepo, PingRepo
 from app.db.session import get_session
 from app.models.schemas import ChannelStatsResponse, PingCreate, PingResponse
@@ -19,13 +20,10 @@ router = APIRouter(prefix="/api/v1", tags=["pings"])
 async def create_ping(
     req: PingCreate,
     session: Annotated[AsyncSession, Depends(get_session)],
-    creator_id: Annotated[str, Depends(get_current_creator_id)],
+    x_channel_key: Annotated[str | None, Header()] = None,
+    authorization: Annotated[str | None, Header()] = None,
 ) -> PingResponse:
-    channel = await ChannelRepo(session).get(req.channel_id)
-    if channel is None:
-        raise HTTPException(status_code=404, detail="Channel not found")
-    if str(channel.creator_id) != creator_id:
-        raise HTTPException(status_code=403, detail="Not your channel")
+    channel = await authorize_channel_access(session, req.channel_id, x_channel_key, authorization)
 
     await check_and_consume_quota(session, channel, kind="message")
 
