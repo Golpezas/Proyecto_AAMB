@@ -6,6 +6,7 @@ from fastapi.responses import JSONResponse
 from starlette.requests import Request
 
 from app.api.channels import router as channels_router
+from app.api.devices import router as devices_router
 from app.api.subscription import router as subscription_router
 
 
@@ -13,6 +14,7 @@ def create_app() -> FastAPI:
     app = FastAPI(title="Ping Platform", version="0.1.0")
     app.include_router(subscription_router)
     app.include_router(channels_router)
+    app.include_router(devices_router)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error_handler(

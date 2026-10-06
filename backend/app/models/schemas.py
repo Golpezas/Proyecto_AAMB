@@ -26,6 +26,35 @@ class SubscribeResponse(BaseModel):
 class UnsubscribeResponse(BaseModel):
     success: bool = True
 
+class DeviceRegisterRequest(BaseModel):
+    token: str = Field(min_length=1, max_length=512)
+    platform: str = Field(default="web", pattern=r"^(web|ios|android)$")
+    wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")
+    signature: str = Field(min_length=2, max_length=1024)
+    timestamp: int
+
+    @field_validator("wallet_address")
+    @classmethod
+    def normalize_wallet(cls, v: str) -> str:
+        return v.lower()
+
+
+class DeviceRevokeRequest(BaseModel):
+    token: str = Field(min_length=1, max_length=512)
+    wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")
+    signature: str = Field(min_length=2, max_length=1024)
+    timestamp: int
+
+    @field_validator("wallet_address")
+    @classmethod
+    def normalize_wallet(cls, v: str) -> str:
+        return v.lower()
+
+
+class DeviceResponse(BaseModel):
+    success: bool = True
+
+
 class PingCreate(BaseModel):
     channel_id: str
     message: str = Field(max_length=160)

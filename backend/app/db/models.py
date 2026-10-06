@@ -137,6 +137,20 @@ class Ping(Base):
     )
 
 
+class DeviceToken(Base):
+    __tablename__ = "device_tokens"
+    __table_args__ = (Index("idx_device_tokens_fan", "fan_id"),)
+
+    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    fan_id: Mapped[uuid.UUID] = mapped_column(
+        Uuid, ForeignKey("fans.id", ondelete="CASCADE"), nullable=False
+    )
+    token: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
+    platform: Mapped[str] = mapped_column(Text, default="web", server_default="web", nullable=False)
+    created_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), server_default=func.now())
+    last_seen_at: Mapped[datetime | None] = mapped_column(DateTime(timezone=True), server_default=func.now())
+
+
 class MessageQueueJob(Base):
     __tablename__ = "message_queue_jobs"
     __table_args__ = (

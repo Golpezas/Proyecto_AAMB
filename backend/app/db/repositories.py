@@ -7,7 +7,7 @@ import uuid
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import AnonymousLink, Channel, Creator, Fan, Ping
+from app.db.models import AnonymousLink, Channel, Creator, DeviceToken, Fan, Ping
 
 
 def _to_uuid(value: str | uuid.UUID) -> uuid.UUID:
@@ -223,6 +223,48 @@ class AnonymousLinkRepo:
             await self._session.flush()
         await self._session.refresh(link)
         return link
+
+
+class DeviceTokenRepo:
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def upsert(self, fan_id, token: str, platform: str, commit: bool = True) -> DeviceToken:
+        res = await self._session.execute(select(DeviceToken).where(DeviceToken.token == token))
+        row = res.scalar_one_or_none()
+        if row is None:
+            row = DeviceToken(fan_id=_to_uuid(fan_id), token=token, platform=platform)
+            self._session.add(row)
+        else:
+            row.fan_id = _to_uuid(fan_id)
+            row.platform = platform
+            row.last_seen_at = func.now()
+        if commit:
+            await _commit(self._session)
+            await self._session.refresh(row)
+        else:
+            await self._session.flush()
+        return row
+
+    async def list_by_fan(self, fan_id) -> list[DeviceToken]:
+        res = await self._session.execute(
+            select(DeviceToken).where(DeviceToken.fan_id == _to_uuid(fan_id))
+        )
+        return list(res.scalars().all())
+
+    async def delete_for_fan(self, token: str, fan_id, commit: bool = True) -> bool:
+        res = await self._session.execute(
+            select(DeviceToken).where(DeviceToken.token == token, DeviceToken.fan_id == _to_uuid(fan_id))
+        )
+        row = res.scalar_one_or_none()
+        if row is None:
+            return False
+        await self._session.delete(row)
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
+        return True
 
 
 class PingRepo:
