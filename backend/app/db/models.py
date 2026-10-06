@@ -117,6 +117,9 @@ class Ping(Base):
     )
     message: Mapped[str] = mapped_column(Text, nullable=False)
     delivery_method: Mapped[str] = mapped_column(Text, nullable=False)
+    kind: Mapped[str] = mapped_column(
+        Text, default="message", server_default="message", nullable=False
+    )
     status: Mapped[str | None] = mapped_column(
         Text, default="pending", server_default="pending"
     )

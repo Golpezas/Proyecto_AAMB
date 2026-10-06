@@ -18,7 +18,7 @@ dependencies = [
 ]
 
 [project.optional-dependencies]
-dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.4", "aiosqlite>=0.20"]
+dev = ["pytest>=8.0", "pytest-asyncio>=0.23", "ruff>=0.4", "aiosqlite>=0.20", "fakeredis>=2.23"]
 
 [tool.pytest.ini_options]
 asyncio_mode = "auto"

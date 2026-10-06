@@ -8,6 +8,7 @@ from starlette.requests import Request
 from app.api.channels import router as channels_router
 from app.api.devices import router as devices_router
 from app.api.subscription import router as subscription_router
+from app.api.worker import router as worker_router
 
 
 def create_app() -> FastAPI:
@@ -15,6 +16,7 @@ def create_app() -> FastAPI:
     app.include_router(subscription_router)
     app.include_router(channels_router)
     app.include_router(devices_router)
+    app.include_router(worker_router)
 
     @app.exception_handler(RequestValidationError)
     async def validation_error_handler(
