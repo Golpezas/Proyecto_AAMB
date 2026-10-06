@@ -13,8 +13,11 @@
 --      anonymous_links -> pings -> message_queue_jobs.
 --   4. idx_anonymous_links_channel_pin (referenced removed column)
 --      replaced with idx_anonymous_links_channel_status for fan-out queries.
+--   5. Phone numbers are AES-256-GCM encrypted at the application layer
+--      (backend/app/services/crypto_service.py); pgcrypto is kept only for
+--      gen_random_uuid(). No SQL decrypt function exists (see 0002).
 
--- pgcrypto: gen_random_uuid() + pgp_sym_decrypt() used below
+-- pgcrypto: gen_random_uuid() used below
 CREATE EXTENSION IF NOT EXISTS pgcrypto;
 
 -- Core tables

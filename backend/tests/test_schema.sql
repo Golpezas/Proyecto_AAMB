@@ -175,25 +175,48 @@ BEGIN
 END $$;
 
 -- ---------------------------------------------------------------------
--- 9. get_decrypted_phone() exists, is SECURITY DEFINER
+-- 9. encrypted_phones PII isolation: RLS enabled, ZERO policies
+--    (deny-all), and phone_encrypted is bytea (AES-256-GCM ciphertext
+--    produced by the application layer -- no SQL decrypt function exists)
 -- ---------------------------------------------------------------------
-SELECT p.proname,
-       p.prosecdef AS security_definer,
-       p.proconfig,
-       l.lanname
-FROM pg_proc p
-JOIN pg_namespace n ON n.oid = p.pronamespace
-JOIN pg_language l ON l.oid = p.prolang
-WHERE n.nspname = 'public' AND p.proname = 'get_decrypted_phone';
+SELECT c.relname AS table_name,
+       c.relrowsecurity AS rls_enabled,
+       (SELECT count(*) FROM pg_policies p
+        WHERE p.schemaname = 'public' AND p.tablename = 'encrypted_phones')
+           AS policy_count,
+       a.attname AS column_name,
+       format_type(a.atttypid, a.atttypmod) AS data_type
+FROM pg_class c
+JOIN pg_namespace n ON n.oid = c.relnamespace
+JOIN pg_attribute a ON a.attrelid = c.oid AND a.attname = 'phone_encrypted'
+WHERE n.nspname = 'public' AND c.relname = 'encrypted_phones';
 
 DO $$
 BEGIN
-    IF NOT EXISTS (SELECT 1 FROM pg_proc p
-                   JOIN pg_namespace n ON n.oid = p.pronamespace
+    IF NOT EXISTS (SELECT 1 FROM pg_class c
+                   JOIN pg_namespace n ON n.oid = c.relnamespace
                    WHERE n.nspname = 'public'
-                     AND p.proname = 'get_decrypted_phone'
-                     AND p.prosecdef) THEN
-        RAISE EXCEPTION 'get_decrypted_phone missing or not SECURITY DEFINER';
+                     AND c.relname = 'encrypted_phones'
+                     AND c.relrowsecurity) THEN
+        RAISE EXCEPTION 'RLS not enabled on encrypted_phones';
+    END IF;
+    IF (SELECT count(*) FROM pg_policies
+        WHERE schemaname = 'public' AND tablename = 'encrypted_phones') <> 0 THEN
+        RAISE EXCEPTION 'encrypted_phones must have ZERO RLS policies (deny-all)';
+    END IF;
+    IF NOT EXISTS (SELECT 1 FROM pg_attribute a
+                   JOIN pg_class c ON c.oid = a.attrelid
+                   JOIN pg_namespace n ON n.oid = c.relnamespace
+                   WHERE n.nspname = 'public'
+                     AND c.relname = 'encrypted_phones'
+                     AND a.attname = 'phone_encrypted'
+                     AND a.atttypid = 'bytea'::regtype) THEN
+        RAISE EXCEPTION 'encrypted_phones.phone_encrypted must be type bytea';
+    END IF;
+    IF EXISTS (SELECT 1 FROM pg_proc p
+               JOIN pg_namespace n ON n.oid = p.pronamespace
+               WHERE n.nspname = 'public' AND p.proname = 'get_decrypted_phone') THEN
+        RAISE EXCEPTION 'get_decrypted_phone must not exist (app-layer AES-256-GCM only)';
     END IF;
 END $$;
 
