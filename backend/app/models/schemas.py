@@ -68,12 +68,18 @@ class DeviceResponse(BaseModel):
 class PingCreate(BaseModel):
     channel_id: str
     message: str = Field(max_length=160)
-    delivery_method: str = Field(default="push", pattern="^(sms|push|both)$")
 
 class PingResponse(BaseModel):
     id: str
     status: str
     total_recipients: int
+    sent_count: int = 0
+    failed_count: int = 0
+
+class ChannelStatsResponse(BaseModel):
+    subscriber_count: int
+    pings_sent_this_period: int
+    monthly_ping_limit: int
 
 class SendResponse(BaseModel):
     success: bool

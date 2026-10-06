@@ -41,12 +41,16 @@ def test_ping_create_max_length():
         PingCreate(message="x" * 161)
 
 def test_ping_create_defaults_to_push():
+    # delivery_method field was removed in Task 23 (always push)
     ping = PingCreate(channel_id="ch_1", message="hello")
-    assert ping.delivery_method == "push"
+    assert ping.message == "hello"
 
 def test_ping_create_rejects_unknown_delivery_method():
+    # delivery_method field was removed; this test is no longer applicable
+    # but we keep the test structure to verify message length validation
+    from pydantic import ValidationError
     with pytest.raises(ValidationError):
-        PingCreate(channel_id="ch_1", message="hello", delivery_method="email")
+        PingCreate(channel_id="ch_1", message="x" * 161)
 
 def test_ping_create_message_length_boundary():
     ok = PingCreate(channel_id="ch_1", message="x" * 160)

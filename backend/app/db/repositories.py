@@ -232,6 +232,16 @@ class AnonymousLinkRepo:
         await self._session.refresh(link)
         return link
 
+    async def count_active(self, channel_id: str | uuid.UUID) -> int:
+        res = await self._session.execute(
+            select(func.count(AnonymousLink.id)).where(
+                AnonymousLink.channel_id == _to_uuid(channel_id),
+                AnonymousLink.status == "active",
+                AnonymousLink.fan_id.is_not(None),
+            )
+        )
+        return res.scalar_one() or 0
+
 
 class DeviceTokenRepo:
     def __init__(self, session: AsyncSession) -> None:
@@ -287,14 +297,22 @@ class PingRepo:
         channel_id: str | uuid.UUID,
         message: str,
         delivery_method: str,
+        kind: str = "message",
+        status: str = "pending",
+        commit: bool = True,
     ) -> Ping:
         ping = Ping(
             channel_id=_to_uuid(channel_id),
             message=message,
             delivery_method=delivery_method,
+            kind=kind,
+            status=status,
         )
         self._session.add(ping)
-        await _commit(self._session)
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
         await self._session.refresh(ping)
         return ping
 
