@@ -44,6 +44,32 @@ class CreatorRepo:
         await self._session.refresh(creator)
         return creator
 
+    async def upsert(
+        self,
+        id: str | uuid.UUID,
+        email: str,
+        handle: str,
+        commit: bool = True,
+    ) -> Creator:
+        """Insert or update the creator keyed by the Supabase user id.
+
+        `creators.id` equals `auth.uid()` (ADR 0005), so the id is supplied
+        by the caller (from the verified JWT `sub`), never generated here.
+        """
+        creator = await self.get(id)
+        if creator is None:
+            creator = Creator(id=_to_uuid(id), email=email, handle=handle)
+            self._session.add(creator)
+        else:
+            creator.email = email
+            creator.handle = handle
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
+        await self._session.refresh(creator)
+        return creator
+
 
 class ChannelRepo:
     def __init__(self, session: AsyncSession) -> None:
@@ -58,6 +84,16 @@ class ChannelRepo:
         )
         return res.scalar_one_or_none()
 
+    async def get_by_creator(
+        self, creator_id: str | uuid.UUID
+    ) -> Channel | None:
+        res = await self._session.execute(
+            select(Channel)
+            .where(Channel.creator_id == _to_uuid(creator_id))
+            .order_by(Channel.created_at)
+        )
+        return res.scalars().first()
+
     async def create(
         self,
         creator_id: str | uuid.UUID,
@@ -65,6 +101,7 @@ class ChannelRepo:
         signing_key: str,
         subscription_tier: str = "free",
         monthly_ping_limit: int = 100,
+        commit: bool = True,
     ) -> Channel:
         channel = Channel(
             creator_id=_to_uuid(creator_id),
@@ -74,7 +111,12 @@ class ChannelRepo:
             monthly_ping_limit=monthly_ping_limit,
         )
         self._session.add(channel)
-        await _commit(self._session)
+        if commit:
+            await _commit(self._session)
+        else:
+            # Unit-of-work mode: keep the caller's transaction open so sibling
+            # inserts commit (or roll back) as one.
+            await self._session.flush()
         await self._session.refresh(channel)
         return channel
 

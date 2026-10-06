@@ -4,6 +4,7 @@ from pydantic_settings import BaseSettings
 class Settings(BaseSettings):
     supabase_url: str = ""
     supabase_key: str = ""
+    supabase_jwt_secret: str = ""  # HS256 secret Supabase uses to sign auth JWTs
     database_url: str = ""
     privy_app_id: str = ""
     privy_app_secret: str = ""

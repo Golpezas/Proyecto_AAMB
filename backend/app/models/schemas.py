@@ -57,6 +57,39 @@ class Creator(BaseModel):
     handle: str
     created_at: datetime | None = None
 
+class ChannelCreateRequest(BaseModel):
+    handle: str
+
+    @field_validator("handle")
+    @classmethod
+    def validate_handle(cls, v: str) -> str:
+        if not re.fullmatch(r"[a-z0-9_]{1,32}", v):
+            raise ValueError(
+                "Handle must be 1-32 characters: lowercase letters, digits, underscores"
+            )
+        return v
+
+class ChannelCreateResponse(BaseModel):
+    # Deliberately narrow: never serializes pin_hash or signing_key.
+    id: str
+    handle: str
+    subscription_tier: str = "free"
+    monthly_ping_limit: int = 100
+
+class PinSetRequest(BaseModel):
+    pin: str
+
+    @field_validator("pin")
+    @classmethod
+    def validate_pin(cls, v: str) -> str:
+        if not re.fullmatch(r"\d{6}", v):
+            raise ValueError("PIN must be exactly 6 digits")
+        return v
+
+class PinSetResponse(BaseModel):
+    # Never includes the plaintext PIN or its hash.
+    success: bool = True
+
 class Channel(BaseModel):
     id: str
     creator_id: str
