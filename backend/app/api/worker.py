@@ -1,4 +1,5 @@
 # backend/app/api/worker.py
+import logging
 import uuid
 from typing import Annotated
 
@@ -19,6 +20,8 @@ from app.services.onesignal_provider import OneSignalProvider
 from app.services.rate_limiter import acquire_slot
 
 router = APIRouter(prefix="/api/v1/worker", tags=["worker"])
+
+logger = logging.getLogger(__name__)
 
 
 class DeliverJob(BaseModel):
@@ -102,4 +105,5 @@ async def notary(job: NotaryJob):
         return {"status": "recorded"}
     except Exception:  # noqa: BLE001
         # Best-effort: log and return accepted, never fail
+        logger.warning("notary record_event failed for event %s", job.event_id)
         return {"status": "accepted"}

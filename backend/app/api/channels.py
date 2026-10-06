@@ -10,6 +10,7 @@
 #   - one channel per creator (MVP rule, 409)
 #   - handle uniqueness across channels (409)
 import logging
+import secrets
 import time
 from typing import Annotated
 
@@ -161,6 +162,3 @@ async def set_live(
         await session.commit()
 
     return GoLiveResponse(is_live=channel.is_live)
-
-
-import secrets  # moved here to avoid unused import warning at top
