@@ -7,7 +7,7 @@ import uuid
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import AnonymousLink, Channel, Creator, Fan, Ping
+from app.db.models import AnonymousLink, Channel, Creator, EncryptedPhone, Fan, Ping
 
 
 def _to_uuid(value: str | uuid.UUID) -> uuid.UUID:
@@ -103,6 +103,40 @@ class FanRepo:
         await _commit(self._session)
         await self._session.refresh(fan)
         return fan
+
+
+class EncryptedPhoneRepo:
+    """Repo for the encrypted_phones table (PII).
+
+    Worker-only by convention: this is the ONLY code allowed to touch
+    EncryptedPhone rows. Phone ciphertexts must never appear in API
+    responses or logs -- only the messaging worker reads them at send time.
+    """
+
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def create(
+        self,
+        fan_id: str | uuid.UUID,
+        phone_encrypted: bytes,
+        encryption_key_id: str = "v1",
+    ) -> EncryptedPhone:
+        row = EncryptedPhone(
+            fan_id=_to_uuid(fan_id),
+            phone_encrypted=phone_encrypted,
+            encryption_key_id=encryption_key_id,
+        )
+        self._session.add(row)
+        await _commit(self._session)
+        await self._session.refresh(row)
+        return row
+
+    async def get_by_fan_id(self, fan_id: str | uuid.UUID) -> EncryptedPhone | None:
+        res = await self._session.execute(
+            select(EncryptedPhone).where(EncryptedPhone.fan_id == _to_uuid(fan_id))
+        )
+        return res.scalar_one_or_none()
 
 
 class AnonymousLinkRepo:

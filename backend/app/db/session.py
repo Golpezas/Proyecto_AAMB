@@ -8,6 +8,8 @@
 # importing this module for build_engine() -- as tests/conftest.py does -- never
 # requires DATABASE_URL, while any real use of engine/async_session without one
 # raises RuntimeError with a clear message.
+from collections.abc import AsyncIterator
+
 from sqlalchemy.ext.asyncio import (
     AsyncEngine,
     AsyncSession,
@@ -59,6 +61,18 @@ def _get_async_session() -> async_sessionmaker[AsyncSession]:
     if _async_session is None:
         _async_session = async_sessionmaker(_get_engine(), expire_on_commit=False)
     return _async_session
+
+
+async def get_session() -> AsyncIterator[AsyncSession]:
+    """FastAPI dependency: yield an AsyncSession and close it afterwards.
+
+    Resolved lazily at request time, so merely importing this module (or the
+    routes that depend on it) never requires DATABASE_URL. Tests override it
+    via ``app.dependency_overrides[get_session]``.
+    """
+    maker = _get_async_session()
+    async with maker() as session:
+        yield session
 
 
 def __getattr__(name: str):

@@ -9,6 +9,7 @@ from app.db.repositories import (
     AnonymousLinkRepo,
     ChannelRepo,
     CreatorRepo,
+    EncryptedPhoneRepo,
     FanRepo,
     PingRepo,
 )
@@ -216,6 +217,39 @@ async def test_opt_out_removes_fan_from_active_list(
     active = await link_repo.list_active_fan_ids(channel.id)
     assert str(fan1.id) not in active
     assert str(fan2.id) in active
+
+
+@pytest.mark.asyncio
+async def test_create_and_get_encrypted_phone(fan_repo, db_session):
+    fan = await fan_repo.create()
+    repo = EncryptedPhoneRepo(db_session)
+    blob = b"nonce+ciphertext-blob"
+
+    row = await repo.create(fan_id=fan.id, phone_encrypted=blob)
+    assert row.id is not None
+    assert row.fan_id == fan.id
+    assert row.phone_encrypted == blob
+    assert row.encryption_key_id
+
+    fetched = await repo.get_by_fan_id(fan.id)
+    assert fetched is not None
+    assert fetched.id == row.id
+    assert fetched.phone_encrypted == blob
+    assert await repo.get_by_fan_id(uuid.uuid4()) is None
+
+
+@pytest.mark.asyncio
+async def test_encrypted_phone_fan_id_unique(fan_repo, db_session):
+    fan = await fan_repo.create()
+    fan_id = fan.id
+    repo = EncryptedPhoneRepo(db_session)
+    await repo.create(fan_id=fan_id, phone_encrypted=b"first")
+
+    with pytest.raises(IntegrityError):
+        await repo.create(fan_id=fan_id, phone_encrypted=b"second")
+
+    # rollback on the failed commit must leave the session usable
+    assert await repo.get_by_fan_id(fan_id) is not None
 
 
 @pytest.mark.asyncio

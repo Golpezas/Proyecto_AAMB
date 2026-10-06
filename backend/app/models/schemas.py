@@ -16,6 +16,12 @@ class SubscribeRequest(BaseModel):
             raise ValueError("Phone must be E.164 format, e.g. +15551234567")
         return v
 
+class SubscribeResponse(BaseModel):
+    # Deliberately narrow: a response_model enforces at serialization time
+    # that ONLY these fields can ever leave the server (PII isolation).
+    success: bool = True
+    fan_id: str
+
 class WalletSubscribeRequest(BaseModel):
     channel_handle: str
     wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")
