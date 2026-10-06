@@ -1,64 +1,60 @@
-# ADR 0004: Message Delivery Guarantees & Queue Architecture
+# ADR 0004: Notification Delivery Guarantees & Queue Architecture
 
 ## Status
-Accepted
+Accepted (revised by ADR 0006 — push-only delivery; Twilio/SMS removed)
 
 ## Context
-When a Creator sends a Ping to 2,000+ fans, we cannot make 2,000 synchronous HTTP calls to Twilio/OneSignal. We need:
+When a Creator sends a Ping (or goes live) to 2,000+ fans, we cannot make
+2,000 synchronous HTTP calls from the request cycle. We need:
 - Async fan-out via message queue
-- Rate limiting per channel (Twilio carrier limits)
-- Idempotent delivery (no duplicate SMS)
+- Bounded per-channel pacing (anti-storm; OneSignal API rate limits)
+- Idempotent delivery (no duplicate notifications)
 - Retry with exponential backoff
-- Cost tracking per channel
-- Push fallback when SMS fails or for cost savings
+- Quota enforcement per channel (tier limit)
+- Two triggers on the same pipeline: Creator pings and **Go Live events**
+
+Push is the only delivery channel (ADR 0006): there is no per-message cost
+and no phone number anywhere in the system.
 
 ## Decision
-**Upstash QStash** as the durable message queue with **per-channel rate limit buckets** in Redis.
+**Upstash QStash** as the durable message queue with **per-channel rate limit
+buckets** in Redis, sending through **OneSignal** (web push + mobile FCM/APNs).
 
 ### Queue Flow
 
 ```
-Creator sends Ping (POST /api/pings)
+Creator sends Ping (POST /api/v1/pings)        ── or ──  GO LIVE event
     │
     ▼
-FastAPI: Validate tier limits, create Ping record (status=processing)
+FastAPI: Validate tier quota, create Ping record (kind=message|live,
+         status=processing)
     │
     ▼
-Fan-out: SELECT fan_id FROM anonymous_links WHERE channel_id=? AND status='active'
+Fan-out: SELECT fan_id FROM anonymous_links WHERE channel_id=?
+         AND status='active'
     │
     ▼
-For each fan: Create MessageQueueJob (idempotency_key = ping_id:fan_id:method)
+For each fan: MessageQueueJob (idempotency_key = ping_id:fan_id:'push')
     │
     ▼
 Enqueue batch to QStash (up to 1000 jobs per API call)
     │
     ▼
-QStash delivers to Worker endpoint (POST /api/worker/deliver)
+QStash delivers to Worker endpoint (POST /api/v1/worker/deliver)
     │
     ▼
-Worker: Check rate limit bucket → Decrypt phone (if SMS) → Send via provider → Update job status
+Worker: Check rate limit bucket → send via OneSignal (include_player_ids)
+        → update job status
+    │
+    ▼  (parallel, best-effort — never blocks fan-out)
+QStash delayed job → NotaryPort → Midnight notary stub
+        (pseudonymous channel id, event id, timestamp)
 ```
 
 ### Rate Limiting (Token Bucket per Channel)
-
-```python
-# Redis key: ratelimit:channel:{channel_id}
-# Tokens: max_sms_per_minute (e.g., 30 for Twilio trial, 1000+ for verified)
-# Refill: 1 token per second
-
-async def acquire_sms_slot(channel_id: str) -> bool:
-    key = f"ratelimit:channel:{channel_id}"
-    # Lua script for atomic check-and-decrement
-    script = """
-    local tokens = tonumber(redis.call('GET', KEYS[1]) or ARGV[1])
-    if tokens > 0 then
-        redis.call('DECR', KEYS[1])
-        return 1
-    end
-    return 0
-    """
-    return await redis.eval(script, 1, key, max_tokens)
-```
+Per-channel token bucket in Redis (Lua check-and-decrement) throttles fan-out
+pacing. The original Twilio carrier rationale is gone; the bucket now exists
+to prevent fan-out storms and stay within OneSignal API throughput limits.
 
 ### Idempotency
 - `idempotency_key = f"{ping_id}:{fan_id}:{delivery_method}"`
@@ -76,21 +72,20 @@ async def acquire_sms_slot(channel_id: str) -> bool:
 
 Implemented via QStash `retries` + custom backoff in worker.
 
-### Push Fallback Logic
-```python
-async def determine_delivery_method(fan: Fan, channel: Channel) -> str:
-    # Priority: User preference > Cost > Reliability
-    if fan.push_token and channel.tier != 'free':
-        return 'push'  # Zero cost, instant
-    if fan.has_phone:
-        return 'sms'   # Costs money, guaranteed delivery
-    return 'push'      # Fallback
-```
+### OneSignal Send
+- Server-side OneSignal REST API, targeting the stored device tokens
+  (`include_player_ids`).
+- Payloads contain only public content (creator handle, message text) —
+  OneSignal sees player ids and payloads, never fan identity.
+- Fans without a registered device token are marked `skipped` on the job
+  (no delivery handle), not failed.
 
-### Cost Tracking
-- Increment `channels.sms_sent_this_period` atomically on SMS send
-- Hard cap at tier limit (Free: 100, Pro: 10,000, Enterprise: custom)
-- Alert at 80% usage via webhook to Creator
+### Quota Tracking (was Cost Tracking)
+- Increment a per-channel, per-period ping counter atomically on send.
+- Hard cap at tier limit (Free: 100, Pro: 10,000, Enterprise: custom),
+  checked **before** fan-out — rejection happens at the API, not mid-queue.
+- The old "prevent SMS bill shock" rationale is retired (ADR 0006); the cap
+  is now a product quota. Alert at 80% usage is a follow-up.
 
 ### Dead Letter Queue
 - Jobs failing after max retries → `status = 'failed'` + `error_message`
@@ -98,13 +93,17 @@ async def determine_delivery_method(fan: Fan, channel: Channel) -> str:
 - Manual replay via admin dashboard
 
 ## Consequences
-- **Pros**: Horizontal scaling, durable delivery, cost control, observability
-- **Cons**: Added complexity (queue, worker, rate limiting), eventual consistency
-- **Monitoring**: Dashboard with queue depth, delivery latency, failure rate, cost/channel
+- **Pros**: horizontal scaling, durable delivery, zero per-message cost,
+  single pipeline for pings and go-live alerts, notary is isolated behind
+  `NotaryPort` (lag/failure cannot affect delivery).
+- **Cons**: added complexity (queue, worker, buckets), eventual consistency,
+  reach limited to devices with granted push permission (no SMS fallback).
+- **Monitoring**: dashboard with queue depth, delivery latency, failure rate.
 
 ---
 
 ## Related
-- ADR 0001: Tech Stack (Upstash QStash)
-- ADR 0002: Database Schema (message_queue_jobs)
-- ADR 0003: Anonymous Link (fan-out source)
+- ADR 0001: Tech Stack (Upstash QStash, OneSignal)
+- ADR 0002: Database Schema (message_queue_jobs, pings)
+- ADR 0003: Anonymous Link (fan-out source; superseded)
+- ADR 0006: Hybrid Architecture (push-only, notary sidecar, quota rationale)

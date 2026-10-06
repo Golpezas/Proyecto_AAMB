@@ -60,10 +60,17 @@ Implemented in `backend/app/core/auth.py`
     process that can read `SUPABASE_JWT_SECRET` can mint creator tokens.
     Mitigation: secret lives only in server env, never in the repo or logs.
   - One channel per creator and handle uniqueness are enforced only by the
-    API (plus DB unique constraints); RLS is not consulted on this path.
+    API layer today: `channels.creator_id` has **no** UNIQUE constraint yet
+    (handle uniqueness is DB-backed). Adding `UNIQUE (creator_id)` is a
+    pending schema fix tracked in the pivot plan.
 - **Follow-ups**:
+  - **UNIQUE (creator_id) on channels**: closes a race where two concurrent
+    requests could create two channels for one creator.
   - **Asymmetric JWTs (RS256/JWKS)**: migrate verification to Supabase's JWKS
     endpoint so the backend only holds public keys and cannot forge tokens.
+  - **Frontend identity bridge**: Privy (Apple/Google/email login) mints the
+    embedded wallet and bridges into a Supabase session so `sub` stays the
+    creator id (ADR 0006); verify against Privy docs before frontend tasks.
   - **Webhook `signing_key` delivery**: the channel's signing key is generated
     at channel creation but deliberately not returned by the API; how the
     creator retrieves it (dashboard + webhook verification) is a separate
@@ -73,5 +80,5 @@ Implemented in `backend/app/core/auth.py`
 
 ## Related
 - ADR 0002: Database Schema & RLS Policies (`creator_id = auth.uid()`)
-- ADR 0003: Anonymous Link Architecture (channel PIN is separate from this
-  creator authentication)
+- ADR 0006: Hybrid Architecture (Privy bridges frontend login into this JWT;
+  the channel PIN referenced by ADR 0003 is deprecated)

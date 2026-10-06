@@ -1,7 +1,11 @@
 # ADR 0003: Anonymous Link Architecture (PIN + Wallet)
 
 ## Status
-Accepted
+**Superseded by ADR 0006 (Hybrid Architecture).** The 6-digit subscription PIN
+(Path A) is deprecated — subscriptions are wallet-signed, and the product name
+itself is now "PIN" (Private Instant Notification), making the code a semantic
+collision. Phone numbers no longer exist on our servers, so `encrypted_phones`
+is removed. Kept below for history; do not implement from this document.
 
 ## Context
 Fans must subscribe to a Creator's channel without revealing their phone number to the Creator or the platform. The link must work via:
