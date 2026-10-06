@@ -1,46 +1,39 @@
 # backend/app/services/subscription_service.py
-# Single-transaction subscription creation. The three row inserts (Fan,
-# EncryptedPhone, AnonymousLink) are flushed inside ONE transaction and
-# committed exactly once, so a failure at any step rolls everything back
-# instead of leaving an orphaned Fan or ciphertext at rest (PII isolation).
+# Single-transaction subscribe/unsubscribe on wallet identity (ADR 0006).
 import uuid
 
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.db.models import Fan
-from app.db.repositories import (
-    AnonymousLinkRepo,
-    EncryptedPhoneRepo,
-    FanRepo,
-)
-from app.services.crypto_service import encrypt_phone
+from app.db.repositories import AnonymousLinkRepo, FanRepo
 
 
-async def create_subscription(
-    session: AsyncSession,
-    channel_id: str | uuid.UUID,
-    phone: str,
+async def subscribe(
+    session: AsyncSession, channel_id: str | uuid.UUID, wallet_address: str
 ) -> Fan:
-    """Create Fan + EncryptedPhone + AnonymousLink atomically.
-
-    The repos run in unit-of-work mode (``commit=False``); this function
-    commits exactly once at the end. On any failure it rolls back everything
-    it wrote and re-raises the original error.
-    """
+    fan_repo, link_repo = FanRepo(session), AnonymousLinkRepo(session)
+    fan = await fan_repo.get_by_wallet(wallet_address)
+    if fan is None:
+        fan = await fan_repo.create(wallet_address=wallet_address, commit=False)
+    link = await link_repo.get_by_channel_and_fan(channel_id, fan.id)
+    if link is None:
+        await link_repo.create(channel_id=channel_id, fan_id=fan.id, commit=False)
+    elif link.status != "active":
+        await link_repo.reactivate(channel_id, fan.id, commit=False)
     try:
-        fan = await FanRepo(session).create(commit=False)
-        await EncryptedPhoneRepo(session).create(
-            fan_id=fan.id,
-            phone_encrypted=encrypt_phone(phone),
-            commit=False,
-        )
-        await AnonymousLinkRepo(session).create(
-            channel_id=channel_id,
-            fan_id=fan.id,
-            commit=False,
-        )
         await session.commit()
     except Exception:
         await session.rollback()
         raise
     return fan
+
+
+async def unsubscribe(
+    session: AsyncSession, channel_id: str | uuid.UUID, wallet_address: str
+) -> None:
+    fan = await FanRepo(session).get_by_wallet(wallet_address)
+    if fan is None:
+        return  # idempotent: unsubscribing a never-subscribed wallet succeeds
+    link = await AnonymousLinkRepo(session).get_by_channel_and_fan(channel_id, fan.id)
+    if link is not None and link.status == "active":
+        await AnonymousLinkRepo(session).set_opted_out(channel_id, fan.id)

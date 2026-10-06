@@ -139,8 +139,14 @@ class FanRepo:
     async def get(self, id: str | uuid.UUID) -> Fan | None:
         return await self._session.get(Fan, _to_uuid(id))
 
-    async def create(self, commit: bool = True) -> Fan:
-        fan = Fan()
+    async def get_by_wallet(self, wallet_address: str) -> Fan | None:
+        res = await self._session.execute(
+            select(Fan).where(Fan.wallet_address == wallet_address.lower())
+        )
+        return res.scalar_one_or_none()
+
+    async def create(self, wallet_address: str, commit: bool = True) -> Fan:
+        fan = Fan(wallet_address=wallet_address.lower())
         self._session.add(fan)
         if commit:
             await _commit(self._session)
@@ -242,14 +248,32 @@ class AnonymousLinkRepo:
         return res.scalar_one_or_none()
 
     async def set_opted_out(
-        self, channel_id: str | uuid.UUID, fan_id: str | uuid.UUID
+        self, channel_id: str | uuid.UUID, fan_id: str | uuid.UUID, commit: bool = True
     ) -> AnonymousLink | None:
         link = await self.get_by_channel_and_fan(channel_id, fan_id)
         if link is None:
             return None
         link.status = "opted_out"
         link.opted_out_at = func.now()
-        await _commit(self._session)
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
+        await self._session.refresh(link)
+        return link
+
+    async def reactivate(
+        self, channel_id: str | uuid.UUID, fan_id: str | uuid.UUID, commit: bool = True
+    ) -> AnonymousLink | None:
+        link = await self.get_by_channel_and_fan(channel_id, fan_id)
+        if link is None:
+            return None
+        link.status = "active"
+        link.opted_out_at = None
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
         await self._session.refresh(link)
         return link
 

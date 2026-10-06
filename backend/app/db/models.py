@@ -79,6 +79,7 @@ class Fan(Base):
     __tablename__ = "fans"
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
+    wallet_address: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
     created_at: Mapped[datetime | None] = mapped_column(
         DateTime(timezone=True), server_default=func.now()
     )

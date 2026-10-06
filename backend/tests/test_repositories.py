@@ -134,8 +134,20 @@ async def test_set_pin_hash_round_trip(creator_repo, channel_repo):
 
 
 @pytest.mark.asyncio
+async def test_fan_wallet_is_unique(db_session):
+    from app.db.repositories import FanRepo
+
+    acct = "0x" + "11" * 20
+    await FanRepo(db_session).create(wallet_address=acct)
+    import sqlalchemy.exc
+
+    with pytest.raises(sqlalchemy.exc.IntegrityError):
+        await FanRepo(db_session).create(wallet_address=acct)
+
+
+@pytest.mark.asyncio
 async def test_create_and_get_fan(fan_repo):
-    fan = await fan_repo.create()
+    fan = await fan_repo.create(wallet_address="0x" + "22" * 20)
     assert fan.id is not None
 
     fetched = await fan_repo.get(fan.id)
@@ -148,8 +160,8 @@ async def test_create_anonymous_link_and_list_active_fans(
     creator_repo, channel_repo, fan_repo, link_repo
 ):
     channel = await _make_channel(channel_repo, creator_repo)
-    fan1 = await fan_repo.create()
-    fan2 = await fan_repo.create()
+    fan1 = await fan_repo.create(wallet_address="0x" + "31" * 20)
+    fan2 = await fan_repo.create(wallet_address="0x" + "32" * 20)
 
     link1 = await link_repo.create(channel_id=channel.id, fan_id=fan1.id)
     link2 = await link_repo.create(
@@ -172,7 +184,7 @@ async def test_list_active_fan_ids_skips_wallet_only_links(
     creator_repo, channel_repo, fan_repo, link_repo, db_session
 ):
     channel = await _make_channel(channel_repo, creator_repo)
-    fan = await fan_repo.create()
+    fan = await fan_repo.create(wallet_address="0x" + "33" * 20)
     await link_repo.create(channel_id=channel.id, fan_id=fan.id)
 
     # wallet-only subscription: no fan row, so fan_id is NULL
@@ -191,7 +203,7 @@ async def test_get_anonymous_link_by_channel_and_fan(
     creator_repo, channel_repo, fan_repo, link_repo
 ):
     channel = await _make_channel(channel_repo, creator_repo)
-    fan = await fan_repo.create()
+    fan = await fan_repo.create(wallet_address="0x" + "34" * 20)
     link = await link_repo.create(channel_id=channel.id, fan_id=fan.id)
 
     found = await link_repo.get_by_channel_and_fan(channel.id, fan.id)
@@ -205,8 +217,8 @@ async def test_opt_out_removes_fan_from_active_list(
     creator_repo, channel_repo, fan_repo, link_repo
 ):
     channel = await _make_channel(channel_repo, creator_repo)
-    fan1 = await fan_repo.create()
-    fan2 = await fan_repo.create()
+    fan1 = await fan_repo.create(wallet_address="0x" + "35" * 20)
+    fan2 = await fan_repo.create(wallet_address="0x" + "36" * 20)
     await link_repo.create(channel_id=channel.id, fan_id=fan1.id)
     await link_repo.create(channel_id=channel.id, fan_id=fan2.id)
 
@@ -221,7 +233,7 @@ async def test_opt_out_removes_fan_from_active_list(
 
 @pytest.mark.asyncio
 async def test_create_and_get_encrypted_phone(fan_repo, db_session):
-    fan = await fan_repo.create()
+    fan = await fan_repo.create(wallet_address="0x" + "37" * 20)
     repo = EncryptedPhoneRepo(db_session)
     blob = b"nonce+ciphertext-blob"
 
@@ -240,7 +252,7 @@ async def test_create_and_get_encrypted_phone(fan_repo, db_session):
 
 @pytest.mark.asyncio
 async def test_encrypted_phone_fan_id_unique(fan_repo, db_session):
-    fan = await fan_repo.create()
+    fan = await fan_repo.create(wallet_address="0x" + "38" * 20)
     fan_id = fan.id
     repo = EncryptedPhoneRepo(db_session)
     await repo.create(fan_id=fan_id, phone_encrypted=b"first")

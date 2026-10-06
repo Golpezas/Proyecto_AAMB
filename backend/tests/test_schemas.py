@@ -1,6 +1,4 @@
 # backend/tests/test_schemas.py
-from app.models.schemas import SubscribeRequest, PingCreate
-
 import pytest
 from pydantic import ValidationError
 
@@ -11,64 +9,36 @@ from app.models.schemas import (
     Fan,
     MessageQueueJob,
     Ping,
+    PingCreate,
     PingResponse,
     SendResponse,
-    WalletSubscribeRequest,
+    SignedFanRequest,
 )
 
-def test_subscribe_request_valid():
-    req = SubscribeRequest(channel_handle="creator1", pin="123456", phone="+15551234567")
-    assert req.pin == "123456"
 
-def test_subscribe_request_rejects_bad_phone():
-    import pytest
-    from pydantic import ValidationError
+def test_signed_fan_request_valid():
+    addr = "0x" + "ab" * 20
+    req = SignedFanRequest(channel_handle="creator1", wallet_address=addr, signature="0x12", timestamp=1760000000)
+    assert req.wallet_address == addr
+
+def test_signed_fan_request_normalizes_wallet():
+    addr = "0x" + "AB" * 20
+    req = SignedFanRequest(channel_handle="creator1", wallet_address=addr, signature="0x12", timestamp=1)
+    assert req.wallet_address == addr.lower()
+
+def test_signed_fan_request_rejects_bad_address():
     with pytest.raises(ValidationError):
-        SubscribeRequest(channel_handle="c", pin="123456", phone="not-a-phone")
+        SignedFanRequest(channel_handle="c", wallet_address="0xnope", signature="0x12", timestamp=1)
+
+def test_signed_fan_request_rejects_bad_signature():
+    with pytest.raises(ValidationError):
+        SignedFanRequest(channel_handle="c", wallet_address="0x" + "a" * 40, signature="x", timestamp=1)
 
 def test_ping_create_max_length():
     import pytest
     from pydantic import ValidationError
     with pytest.raises(ValidationError):
         PingCreate(message="x" * 161)
-
-def test_subscribe_request_rejects_short_pin():
-    with pytest.raises(ValidationError):
-        SubscribeRequest(channel_handle="c", pin="123", phone="+15551234567")
-
-def test_wallet_subscribe_request_valid():
-    addr = "0x" + "ab" * 20
-    req = WalletSubscribeRequest(channel_handle="creator1", wallet_address=addr)
-    assert req.wallet_address == addr
-    assert req.phone is None
-
-def test_wallet_subscribe_request_rejects_bad_address():
-    with pytest.raises(ValidationError):
-        WalletSubscribeRequest(channel_handle="c", wallet_address="0xnope")
-
-def test_wallet_subscribe_request_valid_e164_phone():
-    req = WalletSubscribeRequest(
-        channel_handle="c", wallet_address="0x" + "a" * 40, phone="+15551234567"
-    )
-    assert req.phone == "+15551234567"
-
-def test_wallet_subscribe_request_rejects_bad_phone():
-    with pytest.raises(ValidationError):
-        WalletSubscribeRequest(
-            channel_handle="c", wallet_address="0x" + "a" * 40, phone="garbage"
-        )
-
-def test_wallet_subscribe_request_allows_none_phone():
-    req = WalletSubscribeRequest(
-        channel_handle="c", wallet_address="0x" + "a" * 40, phone=None
-    )
-    assert req.phone is None
-
-def test_subscribe_request_rejects_trailing_newline_phone():
-    with pytest.raises(ValidationError):
-        SubscribeRequest(
-            channel_handle="c", pin="123456", phone="+15551234567\n"
-        )
 
 def test_ping_create_defaults_to_push():
     ping = PingCreate(channel_id="ch_1", message="hello")

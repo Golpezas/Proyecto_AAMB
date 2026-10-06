@@ -1,20 +1,21 @@
 # backend/app/models/schemas.py
-from pydantic import BaseModel, Field, field_validator
 import re
 from datetime import datetime
 from typing import Any
 
-class SubscribeRequest(BaseModel):
-    channel_handle: str
-    pin: str = Field(min_length=6, max_length=12)
-    phone: str = Field(description="E.164 format")
+from pydantic import BaseModel, Field, field_validator
 
-    @field_validator("phone")
+
+class SignedFanRequest(BaseModel):
+    channel_handle: str
+    wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")
+    signature: str = Field(min_length=2, max_length=1024)
+    timestamp: int
+
+    @field_validator("wallet_address")
     @classmethod
-    def validate_phone(cls, v: str) -> str:
-        if not re.fullmatch(r"\+[1-9]\d{7,14}", v):
-            raise ValueError("Phone must be E.164 format, e.g. +15551234567")
-        return v
+    def normalize_wallet(cls, v: str) -> str:
+        return v.lower()
 
 class SubscribeResponse(BaseModel):
     # Deliberately narrow: a response_model enforces at serialization time
@@ -22,19 +23,8 @@ class SubscribeResponse(BaseModel):
     success: bool = True
     fan_id: str
 
-class WalletSubscribeRequest(BaseModel):
-    channel_handle: str
-    wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")
-    phone: str | None = None
-
-    @field_validator("phone")
-    @classmethod
-    def validate_phone(cls, v: str | None) -> str | None:
-        if v is None:
-            return v
-        if not re.fullmatch(r"\+[1-9]\d{7,14}", v):
-            raise ValueError("Phone must be E.164 format, e.g. +15551234567")
-        return v
+class UnsubscribeResponse(BaseModel):
+    success: bool = True
 
 class PingCreate(BaseModel):
     channel_id: str
