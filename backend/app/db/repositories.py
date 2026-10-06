@@ -16,6 +16,20 @@ def _to_uuid(value: str | uuid.UUID) -> uuid.UUID:
     return uuid.UUID(str(value))
 
 
+async def _commit(session: AsyncSession) -> None:
+    """Commit, rolling back before re-raising on failure.
+
+    A failed commit leaves the AsyncSession in a "rollback required" state;
+    without the rollback every later query on the injected session would raise
+    PendingRollbackError instead of the original error surfacing once.
+    """
+    try:
+        await session.commit()
+    except Exception:
+        await session.rollback()
+        raise
+
+
 class CreatorRepo:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
@@ -26,7 +40,7 @@ class CreatorRepo:
     async def create(self, email: str, handle: str) -> Creator:
         creator = Creator(email=email, handle=handle)
         self._session.add(creator)
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(creator)
         return creator
 
@@ -60,7 +74,7 @@ class ChannelRepo:
             monthly_ping_limit=monthly_ping_limit,
         )
         self._session.add(channel)
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(channel)
         return channel
 
@@ -71,7 +85,7 @@ class ChannelRepo:
         if channel is None:
             return None
         channel.pin_hash = pin_hash
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(channel)
         return channel
 
@@ -86,7 +100,7 @@ class FanRepo:
     async def create(self) -> Fan:
         fan = Fan()
         self._session.add(fan)
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(fan)
         return fan
 
@@ -107,7 +121,7 @@ class AnonymousLinkRepo:
             wallet_address=wallet_address,
         )
         self._session.add(link)
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(link)
         return link
 
@@ -119,6 +133,8 @@ class AnonymousLinkRepo:
             .where(
                 AnonymousLink.channel_id == _to_uuid(channel_id),
                 AnonymousLink.status == "active",
+                # Wallet-only links have fan_id NULL; never emit "None".
+                AnonymousLink.fan_id.is_not(None),
             )
             .order_by(AnonymousLink.fan_id)
         )
@@ -143,7 +159,7 @@ class AnonymousLinkRepo:
             return None
         link.status = "opted_out"
         link.opted_out_at = func.now()
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(link)
         return link
 
@@ -167,7 +183,7 @@ class PingRepo:
             delivery_method=delivery_method,
         )
         self._session.add(ping)
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(ping)
         return ping
 
@@ -192,6 +208,6 @@ class PingRepo:
             ping.status = status
             if status == "completed":
                 ping.completed_at = func.now()
-        await self._session.commit()
+        await _commit(self._session)
         await self._session.refresh(ping)
         return ping

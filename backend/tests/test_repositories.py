@@ -4,6 +4,7 @@ import uuid
 import pytest
 from sqlalchemy.exc import IntegrityError
 
+from app.db.models import AnonymousLink
 from app.db.repositories import (
     AnonymousLinkRepo,
     ChannelRepo,
@@ -96,6 +97,29 @@ async def test_channel_handle_is_unique(creator_repo, channel_repo):
 
 
 @pytest.mark.asyncio
+async def test_session_recovers_after_failed_commit(creator_repo, channel_repo):
+    creator = await creator_repo.create(email="c@example.com", handle="creator1")
+    creator_id = creator.id
+    await _make_channel(channel_repo, creator_repo, creator=creator)
+
+    with pytest.raises(IntegrityError):
+        await _make_channel(channel_repo, creator_repo, creator=creator)
+
+    # the injected session must not be poisoned by the failed commit:
+    # subsequent reads and writes both still work
+    fetched = await channel_repo.get_by_handle("creator1")
+    assert fetched is not None
+    assert fetched.signing_key == "sk_test_123"
+
+    other = await creator_repo.create(email="d@example.com", handle="creator2")
+    assert other.id is not None
+    second_channel = await channel_repo.create(
+        creator_id=creator_id, handle="creator2", signing_key="sk_test_456"
+    )
+    assert second_channel.id is not None
+
+
+@pytest.mark.asyncio
 async def test_set_pin_hash_round_trip(creator_repo, channel_repo):
     channel = await _make_channel(channel_repo, creator_repo)
     pin_hash = "$2b$12$abcdefghijklmnopqrstuv"
@@ -140,6 +164,25 @@ async def test_create_anonymous_link_and_list_active_fans(
     active = await link_repo.list_active_fan_ids(channel.id)
     assert set(active) == {str(fan1.id), str(fan2.id)}
     assert await link_repo.list_active_fan_ids(uuid.uuid4()) == []
+
+
+@pytest.mark.asyncio
+async def test_list_active_fan_ids_skips_wallet_only_links(
+    creator_repo, channel_repo, fan_repo, link_repo, db_session
+):
+    channel = await _make_channel(channel_repo, creator_repo)
+    fan = await fan_repo.create()
+    await link_repo.create(channel_id=channel.id, fan_id=fan.id)
+
+    # wallet-only subscription: no fan row, so fan_id is NULL
+    db_session.add(
+        AnonymousLink(channel_id=channel.id, wallet_address="0x" + "cd" * 20)
+    )
+    await db_session.commit()
+
+    active = await link_repo.list_active_fan_ids(channel.id)
+    assert active == [str(fan.id)]
+    assert "None" not in active
 
 
 @pytest.mark.asyncio
