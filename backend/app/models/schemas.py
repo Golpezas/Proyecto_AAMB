@@ -33,6 +33,11 @@ class DeviceRegisterRequest(BaseModel):
     signature: str = Field(min_length=2, max_length=1024)
     timestamp: int
 
+    @field_validator("token")
+    @classmethod
+    def normalize_token(cls, v: str) -> str:
+        return v.lower()
+
     @field_validator("wallet_address")
     @classmethod
     def normalize_wallet(cls, v: str) -> str:
@@ -44,6 +49,11 @@ class DeviceRevokeRequest(BaseModel):
     wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")
     signature: str = Field(min_length=2, max_length=1024)
     timestamp: int
+
+    @field_validator("token")
+    @classmethod
+    def normalize_token(cls, v: str) -> str:
+        return v.lower()
 
     @field_validator("wallet_address")
     @classmethod

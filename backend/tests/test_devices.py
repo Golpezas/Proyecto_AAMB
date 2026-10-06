@@ -82,3 +82,27 @@ async def test_revoke_unknown_token_is_idempotent(api_client, acct):
         "/api/v1/devices/revoke", json={"token": "ghost", **_signed(acct, "device-revoke", "ghost")}
     )
     assert resp.status_code == 200 and resp.json()["success"] is True
+
+
+async def test_token_casing_idempotent(api_client, db_session, acct):
+    from app.db.repositories import DeviceTokenRepo, FanRepo
+
+    wallet = acct.address.lower()
+    await api_client.post(
+        "/api/v1/devices",
+        json={"token": "ABC", "platform": "web", **_signed(acct, "device", "ABC")},
+    )
+    resp = await api_client.post(
+        "/api/v1/devices",
+        json={"token": "abc", "platform": "web", **_signed(acct, "device", "abc")},
+    )
+    assert resp.status_code == 200
+    fan = await FanRepo(db_session).get_by_wallet(wallet)
+    tokens = await DeviceTokenRepo(db_session).list_by_fan(fan.id)
+    assert len(tokens) == 1 and tokens[0].token == "abc"
+
+    resp = await api_client.post(
+        "/api/v1/devices/revoke", json={"token": "abc", **_signed(acct, "device-revoke", "abc")}
+    )
+    assert resp.status_code == 200
+    assert await DeviceTokenRepo(db_session).list_by_fan(fan.id) == []

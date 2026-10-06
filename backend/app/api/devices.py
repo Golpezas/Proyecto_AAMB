@@ -32,8 +32,10 @@ async def register_device(req: DeviceRegisterRequest, session: Annotated[AsyncSe
     fan = await _verify_fan(req, "device", session)
     if fan is None:
         fan = await FanRepo(session).create(wallet_address=req.wallet_address, commit=False)
+        await DeviceTokenRepo(session).upsert(fan.id, req.token, req.platform, commit=False)
         await session.commit()
-    await DeviceTokenRepo(session).upsert(fan.id, req.token, req.platform)
+    else:
+        await DeviceTokenRepo(session).upsert(fan.id, req.token, req.platform)
     return DeviceResponse(success=True)
 
 
