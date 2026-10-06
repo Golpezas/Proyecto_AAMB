@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BreakSuite6 Connector</title>
+    <link rel="stylesheet" href="panel.css" />
+  </head>
+  <body>
+    <main class="panel-shell">
+      <header><span class="bolt">ϟ</span><div><p>BREAKSUITE6</p><h1>Live Connector</h1></div></header>
+      <section id="ledger-banner" class="ledger-banner">Checking saved live ledger…</section>
+      <section class="preflight">
+        <p class="eyebrow">SHOW START</p>
+        <h2 id="ready-title">CHECKING…</h2>
+        <p id="ready-copy">Verifying BreakSuite6 and the selected Whatnot Live Manager tab.</p>
+        <details><summary>Connection details</summary><div id="checks" class="checks" aria-live="polite"></div></details>
+        <button id="verify" class="gold-button">Prepare Show</button>
+        <p id="scan-note" class="scan-note">Checking the current Whatnot tab…</p>
+      </section>
+      <section class="delivery">
+        <p class="eyebrow">LATEST DELIVERY</p>
+        <strong id="latest">No buyer received yet.</strong>
+      </section>
+      <section class="actions">
+        <button id="recover-show" class="gold-button">Recover / Recheck List</button>
+        <details><summary>Advanced tools</summary><div class="actions">
+        <button id="scan" class="outline-button">Refresh Assigned List</button>
+        <button id="recover-latest" class="outline-button">Recover Latest Missed Spots</button>
+        <button id="rebuild-sales" class="outline-button">Rebuild Live Sales</button>
+        <button id="arm" class="gold-button">Legacy Reconnect</button>
+        <button id="board" class="gold-button">Open Break Board</button>
+        <button id="obs" class="outline-button">Open OBS Card View</button>
+        </div></details>
+      </section>
+      <footer>Always-on sync keeps monitoring Whatnot while you browse other tabs. Keep the Live Manager tab and BreakSuite6 open. After an exchange, use Recover / Recheck List once.</footer>
+    </main>
+    <script src="panel.js"></script>
+  </body>
+</html>

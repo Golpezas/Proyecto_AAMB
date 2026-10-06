@@ -1,0 +1,15 @@
+BREAKSUITE6 v0.3.382 — BOARD 6 UPDATE
+
+Board 6 is now the 50-spot Spiritforged layout requested on 2026-10-05.
+
+Key changes:
+- Split all 12 Signature + Overnumbered chase pairs.
+- Listing titles include exact SFD collector numbers.
+- Irelia, Fervent is split into Signature / Overnumbered / ALT + EPIC.
+- Six Seal ON cards remain standalone.
+- All Showcase Runes are one spot.
+- Rare/Epic non-champion Gear, Spell, and Unit cards are split by Fury, Calm, Mind, Body, Chaos, and Order.
+- Old Board 6 custom-map rows are cleared one time so the new 50 positions cannot inherit stale ownership.
+- Existing live/pending round snapshots are not rewritten.
+
+See SPIRITFORGED-50-SPOT-BOARD-6-MAP.txt for the exact spot list.

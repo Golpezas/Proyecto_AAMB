@@ -1,0 +1,15 @@
+.sniper-table {
+  min-width: 1180px;
+}
+
+.sniper-whatnot-link {
+  border-color: rgba(255, 213, 105, .45);
+  color: #ffd569;
+}
+
+.sniper-whatnot-note {
+  margin: -8px 2px 0;
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.5;
+}

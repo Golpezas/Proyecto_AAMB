@@ -1,0 +1,46 @@
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const renderer = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
+const preload = fs.readFileSync(path.join(__dirname, '..', 'preload.js'), 'utf8');
+const main = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+const styles = fs.readFileSync(path.join(__dirname, 'breaker-center.css'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+
+assert.match(renderer, /function buyerBagPriceControl\(/, 'Buyer Bags must render a whole-bag price control');
+assert.match(renderer, /collapsedBuyerBags: new Set\(\)/, 'Each Buyer Bag must preserve its open or minimized state while the view rerenders');
+assert.match(renderer, /function buyerBagCollapseControl\(/, 'Buyer Bags must render a compact open/minimize control');
+assert.match(renderer, /data-buyer-bag-collapse=/, 'The Buyer Bag open/minimize control must be independently wired');
+assert.match(renderer, /wireBuyerBagCollapseControls\(elements\.pendingBreakRounds\)/, 'Pending Review Buyer Bags must support minimizing');
+assert.match(renderer, /wireBuyerBagCollapseControls\(elements\.riftboundBreakerBags\)/, 'Live Riftbound Buyer Bags must support minimizing');
+assert.match(renderer, /PENDING BUYER BAG[\s\S]{0,300}buyerBagPriceControl\(buyer, selected, round\.id\)/, 'Pending Buyer Bags must include whole-bag pricing beside their heading');
+assert.match(renderer, /RIFTBOUND BUYER BAG[\s\S]{0,300}buyerBagPriceControl\(bag\.buyer, selected\)/, 'Live Riftbound Buyer Bags must include whole-bag pricing beside their heading');
+assert.match(renderer, /window\.breakSuite\.refreshBuyerBagPrices\(\{ buyer, roundId \}\)/, 'The Price Check control must call the scoped Buyer Bag API');
+assert.match(renderer, /function formatPrivateRiftboundMoney\(cents\)/, 'Riftbound financial values must use the privacy formatter');
+assert.match(renderer, /if \(!state\.riftboundSpendingVisible \|\| !matched\) return '';/, 'Hide Spending must remove card-price badges completely');
+assert.doesNotMatch(renderer, /CURRENT MARKET/, 'The compact card-price badge must not include a Current Market label');
+assert.doesNotMatch(renderer, /data-buyer-bag-price-selected=/, 'Whole-bag pricing must not require cards to be marked as actual pulls first');
+assert.match(renderer, /riftboundBreakerCardTile[\s\S]{0,500}riftboundCardMarketBadge\(card\)/, 'Remaining Riftbound cards must show the same compact market-price badge');
+assert.match(renderer, /state\.riftboundSpendingVisible = !state\.riftboundSpendingVisible;\s*renderRiftboundBreakerCenter\(\);/, 'Hide Spending must rerender Buyer Bag prices immediately');
+assert.match(preload, /refreshBuyerBagPrices: \(payload\) => ipcRenderer\.invoke\('buyer-bag:refresh-prices', payload\)/, 'Preload must expose Buyer Bag pricing safely');
+assert.match(main, /ipcMain\.handle\('buyer-bag:refresh-prices',[\s\S]*refreshBuyerBagPrices\(payload\)/, 'Main process must own the live pricing request');
+assert.match(styles, /\.riftbound-card-market/, 'Buyer Bag card-price badges must be styled');
+assert.match(styles, /\.buyer-bag\.is-collapsed \.buyer-bag-collapsible \{ display: none; \}/, 'Minimized Buyer Bags must hide only their collapsible content');
+assert.match(styles, /\.riftbound-card-market \{[^}]*height: 18px;/, 'Buyer Bag prices must use a tiny corner badge');
+assert.match(html, /id="buyer-price-source"[\s\S]*JustTCG[\s\S]*ChatGPT Batch Import[\s\S]*eBay Estimate[\s\S]*Manual/, 'Riftbound pricing must expose all four isolated price sources');
+assert.match(html, /id="refresh-riftbound-board-prices"[^>]*>Price Entire Board<\/button>/, 'Remaining Cards must expose one entire-board price button');
+assert.match(html, /id="open-buyer-price-feed"[^>]*>API Keys \/ Help<\/button>/, 'Riftbound pricing must expose provider setup help directly');
+assert.match(html, /id="price-input-modal"[\s\S]*id="copy-chatgpt-price-request"[\s\S]*id="price-input-manual"/, 'ChatGPT Import and Manual Price must share a scoped input dialog');
+assert.match(renderer, /activePriceSourceUi\(\)\.action === 'input'/, 'No-key input sources must not call an automatic provider');
+assert.match(renderer, /window\.breakSuite\.prepareBuyerBagPriceInput/, 'Buyer Bag input must load the complete displayed bag');
+assert.match(renderer, /window\.breakSuite\.applyBuyerBagPriceInput/, 'Buyer Bag input must save through the scoped price API');
+assert.match(preload, /refreshRiftboundBoardPrices: \(\) => ipcRenderer\.invoke\('riftbound-board:refresh-prices'\)/, 'Preload must expose entire-board automatic pricing');
+assert.match(preload, /prepareRiftboundBoardPriceInput: \(\) => ipcRenderer\.invoke\('riftbound-board:prepare-price-input'\)/, 'Preload must expose entire-board batch input');
+assert.match(main, /function buyerBagDisplayedCardIds[\s\S]*displayedCatalogCardIds\(boardCards, audit\)/, 'Buyer Bag pricing must collect displayed family cards instead of selected pulls');
+assert.match(main, /function copyPendingRoundBuyerPulls[\s\S]*topHitsOnly\(recordedCards\)/, 'Pending Review Copy Results must exclude Epic and lower pulls');
+assert.match(main, /function copyRiftboundBuyerPulls[\s\S]*topHitsOnly\(recordedCards\)/, 'Live Buyer Bag Copy Results must exclude Epic and lower pulls');
+assert.match(main, /Here are your top hits:/, 'Copied Riftbound Buyer Bag messages must clearly label the filtered hit list');
+assert.match(renderer, /async function openPriceSourceSetup\(\)/, 'Price Source Setup must open the market connection screen');
+
+console.log('Buyer Bag pricing and privacy checks passed.');

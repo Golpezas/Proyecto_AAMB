@@ -1,0 +1,300 @@
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+html, body { width: 100%; min-height: 100%; margin: 0; background: transparent; }
+body { overflow: hidden; font-family: Inter, Arial, sans-serif; }
+
+/* The board remains transparent for OBS.  The frame follows the exact live-card
+   footprint, so it stays tight even when the Browser Source is scaled or cropped. */
+.overlay-stage { --frame-primary: #55dcff; --frame-secondary: #9b7dff; --frame-glow: .78; --frame-glow-strong: 78%; --frame-glow-soft: 48%; --frame-thickness: 3px; --frame-run-duration: 12s; --card-led-duration: 14s; --frame-breathe-duration: 7.5s; --board-shift-x: 0vw; --board-shift-y: 0vh; --board-scale: 1; --popup-width: 420px; --popup-height: 600px; --popup-pair-width: 764px; --popup-pair-height: 564px; --popup-statue-size: 92%; --popup-card-width: 54%; --popup-card-max-height: 63%; position: relative; isolation: isolate; width: 100%; height: 100vh; overflow: hidden; pointer-events: none; }
+.overlay-grid { --columns: 6; --rows: 1; position: relative; z-index: 2; display: grid; grid-template-columns: repeat(var(--columns), minmax(0, 1fr)); grid-template-rows: repeat(var(--rows), minmax(0, 1fr)); gap: clamp(8px, .95vw, 17px); width: 100%; height: 100%; padding: 1.6vh 7.2vw 19vh; align-items: center; transform: translate(var(--board-shift-x), var(--board-shift-y)) scale(var(--board-scale)); transform-origin: center; }
+.overlay-stage[data-game="RIFTBOUND"] .overlay-grid {
+  /* Match the established One Piece board footprint: six cards across and
+     nine full-size visible rows. Extra Riftbound cards continue below the
+     Browser Source and climb into view as earlier spots are claimed. */
+  grid-auto-flow: row;
+  grid-template-rows: repeat(var(--rows), 8.2vh);
+  column-gap: clamp(8px,.95vw,17px);
+  row-gap: clamp(6px,.55vh,10px);
+  align-content: start;
+}
+.overlay-stage[data-game="RIFTBOUND"][data-bundled="true"] .overlay-grid {
+  grid-template-rows: repeat(var(--rows), 11.4vh);
+  column-gap: clamp(12px,1.3vw,24px);
+  row-gap: clamp(7px,.62vh,11px);
+}
+
+/* Board 9 static OBS layout: a true four-lane grid.  Card width is the
+   authoritative measurement and height follows the physical card aspect ratio.
+   This removes the viewport-height/grid-row mismatch that could make cards
+   overlap in OBS at unusual Browser Source dimensions. */
+.overlay-stage[data-game="RIFTBOUND"][data-layout="spiritforged-board-9-priority-four"] .overlay-grid {
+  --b9-card-width: clamp(70px, min(9vw, 17vh), 176px);
+  --b9-gap-x: clamp(8px, 1.15vw, 20px);
+  --b9-gap-y: clamp(8px, 1.05vh, 16px);
+  grid-auto-flow: row;
+  grid-template-columns: repeat(4, var(--b9-card-width));
+  grid-template-rows: none;
+  grid-auto-rows: auto;
+  justify-content: center;
+  align-content: start;
+  align-items: start;
+  column-gap: var(--b9-gap-x);
+  row-gap: var(--b9-gap-y);
+  width: 100%;
+  height: auto;
+  min-height: 100%;
+  padding: clamp(10px, 1.4vh, 22px) clamp(10px, 2vw, 36px) clamp(14px, 2vh, 30px);
+}
+.overlay-stage[data-game="RIFTBOUND"][data-layout="spiritforged-board-9-priority-four"] .card {
+  display: grid;
+  width: var(--b9-card-width);
+  height: auto;
+  min-width: 0;
+  min-height: 0;
+  aspect-ratio: .7;
+  padding: 0;
+  place-items: stretch;
+  overflow: visible;
+}
+.overlay-stage[data-game="RIFTBOUND"][data-layout="spiritforged-board-9-priority-four"] .card-shell {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-width: 0;
+  min-height: 0;
+  max-width: none;
+  max-height: none;
+  aspect-ratio: .7;
+}
+.overlay-stage[data-game="RIFTBOUND"][data-layout="spiritforged-board-9-priority-four"] .card img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.overlay-stage[data-game="RIFTBOUND"][data-layout="vendetta-board-10-dense-five"] .overlay-grid {
+  /* Board 10 alone uses five dense lanes. Its complete 106-card list remains
+     mounted below the OBS crop and continuously packs upward as cards sell. */
+  grid-auto-flow: row;
+  grid-template-rows: repeat(var(--rows), clamp(68px, min(9.35vh, 8.4vw), 126px));
+  column-gap: clamp(8px,.78vw,14px);
+  row-gap: clamp(4px,.42vh,8px);
+  padding: 1.2vh clamp(14px, 3.6vw, 68px) 2vh;
+  align-content: start;
+}
+.overlay-stage[data-game="RIFTBOUND"][data-layout="vendetta-board-10-dense-five"] .card {
+  min-width: 0;
+  min-height: 0;
+  padding-block: clamp(1px,.15vh,3px);
+}
+.overlay-stage[data-game="RIFTBOUND"][data-layout="vendetta-board-10-dense-five"] .card-shell { max-width:100%; max-height:100%; }
+
+/* A solid premium frame. Opacity breathing stays compositor-friendly in OBS;
+   rotating conic-gradient custom properties forced continuous GPU repaints. */
+.board-frame { --board-led-angle: 0deg; position: absolute; z-index: 1; display: none; min-width: 72px; min-height: 92px; overflow: visible; border: var(--frame-thickness) solid color-mix(in srgb, var(--frame-primary) 72%, #0d172b); border-radius: clamp(14px, 1.7vw, 29px); background: linear-gradient(145deg, color-mix(in srgb, var(--frame-primary) 10%, transparent), color-mix(in srgb, var(--frame-secondary) 5%, transparent)); box-shadow: inset 0 0 18px color-mix(in srgb, var(--frame-primary) 18%, transparent), 0 0 7px color-mix(in srgb, var(--frame-primary) var(--frame-glow-strong), transparent), 0 0 20px color-mix(in srgb, var(--frame-secondary) var(--frame-glow-soft), transparent), 0 12px 32px rgba(0,0,0,.24); pointer-events: none; }
+.board-frame.is-visible { display: block; }
+.board-frame::before, .board-frame::after { position: absolute; content: ''; pointer-events: none; }
+.board-frame::before { inset: -7px; padding: 3px; border-radius: inherit; background: linear-gradient(135deg, var(--frame-primary), rgba(255,255,255,.82) 38%, var(--frame-secondary) 68%, var(--frame-primary)); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; box-shadow: 0 0 10px color-mix(in srgb, var(--frame-secondary) 48%, transparent); animation: board-frame-breathe var(--frame-breathe-duration) ease-in-out infinite; }
+.board-frame::after { inset: -10px; border-radius: calc(clamp(14px, 1.7vw, 29px) + 6px); background: radial-gradient(circle at 0 0, #fff 0 2px, var(--frame-primary) 3px, transparent 10px), radial-gradient(circle at 100% 0, #fff 0 2px, var(--frame-secondary) 3px, transparent 10px), radial-gradient(circle at 0 100%, #fff 0 2px, var(--frame-secondary) 3px, transparent 10px), radial-gradient(circle at 100% 100%, #fff 0 2px, var(--frame-primary) 3px, transparent 10px); filter: drop-shadow(0 0 7px var(--frame-primary)); opacity: var(--frame-glow); }
+.overlay-stage[data-particles="false"] .board-frame::after { opacity: 0; }
+
+/* Frame Studio presets retain the selected primary/secondary colors while
+   changing the geometry and energy language of the live board. */
+.overlay-stage[data-frame-style="haki-crack"] .board-frame { border-radius: 7px 17px 8px 19px; background: repeating-linear-gradient(132deg, color-mix(in srgb, var(--frame-primary) 13%, transparent) 0 1px, transparent 1px 18px), linear-gradient(145deg, rgba(21,8,18,.36), rgba(12,15,28,.08)); }
+.overlay-stage[data-frame-style="haki-crack"] .board-frame::after { background: repeating-linear-gradient(108deg, transparent 0 21px, color-mix(in srgb, var(--frame-primary) 78%, transparent) 22px 24px, transparent 25px 49px), repeating-linear-gradient(36deg, transparent 0 28px, color-mix(in srgb, var(--frame-secondary) 62%, transparent) 29px 31px, transparent 32px 64px); opacity: var(--frame-glow); filter: drop-shadow(0 0 8px var(--frame-primary)); }
+.overlay-stage[data-frame-style="holo-reactor"] .board-frame { border-radius: 4px; border-style: double; background: linear-gradient(90deg, color-mix(in srgb, var(--frame-primary) 13%, transparent), transparent 28%, color-mix(in srgb, var(--frame-secondary) 13%, transparent)); }
+.overlay-stage[data-frame-style="holo-reactor"] .board-frame::after { inset: -12px; background: linear-gradient(90deg, var(--frame-primary) 0 18px, transparent 18px calc(100% - 18px), var(--frame-secondary) calc(100% - 18px)), linear-gradient(var(--frame-secondary) 0 18px, transparent 18px calc(100% - 18px), var(--frame-primary) calc(100% - 18px)); background-size: 100% 2px, 2px 100%; background-position: top left, top left; background-repeat: no-repeat; opacity: var(--frame-glow); }
+.overlay-stage[data-frame-style="boss-awakening"] .board-frame { border-radius: 20px 20px 7px 7px; border-color: color-mix(in srgb, var(--frame-primary) 80%, #ffd36f); background: radial-gradient(ellipse at 50% 110%, color-mix(in srgb, var(--frame-secondary) 26%, transparent), transparent 52%), linear-gradient(145deg, color-mix(in srgb, var(--frame-primary) 13%, transparent), transparent); }
+.overlay-stage[data-frame-style="boss-awakening"] .board-frame::after { inset: -15px; background: radial-gradient(ellipse at 12% 103%, var(--frame-primary) 0 3%, transparent 18%), radial-gradient(ellipse at 43% 103%, var(--frame-secondary) 0 14%, transparent 40%), radial-gradient(ellipse at 82% 103%, var(--frame-primary) 0 10%, transparent 43%); filter: blur(2px) drop-shadow(0 0 9px var(--frame-primary)); opacity: var(--frame-glow); }
+.card { position: relative; display: grid; min-width: 0; min-height: 0; place-items: center; transform-origin: center bottom; backface-visibility: hidden; }
+.overlay-stage[data-game="RIFTBOUND"] .card { z-index: 2; isolation: isolate; padding-block: clamp(2px,.34vh,5px); }
+.overlay-stage[data-game="RIFTBOUND"] .card-shell::before { inset: -3px; }
+.overlay-stage[data-game="RIFTBOUND"] .card-shell::after { inset: -2px; }
+.card.paired-spot { min-width: 0; padding: clamp(3px,.4vh,6px); }
+.spot-pair { display: grid; grid-template-rows: minmax(0,1fr) auto; gap: 4px; width: 100%; height: 100%; padding: clamp(5px,.48vw,9px); border: 1px solid color-mix(in srgb, var(--frame-primary) 58%, rgba(255,255,255,.22)); border-radius: clamp(9px,.8vw,15px); background: linear-gradient(145deg, rgba(6,14,30,.94), rgba(12,24,48,.91)); box-shadow: inset 0 0 16px color-mix(in srgb, var(--frame-primary) 10%, transparent), 0 8px 19px rgba(0,0,0,.3); }
+.spot-pair-cards { display: grid; grid-template-columns: minmax(0,1fr) clamp(18px,1.8vw,34px) minmax(0,1fr); align-items: center; min-height: 0; gap: clamp(3px,.4vw,7px); }
+.spot-pair-card { display: grid; grid-template-rows: minmax(0,1fr) auto; min-width: 0; min-height: 0; height: 100%; justify-items: center; gap: 2px; }
+.spot-pair-card .card-shell { width: auto; height: 100%; min-height: 0; }
+.spot-pair-card b { overflow: hidden; width: 100%; color: #eaf7ff; font-size: clamp(6px,.52vw,10px); letter-spacing: .025em; line-height: 1.1; text-align: center; text-overflow: ellipsis; white-space: nowrap; text-shadow: 0 1px 6px #000; }
+.spot-pair-first b { color: #ffd980; }
+.spot-pair-plus { display: grid; width: clamp(18px,1.8vw,34px); height: clamp(18px,1.8vw,34px); place-items: center; color: #fff3c1; border: 1px solid rgba(255,205,94,.72); border-radius: 50%; background: radial-gradient(circle, rgba(255,191,61,.22), rgba(8,17,34,.94)); box-shadow: 0 0 14px rgba(255,177,43,.25); font-size: clamp(15px,1.55vw,29px); font-weight: 800; line-height: 1; }
+.spot-pair-label { overflow: hidden; color: color-mix(in srgb, var(--frame-primary) 58%, #fff); font-size: clamp(6px,.55vw,11px); font-weight: 900; letter-spacing: .06em; line-height: 1.15; text-align: center; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; }
+.card-shell { --card-led-primary: rgba(94,225,255,.97); --card-led-hot: #f2fdff; --frame-delay: 0s; position: relative; isolation: isolate; width: auto; height: 100%; max-width: 100%; aspect-ratio: .7; box-shadow: 0 10px 12px rgba(0,0,0,.35); backface-visibility: hidden; }
+.card-shell::before, .card-shell::after { position: absolute; z-index: -1; content: ''; pointer-events: none; }
+.card-shell::after { inset: -4px; z-index: 2; padding: 1.5px; border-radius: clamp(8px, .72vw, 14px); background: linear-gradient(145deg, transparent 7%, var(--card-led-primary) 29%, var(--card-led-hot) 48%, var(--card-led-primary) 68%, transparent 92%); -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask-composite: exclude; box-shadow: 0 0 6px rgba(88,189,255,.38); opacity: .78; animation: card-frame-breathe var(--frame-breathe-duration) ease-in-out var(--frame-delay) infinite; }
+.card img { position: relative; z-index: 1; display: block; width: 100%; height: 100%; border-radius: clamp(4px, .55vw, 11px); object-fit: contain; }
+.card-fallback { position: relative; z-index: 1; display: grid; width: 100%; height: 100%; place-items: center; color: rgba(255,255,255,.72); border: 1px solid rgba(204,216,255,.4); border-radius: 9px; background: rgba(15,22,39,.9); font-size: 22px; }
+.card-departure { position: absolute; z-index: 26 !important; display: grid; margin: 0; place-items: center; pointer-events: none; transform-origin: center bottom; will-change: transform, opacity; }
+.card-departure .card-shell { width: auto; height: 100%; }
+
+/* Viewer-card glow: Riftbound uses the same visual key as the spot title:
+   diamond = Signature, fire = Overnumbered, bomb = Alternate Art. */
+.chase-manga .card-shell, .chase-fire .card-shell { --card-led-primary: rgba(255,128,44,.98); --card-led-hot: #fff1b2; box-shadow: 0 0 9px rgba(255,164,57,.68), 0 0 21px rgba(255,60,28,.36); }
+.chase-manga .card-shell::before, .chase-fire .card-shell::before { inset: -8px; z-index: 0; border-radius: 15px; background: linear-gradient(148deg, rgba(255,225,124,.74), rgba(255,77,28,.8) 37%, rgba(159,30,47,.76) 62%, rgba(255,188,58,.7)); opacity: .5; }
+.chase-manga .card-shell::after, .chase-fire .card-shell::after { box-shadow: 0 0 8px rgba(255,76,25,.42); }
+.chase-diamond .card-shell { --card-led-primary: rgba(93,243,255,.98); --card-led-hot: #fff; box-shadow: 0 0 10px rgba(139,246,255,.78), 0 0 23px rgba(174,113,255,.45); }
+.chase-diamond .card-shell::before { inset: -8px; z-index: 0; border-radius: 15px; background: linear-gradient(135deg, rgba(255,255,255,.92), rgba(88,232,255,.74) 27%, rgba(170,100,255,.78) 55%, rgba(127,250,255,.76) 78%, rgba(255,255,255,.9)); opacity: .52; }
+.chase-diamond .card-shell::after { box-shadow: 0 0 9px rgba(122,241,255,.56); }
+.chase-bomb .card-shell { --card-led-primary: rgba(255,70,32,.98); --card-led-hot: #ffe96f; box-shadow: 0 0 10px rgba(255,70,24,.74), 0 0 24px rgba(255,196,48,.38); }
+.chase-bomb .card-shell::before { inset: -8px; z-index: 0; border-radius: 15px; background: radial-gradient(circle at 50% 55%, rgba(255,231,96,.92), rgba(255,66,22,.78) 32%, rgba(63,12,21,.84) 63%, rgba(7,7,10,.92)); opacity: .56; }
+.chase-bomb .card-shell::after { box-shadow: 0 0 9px rgba(255,47,22,.57); }
+.chase-uniform .card-shell { --card-led-primary: rgba(88,225,255,.96); --card-led-hot: #effeff; box-shadow: 0 0 8px rgba(109,227,255,.56), 0 0 18px rgba(93,157,255,.28); }
+.chase-uniform .card-shell::before { inset: -7px; z-index: 0; border-radius: 14px; background: linear-gradient(132deg, rgba(62,191,255,.68), rgba(126,132,255,.72), rgba(82,237,255,.67), rgba(62,191,255,.68)); opacity: .4; }
+.chase-uniform .card-shell::after { box-shadow: 0 0 8px rgba(100,137,255,.38); }
+.chase-heart .card-shell { --card-led-primary: rgba(255,76,197,.98); --card-led-hot: #fff0fa; box-shadow: 0 0 9px rgba(255,82,199,.68), 0 0 21px rgba(159,48,222,.35); }
+.chase-heart .card-shell::before { inset:-8px;z-index:0;border-radius:15px;background:linear-gradient(140deg,rgba(255,188,229,.82),rgba(255,61,185,.78) 35%,rgba(120,42,178,.73) 67%,rgba(240,174,85,.72));opacity:.48 }
+.chase-heart .card-shell::after { box-shadow:0 0 9px rgba(255,67,188,.52) }
+.chase-construction .card-shell { --card-led-primary: rgba(255,185,35,.98); --card-led-hot: #fff1a7; box-shadow: 0 0 9px rgba(255,186,37,.65), 0 0 20px rgba(255,126,17,.3); }
+.chase-construction .card-shell::before { inset:-8px;z-index:0;border-radius:12px;background:repeating-linear-gradient(135deg,rgba(255,194,45,.82) 0 14px,rgba(31,34,36,.9) 14px 28px);opacity:.5 }
+.chase-construction .card-shell::after { box-shadow:0 0 9px rgba(255,171,28,.5) }
+.chase-rose .card-shell { --card-led-primary: rgba(255,51,103,.98); --card-led-hot: #ffe5ec; box-shadow: 0 0 10px rgba(255,55,109,.7), 0 0 23px rgba(160,28,67,.38); }
+.chase-rose .card-shell::before { inset:-8px;z-index:0;border-radius:16px;background:linear-gradient(135deg,rgba(255,159,180,.82),rgba(213,37,83,.8) 36%,rgba(31,105,72,.69) 66%,rgba(226,143,92,.75));opacity:.5 }
+.chase-rose .card-shell::after { box-shadow:0 0 10px rgba(255,47,100,.55) }
+.overlay-stage[data-frame-style="color-sync"] .chase-uniform .card-shell { --card-led-primary: var(--frame-primary); --card-led-hot: var(--frame-secondary); }
+.overlay-stage[data-frame-style="haki-crack"] .card-shell { --card-led-primary: color-mix(in srgb, var(--frame-primary) 82%, #ff384d); --card-led-hot: #fff2f2; }
+.overlay-stage[data-frame-style="holo-reactor"] .card-shell { --card-led-primary: var(--frame-primary); --card-led-hot: #efffff; }
+.overlay-stage[data-frame-style="boss-awakening"] .card-shell { --card-led-primary: color-mix(in srgb, var(--frame-primary) 68%, #ffca67); --card-led-hot: #fff5ba; }
+
+.overlay-stage[data-corner-shape="bevel"] .card-shell::before, .overlay-stage[data-corner-shape="bevel"] .card-shell::after, .overlay-stage[data-corner-shape="bevel"] .card img, .overlay-stage[data-corner-shape="bevel"] .claim-art { border-radius: 0; clip-path: polygon(8% 0, 92% 0, 100% 7%, 100% 93%, 92% 100%, 8% 100%, 0 93%, 0 7%); }
+.overlay-stage[data-corner-shape="square"] .card-shell::before, .overlay-stage[data-corner-shape="square"] .card-shell::after, .overlay-stage[data-corner-shape="square"] .card img, .overlay-stage[data-corner-shape="square"] .claim-art { border-radius: 2px; }
+
+/* A card-only, sci-fi frame reveal. It sits in the exact middle of the OBS
+   Browser Source so the audience sees it directly over the board. */
+.claim-reveal { position: absolute; z-index: 2147483000; top: 50%; left: 50%; isolation: isolate; display: grid; grid-template-rows: auto minmax(0, 1fr); gap: 10px; width: min(var(--popup-width), calc(100vw - 34px)); height: min(var(--popup-height), calc(100vh - 30px)); place-items: stretch center; padding: clamp(17px, 1.1vw, 23px); overflow: visible; color: #fff; border: var(--frame-thickness) solid transparent; border-radius: 22px; background: linear-gradient(145deg, rgba(5,13,28,.94), rgba(11,20,39,.97)) padding-box, linear-gradient(140deg, var(--frame-primary), var(--frame-secondary) 52%, var(--frame-primary)) border-box; box-shadow: 0 0 0 3px rgba(10,16,31,.9), 0 0 25px color-mix(in srgb, var(--frame-primary) 58%, transparent), 0 25px 65px rgba(0,0,0,.68); opacity: 0; visibility: hidden; transform: translate(-50%, -50%); transform-origin: center; will-change: opacity; }
+.claim-reveal.is-visible { visibility: visible; animation: claim-reveal-in 220ms ease-out both; }
+.claim-reveal.is-exiting { visibility: visible; animation: claim-reveal-out 220ms ease-in both; }
+.claim-reveal::before, .claim-reveal::after { position: absolute; z-index: 0; content: ''; pointer-events: none; }
+.claim-reveal::before { inset: -12px; border: 2px solid rgba(112,229,255,.82); border-radius: 28px 20px 28px 20px; clip-path: polygon(9% 0, 91% 0, 100% 9%, 100% 91%, 91% 100%, 9% 100%, 0 91%, 0 9%); box-shadow: inset 0 0 16px rgba(124,228,255,.46), 0 0 22px rgba(115,170,255,.42); }
+.claim-reveal::after { inset: -18px; border-radius: 31px; background: radial-gradient(circle at 8% 10%, rgba(103,235,255,.94) 0 4px, transparent 5px), radial-gradient(circle at 92% 10%, rgba(251,179,88,.92) 0 4px, transparent 5px), radial-gradient(circle at 8% 90%, rgba(251,179,88,.92) 0 4px, transparent 5px), radial-gradient(circle at 92% 90%, rgba(103,235,255,.94) 0 4px, transparent 5px); filter: drop-shadow(0 0 7px rgba(106,232,255,.8)); }
+.claim-reveal > * { position: relative; z-index: 1; }
+.claim-scene { --scene-core:#65eaff; --scene-mid:#277cff; --scene-edge:#b477ff; position:absolute; z-index:0; inset:-16% -31% -15%; overflow:visible; opacity:.94; pointer-events:none; filter:drop-shadow(0 0 22px color-mix(in srgb,var(--scene-core) 62%,transparent)); }
+.claim-scene > i { position:absolute; display:block; pointer-events:none; }
+.claim-scene-portal { z-index:0; top:10%; left:17%; width:66%; height:70%; border:clamp(7px,.7vw,12px) solid color-mix(in srgb,var(--scene-core) 78%,#fff); border-radius:50% 50% 43% 43%; background:radial-gradient(ellipse at 50% 52%,transparent 0 41%,color-mix(in srgb,var(--scene-mid) 32%,transparent) 42% 51%,transparent 53%),conic-gradient(from 12deg,transparent 0 7%,color-mix(in srgb,var(--scene-core) 78%,transparent) 8% 10%,transparent 11% 20%,color-mix(in srgb,var(--scene-edge) 76%,transparent) 21% 24%,transparent 25% 39%,color-mix(in srgb,var(--scene-core) 74%,transparent) 40% 43%,transparent 44% 57%,color-mix(in srgb,var(--scene-edge) 72%,transparent) 58% 61%,transparent 62% 76%,color-mix(in srgb,var(--scene-core) 78%,transparent) 77% 80%,transparent 81%); box-shadow:inset 0 0 31px color-mix(in srgb,var(--scene-core) 58%,transparent),0 0 18px color-mix(in srgb,var(--scene-core) 86%,transparent),0 0 54px color-mix(in srgb,var(--scene-mid) 58%,transparent); opacity:.72; }
+.claim-scene-pillar { z-index:1; top:8%; width:15%; height:77%; border:2px solid color-mix(in srgb,var(--scene-core) 75%,#fff); clip-path:polygon(28% 0,100% 5%,83% 29%,100% 46%,80% 71%,93% 100%,13% 95%,0 70%,18% 47%,0 24%); background:linear-gradient(90deg,rgba(3,10,24,.98),color-mix(in srgb,var(--scene-mid) 30%,#0b1730) 48%,rgba(5,13,30,.98)); box-shadow:inset 0 0 20px color-mix(in srgb,var(--scene-core) 26%,transparent),0 0 18px color-mix(in srgb,var(--scene-core) 48%,transparent); }
+.claim-scene-pillar::before,.claim-scene-pillar::after { position:absolute; left:24%; width:52%; height:17%; content:''; border:1px solid color-mix(in srgb,var(--scene-core) 80%,#fff); background:linear-gradient(180deg,color-mix(in srgb,var(--scene-core) 76%,#fff),color-mix(in srgb,var(--scene-mid) 63%,transparent)); box-shadow:0 0 14px var(--scene-core); }
+.claim-scene-pillar::before { top:17%; }.claim-scene-pillar::after { bottom:17%; }
+.claim-scene-pillar.left { left:6%; }.claim-scene-pillar.right { right:6%; transform:scaleX(-1); }
+.claim-scene-platform { z-index:2; left:16%; bottom:3%; width:68%; height:15%; border:2px solid color-mix(in srgb,var(--scene-core) 72%,#fff); border-radius:50%; background:radial-gradient(ellipse at 50% 32%,color-mix(in srgb,var(--scene-core) 70%,#fff) 0 3%,color-mix(in srgb,var(--scene-mid) 54%,transparent) 18%,rgba(5,12,27,.97) 59% 72%,transparent 74%); box-shadow:inset 0 8px 22px color-mix(in srgb,var(--scene-core) 32%,transparent),0 0 19px var(--scene-core),0 19px 30px rgba(0,0,0,.72); }
+.claim-scene-particles { z-index:3; inset:2% 9% 8%; background:radial-gradient(circle at 13% 22%,var(--scene-core) 0 2px,transparent 3px),radial-gradient(circle at 87% 29%,var(--scene-edge) 0 3px,transparent 4px),radial-gradient(circle at 7% 69%,#fff 0 2px,transparent 3px),radial-gradient(circle at 92% 73%,var(--scene-core) 0 2px,transparent 3px),radial-gradient(circle at 75% 9%,#fff 0 1px,transparent 2px),radial-gradient(circle at 29% 5%,var(--scene-edge) 0 2px,transparent 3px); filter:drop-shadow(0 0 7px var(--scene-core)); }
+.claim-reveal.chase-diamond .claim-scene { --scene-core:#edfeff;--scene-mid:#55dfff;--scene-edge:#b183ff; }
+.claim-reveal.chase-fire .claim-scene,.claim-reveal.chase-manga .claim-scene { --scene-core:#ffdc72;--scene-mid:#ff4a1f;--scene-edge:#d51d33; }
+.claim-reveal.chase-bomb .claim-scene { --scene-core:#fff09a;--scene-mid:#ffad29;--scene-edge:#ffe06a; }
+.claim-reveal.chase-heart { --frame-primary:#ff55c7;--frame-secondary:#a94ee8; }
+.claim-reveal.chase-heart .claim-scene { --scene-core:#ffe6f7;--scene-mid:#ff3fb7;--scene-edge:#ad54e9; }
+.claim-reveal.chase-construction { --frame-primary:#ffc247;--frame-secondary:#e17b20; }
+.claim-reveal.chase-construction .claim-scene { --scene-core:#fff0a7;--scene-mid:#ffad20;--scene-edge:#d36c16; }
+.claim-reveal.chase-rose { --frame-primary:#ff496f;--frame-secondary:#3f9a72; }
+.claim-reveal.chase-rose .claim-scene { --scene-core:#ffe3ea;--scene-mid:#ff315f;--scene-edge:#49a478; }
+.claim-reveal.chase-ultimate { --frame-primary:#ffc33b;--frame-secondary:#ff7a13; }
+.claim-reveal.chase-ultimate .claim-scene { --scene-core:#fff1a5;--scene-mid:#ffb21d;--scene-edge:#ff6918; }
+.claim-reveal.chase-uniform .claim-scene { --scene-core:#72efff;--scene-mid:#3788ff;--scene-edge:#8b76ff; }
+.claim-reveal.paired-claim .claim-scene { inset:-21% -19% -18%; }
+/* Live concept lighting. The scene always stays behind the card and recreates
+   the illuminated vault/rift/stage language from the approved concept sheet. */
+.claim-scene::before,.claim-scene::after{position:absolute;z-index:0;content:'';pointer-events:none}
+.claim-scene::before{inset:-5% 7% 10%;background:linear-gradient(112deg,transparent 7%,color-mix(in srgb,var(--scene-core) 38%,transparent) 22%,transparent 37%),linear-gradient(248deg,transparent 7%,color-mix(in srgb,var(--scene-edge) 32%,transparent) 22%,transparent 37%),radial-gradient(ellipse at 50% 17%,color-mix(in srgb,var(--scene-core) 30%,transparent),transparent 57%);filter:blur(5px);mix-blend-mode:screen}
+.claim-scene::after{left:13%;right:13%;bottom:0;height:26%;border-radius:50%;background:radial-gradient(ellipse at center,color-mix(in srgb,var(--scene-core) 78%,#fff) 0 2%,color-mix(in srgb,var(--scene-mid) 42%,transparent) 17%,transparent 66%);filter:blur(3px);opacity:.82}
+.claim-reveal.chase-diamond .claim-scene-portal{border-radius:8% 8% 42% 42%;clip-path:polygon(10% 0,90% 0,100% 10%,94% 90%,82% 100%,18% 100%,6% 90%,0 10%);background:linear-gradient(90deg,color-mix(in srgb,var(--scene-core) 22%,transparent),transparent 18% 82%,color-mix(in srgb,var(--scene-edge) 25%,transparent)),linear-gradient(180deg,color-mix(in srgb,var(--scene-core) 18%,transparent),transparent 30%);box-shadow:inset 0 0 38px color-mix(in srgb,var(--scene-core) 46%,transparent),0 0 18px color-mix(in srgb,var(--scene-core) 92%,transparent),0 0 64px color-mix(in srgb,var(--scene-mid) 56%,transparent)}
+.claim-reveal.chase-diamond .claim-scene-pillar{background:linear-gradient(90deg,#07101e,color-mix(in srgb,var(--scene-mid) 32%,#102443) 44% 58%,#050a14);box-shadow:inset 0 0 22px rgba(95,226,255,.3),0 0 24px rgba(63,201,255,.65)}
+.claim-reveal.chase-fire .claim-scene-portal,.claim-reveal.chase-manga .claim-scene-portal{border-radius:50%;background:radial-gradient(ellipse at 50% 52%,transparent 0 40%,rgba(255,72,20,.27) 41% 52%,transparent 54%),repeating-conic-gradient(from 4deg,transparent 0 10deg,rgba(255,221,111,.68) 11deg 13deg,transparent 14deg 34deg);box-shadow:inset 0 0 42px rgba(255,66,18,.72),0 0 24px rgba(255,213,89,.82),0 0 72px rgba(219,37,23,.63)}
+.claim-reveal.chase-fire .claim-scene-particles,.claim-reveal.chase-manga .claim-scene-particles{background:radial-gradient(circle at 13% 76%,#fff0a2 0 2px,transparent 3px),radial-gradient(circle at 23% 54%,#ff5b1f 0 3px,transparent 4px),radial-gradient(circle at 79% 68%,#ffd469 0 2px,transparent 3px),radial-gradient(circle at 91% 42%,#ff4b20 0 2px,transparent 3px),radial-gradient(circle at 67% 18%,#fff1a1 0 2px,transparent 3px)}
+.claim-reveal.chase-bomb .claim-scene-portal{border:0;border-radius:0;clip-path:polygon(50% 0,58% 31%,78% 9%,70% 39%,100% 32%,76% 54%,100% 70%,68% 68%,77% 100%,55% 76%,43% 100%,39% 72%,7% 89%,28% 59%,0 48%,34% 44%,20% 13%,45% 34%);background:radial-gradient(circle,#fff8bf 0 4%,#ffd557 8%,#ff7a22 27%,rgba(220,37,24,.78) 47%,transparent 70%);box-shadow:0 0 28px rgba(255,218,89,.9),0 0 72px rgba(255,69,22,.72);opacity:.66}
+.claim-reveal.chase-bomb .claim-scene-pillar{border-color:rgba(255,201,77,.76);background:linear-gradient(90deg,#09080b,#2b1512 50%,#09080b);box-shadow:inset 0 0 18px rgba(255,115,28,.27),0 0 18px rgba(255,70,22,.48)}
+.claim-reveal.chase-bomb .claim-scene-particles{background:radial-gradient(circle at 10% 24%,#ffd45b 0 3px,transparent 4px),radial-gradient(circle at 91% 27%,#ff6525 0 3px,transparent 4px),radial-gradient(circle at 6% 72%,#fff0a1 0 2px,transparent 3px),radial-gradient(circle at 86% 78%,#ff9b2e 0 3px,transparent 4px),radial-gradient(circle at 72% 8%,#fff4b3 0 2px,transparent 3px)}
+/* The transparent statue is a separate physical layer behind the sold card;
+   it is never flattened into the popup's background like a concept photo. */
+.claim-reveal.chase-diamond .claim-scene,.claim-reveal.chase-fire .claim-scene,.claim-reveal.chase-bomb .claim-scene{inset:-15% -20% -16%;z-index:0;filter:drop-shadow(0 16px 25px rgba(0,0,0,.68)) drop-shadow(0 0 8px color-mix(in srgb,var(--scene-core) 30%,transparent));opacity:1;transform:translateZ(0);will-change:transform,opacity}
+.claim-statue-wrap{position:absolute;z-index:1;top:50%;left:50%;display:block;width:var(--popup-statue-size,92%);height:var(--popup-statue-size,92%);transform:translate(-50%,-50%);pointer-events:none;user-select:none}
+.claim-statue{position:absolute;z-index:1;inset:0;display:block;width:100%;height:100%;object-fit:contain;object-position:center;pointer-events:none;user-select:none}
+#claim-reveal.statue-label-only{grid-template-rows:minmax(0,1fr);height:min(calc(var(--popup-height) + 78px),calc(100vh - 30px))}
+#claim-reveal.statue-label-only>.claim-taken,#claim-reveal.statue-label-only>.claim-champion-name{position:absolute;width:1px;height:1px;overflow:hidden;opacity:0;visibility:hidden;pointer-events:none;animation:none}
+.claim-reveal.chase-diamond .claim-scene>i,.claim-reveal.chase-fire .claim-scene>i,.claim-reveal.chase-bomb .claim-scene>i{display:none}
+.claim-reveal.chase-diamond .claim-scene>.claim-scene-particles,.claim-reveal.chase-fire .claim-scene>.claim-scene-particles,.claim-reveal.chase-bomb .claim-scene>.claim-scene-particles{display:block;z-index:3;inset:8% 7% 12%;background:radial-gradient(circle at 14% 73%,var(--scene-core) 0 2px,transparent 3px),radial-gradient(circle at 87% 67%,var(--scene-edge) 0 3px,transparent 4px),radial-gradient(circle at 22% 39%,#fff 0 1px,transparent 2px),radial-gradient(circle at 79% 31%,var(--scene-core) 0 2px,transparent 3px),radial-gradient(circle at 52% 14%,#fff 0 2px,transparent 3px),radial-gradient(circle at 47% 84%,var(--scene-edge) 0 2px,transparent 3px);filter:drop-shadow(0 0 8px var(--scene-core))}
+.claim-reveal.chase-diamond .claim-scene::before,.claim-reveal.chase-fire .claim-scene::before,.claim-reveal.chase-bomb .claim-scene::before{inset:3% 12% 12%;background:linear-gradient(112deg,transparent 16%,rgba(255,255,255,.15) 34%,transparent 48%);filter:blur(4px);mix-blend-mode:screen}
+.claim-reveal.chase-diamond .claim-scene::after,.claim-reveal.chase-fire .claim-scene::after,.claim-reveal.chase-bomb .claim-scene::after{left:18%;right:18%;bottom:4%;height:20%;background:radial-gradient(ellipse at center,rgba(255,255,255,.72),rgba(91,210,255,.22) 22%,transparent 65%);filter:blur(5px)}
+.claim-reveal.chase-diamond>.claim-art,.claim-reveal.chase-fire>.claim-art,.claim-reveal.chase-bomb>.claim-art{z-index:2;overflow:visible;border-radius:9px;filter:drop-shadow(0 20px 17px rgba(0,0,0,.82)) drop-shadow(0 0 15px color-mix(in srgb,var(--frame-primary) 28%,transparent));transform:translate3d(0,0,0);transform-origin:center;will-change:transform,opacity}
+.claim-reveal:not(.paired-claim)>.claim-art{width:var(--popup-card-width,54%);height:auto;max-height:var(--popup-card-max-height,63%);aspect-ratio:.7;place-self:center}
+.claim-reveal.chase-diamond>.claim-art img,.claim-reveal.chase-fire>.claim-art img,.claim-reveal.chase-bomb>.claim-art img{border-radius:8px;background:#0b1120;box-shadow:0 0 0 2px rgba(3,7,15,.82),0 0 22px color-mix(in srgb,var(--frame-primary) 48%,transparent)}
+.claim-reveal.chase-diamond>.claim-pair,.claim-reveal.chase-fire>.claim-pair,.claim-reveal.chase-bomb>.claim-pair{z-index:2}
+.claim-reveal.chase-diamond>.claim-taken,.claim-reveal.chase-fire>.claim-taken,.claim-reveal.chase-bomb>.claim-taken,.claim-reveal.chase-diamond>.claim-champion-name,.claim-reveal.chase-fire>.claim-champion-name,.claim-reveal.chase-bomb>.claim-champion-name,.claim-reveal.chase-diamond>.spot-preview-title,.claim-reveal.chase-fire>.spot-preview-title,.claim-reveal.chase-bomb>.spot-preview-title{z-index:3}
+.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate) .claim-scene{inset:-15% -20% -16%;z-index:0;filter:drop-shadow(0 16px 25px rgba(0,0,0,.68)) drop-shadow(0 0 9px color-mix(in srgb,var(--scene-mid) 38%,transparent));opacity:1;transform:translateZ(0)}
+.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate) .claim-scene>i{display:none}
+.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate) .claim-scene>.claim-scene-particles{display:block;z-index:3;inset:8% 7% 12%;background:radial-gradient(circle at 14% 73%,var(--scene-core) 0 2px,transparent 3px),radial-gradient(circle at 87% 67%,var(--scene-edge) 0 3px,transparent 4px),radial-gradient(circle at 22% 39%,#fff 0 1px,transparent 2px),radial-gradient(circle at 79% 31%,var(--scene-mid) 0 2px,transparent 3px),radial-gradient(circle at 52% 14%,#fff 0 2px,transparent 3px),radial-gradient(circle at 47% 84%,var(--scene-edge) 0 2px,transparent 3px);filter:drop-shadow(0 0 8px var(--scene-mid))}
+.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate)>.claim-art{z-index:2;overflow:visible;border-radius:9px;filter:drop-shadow(0 20px 17px rgba(0,0,0,.82)) drop-shadow(0 0 16px color-mix(in srgb,var(--frame-primary) 34%,transparent));transform:translate3d(0,0,0);transform-origin:center}
+.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate)>.claim-art img{border-radius:8px;background:#0b0d16;box-shadow:0 0 0 2px rgba(3,5,12,.84),0 0 23px color-mix(in srgb,var(--frame-primary) 52%,transparent)}
+.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate)>.claim-pair{z-index:2}
+.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate)>.claim-taken,.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate)>.claim-champion-name,.claim-reveal:is(.chase-heart,.chase-construction,.chase-rose,.chase-ultimate)>.spot-preview-title{z-index:3}
+.claim-taken { display: grid; justify-items: center; gap: 3px; padding: 2px 8px; color: #e9f8ff; text-align: center; text-shadow: 0 1px 8px rgba(0,0,0,.85); }
+.claim-taken span { color: color-mix(in srgb, var(--frame-primary) 62%, #fff); font-size: clamp(11px, 1.1vw, 16px); font-weight: 950; letter-spacing: .2em; line-height: 1.05; }
+.claim-taken strong { max-width: 100%; overflow: hidden; color: #fff; font-size: clamp(15px, 1.55vw, 24px); line-height: 1.05; text-overflow: ellipsis; white-space: nowrap; }
+.claim-art { width: 100%; height: 100%; overflow: hidden; border: 2px solid rgba(198,244,255,.76); border-radius: 13px; background: #101729; box-shadow: inset 0 0 0 2px rgba(0,0,0,.55), 0 0 17px rgba(113,219,255,.6), 0 16px 27px rgba(0,0,0,.65); }
+.claim-art img { display: block; width: 100%; height: 100%; object-fit: contain; }
+.claim-reveal.has-champion-name { grid-template-rows: auto minmax(0, 1fr) auto; height: min(calc(var(--popup-height) + 78px), calc(100vh - 30px)); }
+.claim-reveal.paired-claim { grid-template-rows: auto auto minmax(0,1fr) auto; width: min(var(--popup-pair-width), calc(100vw - 34px)); height: min(var(--popup-pair-height), calc(100vh - 30px)); }
+.spot-preview-title { display: flex; width: 100%; align-items: center; gap: 12px; color: color-mix(in srgb, var(--frame-primary) 58%, #fff); font-size: clamp(9px,.82vw,13px); font-weight: 950; letter-spacing: .19em; text-align: center; white-space: nowrap; }
+.spot-preview-title::before, .spot-preview-title::after { flex: 1 1 auto; height: 1px; content: ''; background: linear-gradient(90deg, transparent, color-mix(in srgb, var(--frame-primary) 75%, #ffd46f)); box-shadow: 0 0 6px color-mix(in srgb, var(--frame-primary) 38%, transparent); }
+.spot-preview-title::after { background: linear-gradient(90deg, color-mix(in srgb, var(--frame-primary) 75%, #ffd46f), transparent); }
+.claim-pair { display: grid; grid-template-columns: minmax(0,1fr) clamp(42px,4.2vw,68px) minmax(0,1fr); width: 100%; min-height: 0; align-items: center; gap: clamp(8px,1vw,17px); }
+.claim-pair-card { display: grid; grid-template-rows: minmax(0,1fr) auto; min-width: 0; min-height: 0; height: 100%; justify-items: center; gap: 7px; }
+.claim-pair-card .claim-art { width: auto; max-width: 100%; height: 100%; aspect-ratio: .7; }
+.claim-pair-card b { overflow: hidden; max-width: 100%; color: #eff8ff; font-size: clamp(12px,1vw,17px); letter-spacing: .06em; text-align: center; text-overflow: ellipsis; text-transform: uppercase; white-space: nowrap; text-shadow: 0 2px 9px #000; }
+.claim-pair-card:first-child b { color: #ffdd84; }
+.claim-pair-plus { display: grid; width: clamp(42px,4.2vw,68px); height: clamp(42px,4.2vw,68px); place-items: center; color: #fff3c7; border: 2px solid color-mix(in srgb, var(--frame-primary) 48%, #ffd260); border-radius: 50%; background: radial-gradient(circle, color-mix(in srgb, var(--frame-primary) 18%, transparent), rgba(5,13,28,.95)); box-shadow: 0 0 23px color-mix(in srgb, var(--frame-primary) 32%, transparent); font-size: clamp(31px,3vw,51px); font-weight: 700; line-height: 1; }
+.paired-claim .claim-champion-name { min-height: 60px; }
+.paired-claim .claim-champion-name strong { max-width: 94%; font-size: clamp(15px,1.45vw,24px); letter-spacing: .07em; line-height: 1.15; }
+.claim-champion-name { position: relative; display: grid; width: calc(100% - 10px); min-height: 66px; margin-top: -3px; place-content: center; overflow: hidden; border: 1px solid color-mix(in srgb, var(--frame-primary) 76%, #fff); clip-path: polygon(7% 0,93% 0,100% 28%,100% 72%,93% 100%,7% 100%,0 72%,0 28%); background: linear-gradient(90deg, color-mix(in srgb, var(--frame-primary) 22%, #07101f), rgba(7,15,31,.98) 24% 76%, color-mix(in srgb, var(--frame-secondary) 22%, #07101f)); box-shadow: inset 0 0 18px color-mix(in srgb, var(--frame-primary) 18%, transparent), 0 0 16px color-mix(in srgb, var(--frame-primary) 42%, transparent); text-align: center; text-shadow: 0 2px 10px #000; }
+.claim-champion-name::before { position: absolute; inset: 5px 16px; content: ''; border-top: 1px solid color-mix(in srgb, var(--frame-primary) 64%, transparent); border-bottom: 1px solid color-mix(in srgb, var(--frame-secondary) 55%, transparent); pointer-events: none; }
+.claim-champion-name small { position: relative; color: color-mix(in srgb, var(--frame-primary) 63%, #fff); font-size: clamp(8px,.72vw,11px); font-weight: 900; letter-spacing: .23em; line-height: 1; }
+.claim-champion-name strong { position: relative; margin-top: 4px; color: #fff; font-size: clamp(24px,2.25vw,38px); font-weight: 950; letter-spacing: .12em; line-height: 1; text-transform: uppercase; }
+.claim-reveal.chase-manga, .claim-reveal.chase-fire { background: linear-gradient(145deg, rgba(35,10,12,.97), rgba(65,17,20,.98)) padding-box, linear-gradient(140deg, #ffd66c, #ff6e24 24%, #cc2932 55%, #ffbf4d 77%, #ffec9c) border-box; box-shadow: 0 0 0 3px rgba(26,8,11,.9), 0 0 32px rgba(255,82,25,.65), 0 27px 67px rgba(0,0,0,.72); }
+.claim-reveal.chase-manga::before, .claim-reveal.chase-fire::before { border-color: rgba(255,213,118,.94); box-shadow: inset 0 0 19px rgba(255,99,31,.33), 0 0 22px rgba(255,73,21,.46); }
+.claim-reveal.chase-manga::after, .claim-reveal.chase-fire::after { inset: -14px; background: radial-gradient(ellipse at 14% 103%, rgba(255,232,131,.82) 0 4%, transparent 17%), radial-gradient(ellipse at 38% 103%, rgba(255,93,24,.72) 0 19%, transparent 43%), radial-gradient(ellipse at 80% 102%, rgba(255,41,21,.68) 0 17%, transparent 47%); filter: blur(2px); opacity: .54; }
+.claim-reveal.chase-manga .claim-art, .claim-reveal.chase-fire .claim-art { border-color: rgba(255,220,135,.96); box-shadow: inset 0 0 0 2px rgba(255,116,35,.3), 0 0 22px rgba(255,85,23,.68), 0 16px 28px rgba(0,0,0,.65); }
+.claim-reveal.chase-diamond { background: linear-gradient(145deg, rgba(5,24,42,.97), rgba(30,16,66,.98)) padding-box, linear-gradient(135deg, #fff, #73efff 20%, #a77aff 45%, #eefcff 64%, #59e6ff 83%, #fff) border-box; box-shadow: 0 0 0 3px rgba(7,16,34,.92), 0 0 35px rgba(113,230,255,.7), 0 0 58px rgba(166,104,255,.38), 0 27px 67px rgba(0,0,0,.72); }
+.claim-reveal.chase-diamond::before { border-color: rgba(222,253,255,.97); border-radius: 8px 27px 8px 27px; box-shadow: inset 0 0 21px rgba(117,239,255,.38), 0 0 25px rgba(184,126,255,.58); }
+.claim-reveal.chase-diamond::after { inset: -16px; background: linear-gradient(45deg, transparent 0 31%, rgba(255,255,255,.77) 32% 33%, transparent 34% 65%, rgba(105,235,255,.6) 66% 67%, transparent 68%), linear-gradient(135deg, transparent 0 35%, rgba(186,129,255,.38) 36% 37%, transparent 38%); filter: drop-shadow(0 0 7px rgba(144,239,255,.76)); opacity: .46; }
+.claim-reveal.chase-diamond .claim-art { border-color: rgba(221,253,255,.98); box-shadow: inset 0 0 0 2px rgba(119,230,255,.3), 0 0 24px rgba(102,234,255,.72), 0 0 40px rgba(172,111,255,.46), 0 16px 28px rgba(0,0,0,.65); }
+.claim-reveal.chase-bomb { background: radial-gradient(circle at 50% 72%, rgba(135,30,13,.88), rgba(31,8,12,.98) 48%, rgba(5,6,10,.99) 79%) padding-box, linear-gradient(140deg, #ffe568, #ff7c24 25%, #e62621 49%, #241117 70%, #ffc940) border-box; box-shadow: 0 0 0 3px rgba(10,7,9,.94), 0 0 34px rgba(255,55,22,.72), 0 0 58px rgba(255,185,36,.3), 0 27px 67px rgba(0,0,0,.76); }
+.claim-reveal.chase-bomb::before { border-color: rgba(255,201,72,.95); border-radius: 31px 9px 29px 11px; box-shadow: inset 0 0 22px rgba(255,70,23,.44), 0 0 25px rgba(255,48,22,.62); }
+.claim-reveal.chase-bomb::after { inset: -17px; background: radial-gradient(circle at 19% 91%, rgba(255,231,94,.9) 0 3%, rgba(255,75,21,.68) 4% 14%, transparent 28%), radial-gradient(circle at 78% 94%, rgba(255,202,62,.8) 0 5%, rgba(230,40,23,.62) 6% 18%, transparent 33%), radial-gradient(circle at 50% 107%, rgba(31,31,35,.95) 0 23%, transparent 49%); filter: blur(2px) drop-shadow(0 0 8px rgba(255,62,21,.8)); opacity: .62; }
+.claim-reveal.chase-bomb .claim-art { border-color: rgba(255,206,76,.96); box-shadow: inset 0 0 0 2px rgba(255,74,23,.38), 0 0 24px rgba(255,51,20,.74), 0 0 39px rgba(255,177,28,.32), 0 16px 28px rgba(0,0,0,.68); }
+.claim-reveal.chase-uniform { background: linear-gradient(145deg, rgba(4,22,45,.97), rgba(13,25,68,.98)) padding-box, linear-gradient(140deg, #70efff, #4e84ff 28%, #9f7cff 54%, #72efff 77%, #69aaff) border-box; box-shadow: 0 0 0 3px rgba(7,14,31,.9), 0 0 29px rgba(73,204,255,.6), 0 26px 65px rgba(0,0,0,.72); }
+.claim-reveal.chase-uniform::after { inset: -13px; background: linear-gradient(114deg, transparent 19%, rgba(139,237,255,.1) 36%, rgba(188,245,255,.6) 47%, rgba(141,137,255,.24) 53%, transparent 65%); opacity: .4; filter: none; }
+.claim-reveal.chase-uniform .claim-art { box-shadow: inset 0 0 0 2px rgba(89,219,255,.26), 0 0 21px rgba(82,221,255,.6), 0 0 37px rgba(143,96,255,.42), 0 16px 28px rgba(0,0,0,.65); }
+
+/* The complete card/platform appears as one still composition. Only the outer
+   reveal fades in and out; no child layer floats, bounces, or loops. */
+#claim-reveal.is-visible > * { animation: none; }
+
+.claim-reveal[data-frame-style="haki-crack"] { border-radius: 7px 19px 8px 21px; background: repeating-linear-gradient(128deg, color-mix(in srgb, var(--frame-primary) 22%, transparent) 0 1px, transparent 1px 18px), linear-gradient(145deg, rgba(27,6,12,.96), rgba(13,9,24,.98)) padding-box, linear-gradient(140deg, var(--frame-primary), #f8f7ff 48%, var(--frame-secondary)) border-box; }
+.claim-reveal[data-frame-style="haki-crack"]::before { border-radius: 4px 18px 5px 20px; border-color: color-mix(in srgb, var(--frame-primary) 78%, #fff); box-shadow: inset 0 0 15px color-mix(in srgb, var(--frame-primary) 37%, transparent), 0 0 24px color-mix(in srgb, var(--frame-secondary) 55%, transparent); }
+.claim-reveal[data-frame-style="holo-reactor"] { border-radius: 4px; border-style: double; background: linear-gradient(90deg, color-mix(in srgb, var(--frame-primary) 20%, transparent), rgba(6,18,36,.97) 24%, rgba(7,13,31,.98) 76%, color-mix(in srgb, var(--frame-secondary) 20%, transparent)) padding-box, linear-gradient(145deg, var(--frame-primary), #f0ffff 48%, var(--frame-secondary)) border-box; }
+.claim-reveal[data-frame-style="holo-reactor"]::before { border-radius: 2px; clip-path: none; border-color: color-mix(in srgb, var(--frame-primary) 80%, #fff); }
+.claim-reveal[data-frame-style="boss-awakening"] { border-radius: 25px 25px 7px 7px; background: radial-gradient(ellipse at 50% 110%, color-mix(in srgb, var(--frame-secondary) 31%, transparent), transparent 55%), linear-gradient(145deg, rgba(38,11,8,.97), rgba(32,9,13,.98)) padding-box, linear-gradient(140deg, #ffe9a6, var(--frame-primary) 34%, var(--frame-secondary) 67%, #fff0b4) border-box; box-shadow: 0 0 0 3px rgba(25,8,10,.9), 0 0 36px color-mix(in srgb, var(--frame-primary) 68%, transparent), 0 25px 65px rgba(0,0,0,.74); }
+.claim-reveal[data-frame-style="boss-awakening"]::before { border-color: #ffe6a1; box-shadow: inset 0 0 19px color-mix(in srgb, var(--frame-primary) 35%, transparent), 0 0 24px color-mix(in srgb, var(--frame-secondary) 62%, transparent); }
+.claim-reveal[data-corner-shape="bevel"] { border-radius: 0; clip-path: polygon(6% 0, 94% 0, 100% 5%, 100% 95%, 94% 100%, 6% 100%, 0 95%, 0 5%); }
+.claim-reveal[data-corner-shape="square"] { border-radius: 2px; }
+
+/* Premium rarity reveals use the free-standing alpha statue only. Removing
+   the generic shell leaves the OBS scene visible around Diamond, Fire, Bomb,
+   Heart, Construction, and Rose instead of flattening them into a rectangle. */
+#claim-reveal.has-statue { border: 0; border-radius: 0; background: transparent; box-shadow: none; clip-path: none; }
+#claim-reveal.has-statue::before,
+#claim-reveal.has-statue::after,
+#claim-reveal.has-statue .claim-scene::before,
+#claim-reveal.has-statue .claim-scene::after { display: none; content: none; animation: none; }
+.empty { grid-column: 1 / -1; display: grid; min-height: 260px; place-content: center; color: rgba(255,255,255,.5); font-size: 20px; text-align: center; }
+
+@keyframes board-frame-breathe { 0%, 100% { opacity: .56; } 50% { opacity: .9; } }
+@keyframes card-frame-breathe { 0%, 100% { opacity: .58; } 50% { opacity: .94; } }
+@keyframes claim-reveal-in {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+@keyframes claim-reveal-out {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+@media (max-width: 900px) { .overlay-grid { padding-inline: 2vw; padding-bottom: 25vh; }.overlay-stage[data-game="RIFTBOUND"] .overlay-grid{grid-template-rows:repeat(var(--rows),7.55vh);row-gap:clamp(5px,.48vh,8px)}.overlay-stage[data-game="RIFTBOUND"][data-bundled="true"] .overlay-grid{grid-template-rows:repeat(var(--rows),10.6vh)}.claim-reveal { width: min(360px, 64vw); height: min(514px, 62vh); padding: 15px; }.claim-reveal.has-champion-name,#claim-reveal.statue-label-only{height:min(586px,72vh)}.claim-reveal.paired-claim{width:min(690px,92vw);height:min(550px,76vh)}.claim-champion-name{min-height:58px}.claim-champion-name strong{font-size:clamp(21px,3vw,31px)}.paired-claim .claim-champion-name strong{font-size:clamp(14px,2.1vw,20px)} }
+@media (max-width: 900px) { .overlay-stage[data-game="RIFTBOUND"][data-layout="vendetta-board-10-dense-five"] .overlay-grid{grid-template-rows:repeat(var(--rows),clamp(58px,min(9vh,8vw),108px));row-gap:clamp(4px,.38vh,7px);padding:1vh clamp(10px,2vw,26px) 2vh} .overlay-stage[data-game="RIFTBOUND"][data-layout="spiritforged-board-9-priority-four"] .overlay-grid{grid-template-rows:repeat(var(--rows),clamp(66px,min(10.8vh,12vw),126px));padding:1vh clamp(12px,3vw,34px) 2vh} }
+@media (prefers-reduced-motion: reduce) { *, *::before, *::after { animation-duration: .01ms !important; transition-duration: .01ms !important; } }

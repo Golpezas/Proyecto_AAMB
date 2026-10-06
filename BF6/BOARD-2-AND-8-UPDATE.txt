@@ -1,0 +1,9 @@
+BreakSuite6 v0.3.378 — Origins runes with seals
+Close BreakSuite6, extract everything, and run RUN-THIS-UPDATE.cmd.
+Board 8 now has 24 spots. Each rune alternate art is assigned to its matching
+seal/domain spot. The separate ALL RUNES spot is removed.
+Board 2 is rebuilt from Board 8 + Board 4 (42 spots if Board 4 has 18).
+Seal listing titles say Non-Champion; copied notes exclude cards assigned to
+champion spots or other named spots. Existing champion/named owners remain.
+Load Board 2 or Board 8 and Save Board before the next break, then Prepare Show.
+Existing live sales/history are retained. Your connector needs no change.

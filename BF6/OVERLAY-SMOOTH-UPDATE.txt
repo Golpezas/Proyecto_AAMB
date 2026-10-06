@@ -1,0 +1,1 @@
+OBS Spot Map update: hidden scrollbar and lane outlines; 6-second page interval; 1.1-second eased slide; repaired malformed CSS cleanup block; avoid stale pages when board changes during a slide. Run RUN-THIS-UPDATE.cmd, then refresh the OBS browser source.

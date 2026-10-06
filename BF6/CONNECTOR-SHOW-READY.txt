@@ -1,0 +1,8 @@
+CONNECTOR SHOW READY UPDATE
+1. Extract this ZIP and run RUN-THIS-UPDATE.cmd with BreakSuite closed.
+2. In Chrome/Brave Extensions, reload the existing BreakSuite6 Whatnot Connector. If its folder is elsewhere, load the updated app/BreakSuite6_Whatnot_Connector folder instead, and disable the older copy.
+3. Refresh your Whatnot Live Manager tab once after updating the extension. Keep BreakSuite and OBS open, save the correct board, then click Prepare Show before the first sale.
+4. Wait for SHOW READY. The connector locks the selected show tab and verifies the current-round starting count. Start numbered spot listings; new sales are watched automatically.
+5. For missed spots or exchanges, click Recover / Recheck List once and wait. It internally retries incomplete scans, updates Buyer Bags and the OBS board, and reports recovered/exchanged/returned counts.
+If Assigned is incomplete or changing, no reconciliation is applied. Advanced tools remain available. Recovery never resets the round boundary. If the original boundary was lost before startup, the existing count-based recovery cannot infer which historical rows belong to the box; use the explicit newest-row recovery under Advanced only when you know that count.
+Includes the previous overlay scrollbar and smooth-slide fixes.

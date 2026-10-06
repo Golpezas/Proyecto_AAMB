@@ -1,0 +1,12 @@
+BreakSuite6 v0.3.379 - Buyer Bag Card Lookup
+
+Installer version check corrected for v0.3.379.
+Run RUN-THIS-UPDATE.cmd from the fully extracted ZIP folder.
+
+BreakSuite6 v0.3.379 - Buyer Bag Card Lookup
+
+- Added Card # / Name search beside Save Selected Pulls in Riftbound Buyer Bags.
+- Search assigned cards by full or partial card number, card name, set code, or spot number.
+- Results show the matching card, buyer, and spot; click a result to jump to that Buyer Bag.
+- Buyer Spending names are now clickable and jump directly to that buyer's bag.
+- Jumping opens a minimized bag automatically and briefly highlights it.

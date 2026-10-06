@@ -1,0 +1,114 @@
+VENDETTA BOARD 10 — 106 EXACT CHASE SINGLES
+Created: 2026-09-23
+
+Every position owns one exact printing only. This is a Singles board, not a
+mapped champion-family board. Standard Rare cards are excluded and no Rare
+cards are attached behind another position.
+
+POSITIONS 001–009 — SIGNATURES (9)
+001–009: VEN-189* through VEN-197*
+
+POSITIONS 010–040 — OVERNUMBERED (31)
+010–040: VEN-167 through VEN-197
+
+POSITIONS 041–073 — ALTERNATE ARTS (33)
+041 VEN-019A
+042 VEN-021A
+043 VEN-023A
+044 VEN-038A
+045 VEN-041A
+046 VEN-042A
+047 VEN-046A
+048 VEN-063A
+049 VEN-068A
+050 VEN-069A
+051 VEN-069B
+052 VEN-084A
+053 VEN-088A
+054 VEN-092A
+055 VEN-110A
+056 VEN-112A
+057 VEN-113A
+058 VEN-135A
+059 VEN-136A
+060 VEN-138A
+061 VEN-139A
+062 VEN-R01A
+063 VEN-R01B
+064 VEN-R02A
+065 VEN-R02B
+066 VEN-R03A
+067 VEN-R03B
+068 VEN-R04A
+069 VEN-R04B
+070 VEN-R05A
+071 VEN-R05B
+072 VEN-R06A
+073 VEN-R06B
+
+POSITIONS 074–099 — REGULAR EPICS (26)
+074 VEN-021
+075 VEN-022
+076 VEN-023
+077 VEN-045
+078 VEN-046
+079 VEN-067
+080 VEN-068
+081 VEN-069
+082 VEN-090
+083 VEN-091
+084 VEN-092
+085 VEN-113
+086 VEN-114
+087 VEN-115
+088 VEN-136
+089 VEN-137
+090 VEN-138
+091 VEN-140
+092 VEN-142
+093 VEN-144
+094 VEN-146
+095 VEN-148
+096 VEN-150
+097 VEN-152
+098 VEN-154
+099 VEN-156
+
+POSITIONS 100–105 — CRYSTAL ROSE SP (6)
+100 VEN-SP1
+101 VEN-SP2
+102 VEN-SP3
+103 VEN-SP4
+104 VEN-SP5
+105 VEN-SP6
+
+Copy Listing places 🌹 at both ends of every SP1–SP6 title. Their live claim
+popup uses the matching Rose statue.
+
+POSITION 106 — NAMED CHASE (1)
+106 VEN-044 — Astral Heron
+
+IMPORTANT
+- An Alternate Art or Overnumbered printing remains eligible even when its
+  underlying rarity metadata says Rare. It is included because it is AA/ON.
+- Plain standard Rare printings are not included anywhere on Board 10.
+- Copy Listing identifies every spot by exact card name, collector number, and
+  treatment.
+- Regular Epics and Astral Heron use the Heart popup; any standalone Rare uses
+  the Construction popup. These visual rules apply to Board 10 only.
+- The Static OBS Board uses five dense columns. A sold position makes a short
+  downward crash, then the following cards advance through a small staggered
+  cascade to fill the open grid cell. The whole 106-card board is never
+  animated at once.
+- Signature claims use the premium sapphire/platinum crowned-diamond portal.
+- Six dedicated Board 10 statue images have SIG, OVERNUMBERED, ALTERNATE ART,
+  EPIC, SP, or RARE physically baked into their built-in plates. The separate
+  top buyer copy and external bottom title are
+  visually transparent on Board 10, but their information remains intact in
+  the popup markup. The complete name and collector number remain in Copy
+  Listing, and no ledger or assignment data is changed.
+- The visible rarity words are part of the statue artwork itself, centered in
+  the large wide nameplate, and scale together when Statue Size changes.
+- Installing this preset replaces saved Board 10 only. Board 9, other presets,
+  the live ledger, pending rounds, Buyer Bags, history, and connector data are
+  not modified.

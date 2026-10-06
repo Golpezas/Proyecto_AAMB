@@ -1,0 +1,15 @@
+BreakSuite6 v0.3.382 - Compact Buyer Messages
+
+Buyer message card lines now contain only:
+- Card name
+- Rarity / treatment
+- Set + card number
+- Quantity only when more than one copy was pulled
+
+Removed from copied buyer messages:
+- Saved box / break name
+- Full set name repeated after the card number
+- Spot number
+- Other source metadata
+
+This applies to Pool History combined messages, pending Buyer Bag messages, live Riftbound Buyer Bag messages, and standard Buyer Bag pull messages.

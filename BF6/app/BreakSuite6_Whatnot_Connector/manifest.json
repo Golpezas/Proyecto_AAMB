@@ -1,0 +1,41 @@
+{
+  "manifest_version": 3,
+  "name": "BreakSuite6 Whatnot Connector",
+  "description": "Delivers the Whatnot assigned buyer and spot number to the saved BreakSuite6 live ledger.",
+  "version": "0.3.48",
+  "permissions": [
+    "storage",
+    "tabs",
+    "sidePanel",
+    "scripting"
+  ],
+  "host_permissions": [
+    "*://*.whatnot.com/*",
+    "http://127.0.0.1:8878/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_title": "BreakSuite6 Connector"
+  },
+  "side_panel": {
+    "default_path": "panel.html"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "*://*.whatnot.com/*"
+      ],
+      "js": [
+        "assignment-count-gate.js",
+        "round-assignment-window.js",
+        "live-row-stability.js",
+        "assigned-buyer-parser.js",
+        "whatnot-content.js"
+      ],
+      "run_at": "document_idle"
+    }
+  ]
+}

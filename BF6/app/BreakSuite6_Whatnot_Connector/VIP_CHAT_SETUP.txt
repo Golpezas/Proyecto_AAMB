@@ -1,0 +1,12 @@
+BreakSuite6 VIP Chat Alert Connector v0.3.37
+
+This connector reads the current Whatnot chat while always-on sync is connected.
+It sends a private alert to BreakSuite6 when a person appearing in chat has at
+least $10 in saved Orders History purchases. It never posts or sends a message
+to Whatnot.
+
+Install this connector folder from chrome://extensions or brave://extensions:
+1. Turn on Developer mode.
+2. Click Load unpacked.
+3. Choose this BreakSuite6_Whatnot_Connector folder.
+4. Open your one correct Whatnot Live Manager tab. It locks automatically.

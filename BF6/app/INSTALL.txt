@@ -1,0 +1,1 @@
+Version 0.3.375 refreshes saved Board 8 with the approved 25-spot Origins map. Updated pairs: Unchecked Power + Sabotage; Thousand-Tailed Watcher + Falling Star; Time Warp + Zhonya's Hourglass. Board 8 keeps 12 champions, 6 named playable spots, 6 Seal/color stacks, and ALL RUNES, with no miscellaneous spot. Other boards and live/history snapshots are left unchanged.

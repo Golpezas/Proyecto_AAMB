@@ -1,0 +1,1518 @@
+BreakSuite6 v0.3.385 — Board 9 Spiritforged 110 · 4-Lane Priority Overlay
+
+- Fixes the updater version check so v0.3.385 installs normally.
+- Board 9 static OBS uses four responsive lanes.
+- Display priority is Signature, Overnumbered, Alternate Art/Showcase, then Epic.
+- Board 10 keeps its existing order/layout behavior with responsive anti-overlap sizing.
+- Promo printings remain excluded from the Spiritforged 110-spot Board 9.
+
+BreakSuite6 v0.3.382 — Spiritforged Board 6 · 50 Spots
+
+- Board 6 is rebuilt as a 50-spot Spiritforged layout.
+- Signature and matching ON chase cards are separated.
+- Irelia, Fervent has three spots: SIG, ON, and ALT + EPIC.
+- All Showcase Runes are one spot.
+- Rare/Epic non-champion Gear/Spell/Unit cards are split into Fury, Calm, Mind, Body, Chaos, and Order pools.
+- Listing titles include SFD collector numbers for SIG/ON/ALT/EPIC chase spots.
+- Review SPIRITFORGED-50-SPOT-BOARD-6-MAP.txt for the exact layout and ownership rules.
+
+BreakSuite6 v0.3.375 — Combined Board 7 — Vendetta + Unleashed
+
+WHAT CHANGED
+- Copy Listing now respects Board 1's 33 exact mapped titles. Renekton is
+  listed with Renekton cards only; Rengar is listed once in his own spot.
+- The champion card ownership and promo exclusions from v0.3.372 continue.
+
+HOW TO USE
+1. Extract this ZIP into a fresh folder and run RUN-THIS-UPDATE.cmd.
+2. Confirm the window says "BreakSuite6 v0.3.375 installed and verified."
+3. Load saved Board 1, then press Copy Listing to get all 33 corrected names.
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.372 — Vendetta Champion Cards
+
+WHAT CHANGED
+- Reinstalls the 33-spot saved Board 1. Signature Spells and matching
+  champion Units, Gear, and Spells stay with their own champion.
+- Spot 33 contains only remaining Rare/Epic/AA Gear and Spells. Promotional
+  printings are excluded; the six specified SP Showcase spots remain separate.
+
+HOW TO USE
+1. Extract this ZIP into a fresh folder and run RUN-THIS-UPDATE.cmd.
+2. Confirm the window says "BreakSuite6 v0.3.372 installed and verified."
+3. Open BreakSuite, load saved Board 1, and check its 33 mapped spots.
+4. Press Save Board when you want this setup on the live ledger.
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.371 — Vendetta Board 1 Repair
+
+WHAT CHANGED
+- Reinstalls saved Board 1 with all 33 Vendetta spots, including when the
+  previous update left the older board visible.
+- Matches the required chase cards by collector number even if older catalog
+  metadata is incomplete. An Update Pending label names missing card numbers
+  if the local catalog still needs a sync.
+
+HOW TO USE
+1. Extract this ZIP into a fresh folder and run RUN-THIS-UPDATE.cmd.
+2. Confirm the window says "BreakSuite6 v0.3.371 installed and verified."
+3. Open BreakSuite and check that the saved Board 1 tile says 33 spots.
+4. Click Board 1 and choose Load to show all 33 in the working board. Press
+   Save Board when you want this setup on the live ledger.
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.370 — Vendetta 33-Spot Board 1
+
+WHAT CHANGED
+- Saved Board 1 now has 33 Vendetta spots. Each champion has one spot with
+  its matching ON printings; each SP is separate. Astral Heron is separate,
+  all 12 Showcase Runes share one spot, and Gear/Spells share one spot.
+- Only the reusable Board 1 preset and its already-loaded draft are replaced.
+  The live break, pending rounds, Buyer Bags, and other boards stay intact.
+
+HOW TO USE
+1. Extract this ZIP into a fresh folder and run RUN-THIS-UPDATE.cmd.
+2. In BreakSuite, load saved Board 1 and review its 33 positions and mapping.
+3. Press Save Board only when you want this setup in the live ledger.
+4. Confirm the window says "BreakSuite6 v0.3.370 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.369 — Automatic Assigned Sync
+
+WHAT CHANGED
+- The live connector checks the newest Assigned buyers even if you scroll
+  away from the top of Whatnot's virtualized list.
+- It confirms offscreen buyers before sending popups, and manual Refresh
+  Assigned List no longer leaves its automatic count behind.
+- Verify Live Ready shows how recently the watcher checked and the Assigned
+  count it has synced.
+
+HOW TO USE
+1. Extract this entire ZIP into a fresh folder and run RUN-THIS-UPDATE.cmd.
+2. Reload the unpacked BreakSuite6 Whatnot Connector in Brave or Chrome. If
+   it points to an older extracted ZIP, load this update's connector folder.
+3. Refresh the Whatnot Live Manager tab so connector v0.3.47 starts watching.
+4. Open the connector panel and press Verify Live Ready to see its scan age.
+5. Confirm the window says "BreakSuite6 v0.3.369 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.368 — OBS Overlay Sync
+
+WHAT CHANGED
+- The OBS board and popup now reuse the mapped cards and refresh each live
+  buyer/spot status without remapping the whole board for every sale.
+- An enabled OBS board keeps checking promptly even when OBS labels it hidden.
+- The Static OBS Board switch stays on after you restart BreakSuite.
+
+HOW TO USE
+1. Extract this entire ZIP into a fresh folder and run RUN-THIS-UPDATE.cmd.
+2. In Breaker Center, check that Static OBS Board says Active. Enable it once
+   if it says Idle. The separate popup source works on its own.
+3. Reload the unpacked connector and refresh the Whatnot Live Manager tab if
+   you have not yet installed v0.3.367's connector update.
+4. Confirm the window says "BreakSuite6 v0.3.368 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.367 — Live Popup Speed
+
+WHAT CHANGED
+- Quick sales still reveal every buyer and spot in order. Earlier popups use
+  three seconds while others wait; the last popup uses your saved display time.
+- The Whatnot scanner avoids extra page scanning and scrolling when the newest
+  buyer is already visible.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder and run RUN-THIS-UPDATE.cmd.
+2. In Brave or Chrome, open Extensions, find the unpacked BreakSuite6 Whatnot
+   Connector, and press Reload if its source is the current app folder. If it
+   points to an older extracted ZIP, load the connector from this update.
+   Refresh the Whatnot Live Manager tab to start the updated scanner.
+3. Open Breaker Center and use Send Test Assignment on a ready spot; use Reset
+   Test Assignments afterward. The catch-up timing takes effect with a burst
+   of live sales.
+4. Confirm the window says "BreakSuite6 v0.3.367 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.366 — Box Tracker Speed
+
+WHAT CHANGED
+- Box Tracker loads saved case details in grouped queries as your history grows.
+- Clicking Edit Case opens the name field without rebuilding the tracker page.
+- Renaming a live case still updates its Active Case overlay.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Box Tracker, select a Live Case, click Edit Case, and rename it.
+4. Confirm the window says "BreakSuite6 v0.3.366 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.365 — Live Popup Repair
+
+WHAT CHANGED
+- Delayed Whatnot prices no longer change the sale timestamp used to display
+  the card popup.
+- Your existing OBS board URL can show the popup if the separate popup source
+  is missing. If popup.html is active, it takes over without a second reveal.
+- Price updates and buyer reassignments keep the live ledger in sync.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Breaker Center and use Send Test Assignment on a ready spot.
+4. Confirm the card reveal appears in OBS. Use Reset Test Assignments afterward.
+5. Confirm the window says "BreakSuite6 v0.3.365 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.364 — Edit Saved Order Tracker Destination
+
+WHAT CHANGED
+- A saved Order can now be moved between a standalone Box, standalone Case,
+  and a named open case. Its recorded buyers, sales, and pulls stay saved.
+- The destination picker is inside Orders, directly under each saved Order's
+  accounting edit form. Moves update Box Tracker and clear the old position.
+- Incorrect set, missing case, or a full case leaves the existing Order and
+  tracker as they were.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Orders and expand the box that was saved separately by mistake.
+4. Under Box Tracker Destination, select "Box in an open case", choose the
+   currently open case by name, then click Update Tracker.
+5. Confirm it shows the case name and box number. The original pulls and
+   buyer spots remain in that saved Order.
+6. Confirm the window says "BreakSuite6 v0.3.364 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.363 — Board 3 Poro Rune Correction
+
+WHAT CHANGED
+- Corrects the two reversed Board 3 Poro lanes.
+- Spot 16 is now Plundering Poro + Mind Rune: blue/Mind Rare and Epic Units,
+  Champion Units, Gear, and Spells belong there; Gutter Palace remains there.
+- Spot 17 is now Veteran Poro + Body Rune: orange/Body Rare and Epic Units,
+  Champion Units, Gear, and Spells belong there; Arachnoid Horror remains there.
+- Pouty/Fury, Lonely/Calm, Mystic/Chaos, and Daring/Order are unchanged.
+- The corrected migration reruns saved Board 3 only. Every other board and all
+  live, pending, historical, Buyer Bag, tracker, and connector data are intact.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 3.
+4. Confirm Spot 16 says Plundering Poro + Mind Rune and Spot 17 says Veteran
+   Poro + Body Rune.
+5. Confirm the window says "BreakSuite6 v0.3.363 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.362 — Board 3 23-Spot Install Fix
+
+WHAT CHANGED
+- Corrects the update path that could leave saved Board 3 showing its old 19
+  positions after v0.3.361.
+- The 23 exact lead-card anchors now control installation. A differently
+  labeled or temporarily missing supporting family record is reported as a
+  catalog warning instead of silently blocking the complete preset.
+- Forces the corrected Board 3 migration to run again even if the earlier
+  migration marker was written.
+- All available champion-family, Rune, Rare, Epic, Alternate Art, Baron, Poro,
+  and special-chase cards are still mapped under their approved lead spots.
+- Only saved Board 3 is rebuilt. Other saved boards, the live ledger, pending
+  rounds, Buyer Bags, Pull History, Box Tracker, and connector remain intact.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 3.
+4. Confirm Board 3 now shows 23 positions and Buyer Bag mode says Mapped groups.
+5. Confirm the window says "BreakSuite6 v0.3.362 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.361 — Board 3 Color Poros + Separate Chases
+
+WHAT CHANGED
+- Saved Board 3 is replaced once with the approved 23-position Unleashed map.
+- The twelve champion spots retain their complete eight-card booster families.
+- Baron Nashor owns all three printings: Ultimate 238 first, Alternate Art
+  147A second, and regular Epic 147 third.
+- Each Poro owns its matching booster Alternate-Art Rune plus every unreserved
+  Rare/Epic Unit, Champion Unit, Gear, and Spell in its designated domain.
+- Plundering Poro is Orange/Body; Veteran Poro is Blue/Mind.
+- Vilemaw, Elder Dragon, and Rift Herald each receive a separate spot with the
+  Alternate Art first and regular Epic second.
+- Irresistible Faefolk, Alpha Wildclaw, and both Blue Sentinel printings share
+  one separate spot.
+- The removed All Runes position and four new special positions produce 23
+  total spots, three more than the former 20-position Board 3.
+- Exact card IDs are validated for one owner only. Promotional Rune B cards,
+  promotional printings, and Common/Uncommon color cards remain excluded.
+- Only saved Board 3 is replaced. Other saved boards, the active ledger, live
+  and pending Buyer Bags, Pull History, Box Tracker, and connector are intact.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 3.
+4. Confirm Board 3 shows 23 positions and Buyer Bag mode says Mapped groups.
+5. Review UNLEASHED-23-SPOT-BOARD-3-MAP.txt, then press Save Board only when
+   you are ready to make the new Board 3 setup live.
+6. Confirm the window says "BreakSuite6 v0.3.361 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.360 — Live Case Editing + Safe Removal
+
+WHAT CHANGED
+- Adds Edit Case beside the selected live case. You can rename it or change its
+  box capacity without changing its locked game/set identity.
+- A case cannot be reduced past a box that already contains an archived Buyer
+  Bag, preventing an accidental loss or orphaned history link.
+- Every filled live-case box now has Check / Edit Pulls, which opens its exact
+  linked Pull History record, and Remove Box, which makes that case position
+  available again.
+- Adds Delete Live Case for removing the complete active tracker when it was
+  created by mistake.
+- Remove Box and Delete Live Case preserve Orders History, Pull History, buyer
+  data, cards, and sale data. Only the Box Tracker copy/link is removed.
+- The Active Case Status OBS feed refreshes after renaming, resizing, removing
+  a box, or deleting the selected live case.
+- The live board, connector, claims, assignments, and archive behavior remain
+  unchanged.
+- The updater and app payload share one verified v0.3.360 release number.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Box Tracker > Live Cases and select the case.
+4. Use Edit Case or Delete Live Case at the top, or use Check / Edit Pulls and
+   Remove Box directly on an archived box.
+5. Confirm the window says "BreakSuite6 v0.3.360 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.359 — Live Case Tracking + Active Case OBS
+
+WHAT CHANGED
+- Adds a Live Cases tab in Box Tracker. Create a case once, choose its game,
+  set, and box count, then keep it open across separate breaks.
+- Complete & Archive and Save Current Break now offer Auto record or Current
+  open case. Auto keeps the established standalone Box/Case behavior.
+- Current open case puts the archived Buyer Bag into the case's next free box
+  and retains its exact Orders History, Pull History, buyers, spots,
+  quantities, sale amounts, cards, and qualifying-hit totals.
+- Re-saving or correcting one linked history rebuilds only that same case box;
+  it cannot allocate another box or double the case totals.
+- Finalize Case moves the live case into Saved Records and stops new boxes from
+  entering it.
+- Adds a separate Active Case Status OBS link showing the case name, game/set,
+  boxes opened, next box, remaining boxes, and cumulative tracked hits.
+- Reviewing an older totals record cannot change the Active Case Status source.
+- The live board, connector, assignments, claim logic, and existing history
+  records remain unchanged.
+- The updater and app payload share one verified v0.3.359 release number.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Box Tracker > Live Cases and create the case you are opening.
+4. When completing each Buyer Bag, choose Current open case and select it.
+5. When the case is done, click Finalize Case; use Copy Active Case OBS Link
+   whenever you want the live progress banner in OBS.
+6. Confirm the window says "BreakSuite6 v0.3.359 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.358 — Pull History Missed Card Correction
+
+WHAT CHANGED
+- Adds a + Add Missed Card button inside each buyer's expanded exact-card
+  audit in Pull History.
+- Search is restricted to the game and set saved with that Pull History
+  record, then the exact printing is assigned to one of that buyer's spots.
+- The existing Pull History batch is corrected in place. Adding the same exact
+  printing to the same spot again increases its quantity instead of creating a
+  duplicate card row.
+- The archived buyer-bag copy and any existing linked Box/Case Tracker are
+  rebuilt from the corrected Pull History batch, so totals cannot double.
+- The current live board, ledger, connector, OBS, assignments, and every other
+  history record remain unchanged.
+- The updater and app payload share one verified v0.3.358 release number.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Pull History, expand the correct buyer, and click + Add Missed Card.
+4. Search for the exact card, confirm the buyer spot and quantity, then click
+   Add Card to History.
+5. Confirm the window says "BreakSuite6 v0.3.358 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.357 — Ultimate Skull Popup Fix
+
+WHAT CHANGED
+- Corrects Board 5 Baron Nashor Ultimate (UNL-238/219), which was incorrectly
+  selecting the fire OVERNUMBERED platform from its legacy treatment field.
+- Exact Ultimate printings now use the skull symbol (💀) in Riftbound listing
+  titles and select the black-and-gold ULTIMATE pop-up platform.
+- The rule follows the exact printing catalog, so future indexed Ultimate
+  cards receive the same skull and ULTIMATE platform automatically.
+- Normal Overnumbered cards still use the fire symbol and OVERNUMBERED plate;
+  Signature, AA, Epic, Rare, and SP behavior is unchanged.
+- Saved Board 5 ownership, card order, Buyer Bags, ledger, Pull History, Box
+  Tracker, and every other saved board remain untouched.
+- The updater and app payload share one verified v0.3.357 release number.
+
+HOW TO USE
+1. Extract this entire new ZIP into a fresh folder.
+2. Run RUN-THIS-UPDATE.cmd.
+3. In OBS, keep the regular Card View for the static board and popup.html for
+   the one sale reveal. BreakSuite now prevents Card View from duplicating it.
+4. Confirm the window says "BreakSuite6 v0.3.357 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.356 — Single First-Card Popup Platforms
+
+WHAT CHANGED
+- Extends Board 10's clean embedded rarity platforms to every Riftbound board
+  pop-up while leaving the saved boards themselves unchanged.
+- The first/front mapped card is now the only display authority. Its own
+  treatment or rarity selects SIG, OVERNUMBERED, ALTERNATE ART, ULTIMATE,
+  EPIC, RARE, or SP.
+- Paired spots still keep every owned card in the Buyer Bag, ledger, audits,
+  history, and tracker data, but the public pop-up shows only the first card.
+- Adds a matching black-and-gold ULTIMATE statue with the word physically
+  integrated into its plate for Unleashed lead cards.
+- The regular OBS Card View is now board-only. The dedicated popup.html source
+  is the single sale-reveal channel, preventing one claim from appearing once
+  above and again below when both OBS sources are in the scene.
+- A reveal now fades in once, stays completely still, and fades out once. The
+  continuous card hover and separate moving child-layer effects are removed.
+- Static board layouts, Board 10's five lanes and cascade, saved pairings,
+  listings, claim assignment, Buyer Bags, Pull History, and Box Tracker logic
+  are unchanged.
+
+BreakSuite6 v0.3.355 — Riftbound SP Box Tracker
+
+WHAT CHANGED
+- Riftbound SP-numbered pulls now travel from Buyer Bags and Pull History into
+  the automatic Box/Case Tracker as their own SP category.
+- SP detection uses the printed collector-number namespace (for example,
+  VEN-SP1/006 through VEN-SP6/006), regardless of whether source metadata calls
+  the card Epic, Showcase, SP, or another treatment label.
+- Future Riftbound SP collector numbers are recognized even before the bundled
+  printing index receives its next catalog update.
+- Every qualifying SP tracker entry keeps the exact card, buyer, spot, quantity,
+  captured sale amount, and source history link.
+- One Piece SP tracking keeps its established behavior. Both games share the
+  existing SP count safely without duplicating a database field.
+- Replaces the floating Board 10 rarity text layer with six dedicated statue
+  images whose words are physically baked into their built-in plates.
+- Board 10 now uses SIG, OVERNUMBERED, ALTERNATE ART, EPIC, RARE, and SP
+  statues with large, centered, premium lettering integrated into the art.
+- The approved OVERNUMBERED fire treatment is the visual reference for the
+  full set: dimensional metal type, matching light, and a true plaque fit.
+- Resizing the popup statue in Frame Studio scales the plate and wording as
+  one image, so the label cannot drift below or away from the statue.
+- The separate top "SPOT TAKEN / buyer" copy and bottom rarity title remain
+  intact as background popup information but are visually transparent on
+  Board 10. No ledger, Buyer Bag, claim, or assignment data was removed.
+- Each baked plaque has colors, glow, outline, and sizing matched to its own
+  Signature, Fire, Bomb, Heart, Construction, or Rose statue.
+- Other saved boards continue to use the original unlabeled statue assets.
+- Signature claims now use a new sapphire, platinum, gold, and crystal-wing
+  popup statue designed to feel distinct from every other rarity.
+- Board 10 sold cards now make a short downward crash as they disappear.
+- Only the next cards advance in a brief staggered cascade. The old full-board
+  floating reflow and long diagonal row-wrap motion are removed to reduce lag.
+- Board 10 regular Epics and Astral Heron now reveal inside the new Heart statue.
+- Board 10 Rares now reveal inside the new Construction statue.
+- Board 10 SP1-SP6 listings now use a rose, and their reveals use the new Rose statue.
+- Board 10's Static OBS Board uses five dense columns and still closes every
+  sold-card gap without leaving an empty cell.
+- The updater and app payload share one verified v0.3.355 release number.
+- The updater checks the ZIP payload before touching the installed app, then
+  verifies the copied version before completing.
+- Keeps the Board 10 Epic heart and Rare construction title changes from
+  v0.3.347.
+- Your database, saved boards, live breaks, pending rounds, and history remain
+  outside the replaced app folder and are not reset.
+
+HOW TO USE
+1. Delete the previously extracted broken update folder.
+2. Extract this entire new ZIP into a fresh folder.
+3. Run RUN-THIS-UPDATE.cmd.
+4. Confirm the window says "BreakSuite6 v0.3.355 installed and verified."
+
+EARLIER RELEASE
+----------------
+
+BreakSuite6 v0.3.347 — Board 10 Epic / Rare Listing Titles
+
+WHAT CHANGED
+- Changes saved Board 10 only; every other saved board remains untouched.
+- Regular Epic titles, including standalone Astral Heron, now explicitly say
+  "Epic" and use 💗 at both ends.
+- Any standalone Rare placed on Board 10 explicitly says "Rare" and uses 🚧
+  at both ends.
+- Signature, Overnumbered, and Alternate Art titles keep their existing
+  diamond, fire, and bomb styling.
+- VEN-SP1 through VEN-SP6 remain compact because their collector numbers
+  already identify them. No SP rarity word or extra symbol is added.
+- Board 10 still excludes standard Rares by default, so 🚧 appears only if a
+  standalone Rare is later placed on that board.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 10.
+4. Click Copy Listing and review the Epic heart titles.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.346 — Board 10 Listing Installation Fix
+
+WHAT CHANGED
+- Fixes the Vendetta listing not appearing after loading saved Board 10.
+- Bundles verified fallback catalog rows for all 106 required printings, so a
+  missing local card can no longer block the entire Board 10 installation.
+- Forces Board 10 to rebuild as 106 exact Singles after the blocked release.
+- Keeps the verified 31 unique Overnumbered cards: VEN-167 through VEN-197.
+- Excludes standard Rares and leaves Board 9, live, pending, and history data
+  unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 10.
+4. Board 10 should display all 106 exact Vendetta Singles.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.345 — Vendetta Board 10 Exact Chase Singles
+
+WHAT CHANGED
+- Replaces saved Board 10 with 106 exact-card Vendetta Singles.
+- Creates separate positions for all 9 Signatures, 31 Overnumbered cards,
+  33 Alternate Arts, 26 regular Epics, and 6 Crystal Rose SPs.
+- Gives Astral Heron its own standalone final position.
+- Excludes every standard Rare card and attaches no Rare family to any spot.
+- Copy Listing uses each card's exact name, collector number, and treatment.
+- Keeps Board 9 and every live, pending, or historical break unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 10.
+4. Review the 106 exact Singles before making the board live.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.344 — Vendetta 16-Spot Board 9 Restored
+
+WHAT CHANGED
+- Restores saved Board 9 as 16 combined Vendetta positions.
+- Keeps each Signature champion with its designated Rival ON champion family.
+- Keeps each Crystal Rose SP/color anchor with exactly one paired Rival ON.
+- Pairs Sona with Riven, Astral Heron with Irelia and Helm of Suppression,
+  Sett with Kha'Zix, Ezreal with Diana, and Lux with Kayle.
+- Shows one anchor publicly while retaining the complete ownership map in
+  Buyer Bags.
+- Replaces Board 9 only; live, pending, and historical break data is untouched.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 9.
+4. Review the 16 restored Vendetta positions before making the board live.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.343 — Automatic Box / Case Tracker
+
+WHAT CHANGED
+- Adds one simple Box or Case choice whenever a break is archived.
+- Automatically detects One Piece or Riftbound and the exact saved set.
+- Automatically transfers the selected Pull History cards, buyers, spots,
+  and captured bids into the matching Box Tracker record.
+- Riftbound records count only Epic, Alternate Art, Overnumbered, and
+  Signature hits.
+- Removes the visible manual tracker setup and Buyer Bag destination picker.
+- Keeps older One Piece tracker records readable.
+- Updates the OBS overlay automatically for the selected game and hit groups.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.342 — Standalone Playable Market Launcher
+
+WHAT CHANGED
+- Moved Playable Market completely outside the BreakSuite interface.
+- Changed the BreakSuite menu item into a stable standalone webpage launcher.
+- Kept market page updates independent from normal BreakSuite installations.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.341 — Riftbound Playable Market Model
+
+WHAT CHANGED
+- Added the first assistant-researched Riftbound Playable Market model with
+  current price and 24-hour, 7-day, 30-day, and 90-day movement.
+- Added signals, market catalysts, evidence links, and a ChatGPT copy/paste
+  research workflow without a pricing API.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.340 — Copy Listing Symbols and Board 5 Order
+
+WHAT CHANGED
+- Every copied Riftbound listing title now uses only its first card's symbol.
+- The matching symbol appears exactly once at the front and once at the end:
+  Diamond for Signature, Fire for Overnumbered, and Bomb for Alternate Art or
+  Showcase.
+- Symbols inherited from other cards in a mapped bundle are removed from the
+  copied title.
+- Saved Board 5 is reordered with Baron first, all 12 champions next, and all
+  Poros, Runes, Gear/Spells, and named creature bundles after the champions.
+- Board 5 keeps the same 26 spot names and ownership rules. Plundering remains
+  blue/Mind, Veteran remains orange/Body, and Common/Uncommon Gear/Spells stay
+  excluded.
+- A new one-time migration updates saved Board 5 without rewriting active,
+  pending, or historical Buyer Bags.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board, load saved Board 5, and review the 26 positions.
+4. Press Save Board only when you are ready to make it live.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.339 — Board 5 Poro Color and Gear/Spell Fix
+
+WHAT CHANGED
+- Plundering Poro now owns the blue/Mind Rare Units and Rare Champion Units.
+- Veteran Poro now owns the orange/Body Rare Units and Rare Champion Units.
+- Spot 16 now owns only unreserved Rare-or-higher Gear and Spell hits.
+- Common and Uncommon Gear and Spell cards are excluded from Spot 16.
+- The exact 26 Board 5 spot labels and their order remain unchanged.
+- A new one-time migration corrects saved Board 5 without rewriting active,
+  pending, or historical Buyer Bags.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board, load saved Board 5, and review the 26 positions.
+4. Press Save Board only when you are ready to make it live.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.338 — Unleashed 26-Spot Character Case on Board 5
+
+WHAT CHANGED
+- Saved Board 5 is replaced once with the exact 26 listings supplied for the
+  complete six-box Unleashed case.
+- The spot order and slash bundles match the supplied sold-out listing.
+- Each named champion owns all eight booster cards in that champion family:
+  Signature, Overnumbered, two Alternate Arts, two Epics, and two Rares.
+- Each Poro owns its Poro card plus all unreserved regular Rare Units and Rare
+  Champion Units in its matching domain.
+- Poro spots do not duplicate Gear or Spell cards. All unreserved Gears and
+  Spells, at every rarity, belong to Spot 16.
+- Elder Dragon, Red Brambleback / Irresistible Faefolk, Alpha Wildclaw /
+  Inviolus Vox / Arachnoid Horror, Vilemaw, and Rift Herald / Blue Sentinel
+  retain their own exact named bundles.
+- Spot 12 owns all six booster Alternate-Art Runes. Spot 19 owns every Baron
+  Nashor printing.
+- Board 5 keeps the one-card public overlay while Buyer Bags retain every
+  mapped card. No active, pending, or historical Buyer Bag is rewritten.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board, load saved Board 5, and review the 26 positions.
+4. Press Save Board only when you are ready to make it live.
+
+BreakSuite6 v0.3.336 — Board 5 Combined Champions and Poro Groups
+
+WHAT CHANGED IN v0.3.336
+
+- Saved Board 5 is now 20 spots for one complete six-box Unleashed case.
+- Each champion owns its SIG and ON together, plus both Alternate Arts and
+  both Epics, matching the Board 3 champion-family setup.
+- Each Poro leads one group containing its matching eligible premium cards.
+- Baron Nashor remains standalone.
+- All six Alternate-Art Runes remain together in one standalone spot.
+- Plain Common, Uncommon, and Rare cards are not mapped or used as spots.
+- Spot names contain card names only, with no color/domain wording.
+- Existing live and pending rounds, Buyer Bags, history, and other saved
+  boards remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd from the top folder.
+3. Load saved Board 5 and press Save Board when you are ready to make it live.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.335 — Board 5 Board 3-Style Poro Pairs
+
+WHAT CHANGED IN v0.3.335
+
+- Saved Board 5 is now 35 Unleashed spots for one complete six-box case.
+- Each Poro is the first card in its spot and owns its matching named chase:
+  Pouty + Irresistible Faefolk, Lonely + Vilemaw, Plundering + Elder Dragon,
+  Veteran + Blue Sentinel, Mystic + Rift Herald, and Daring + The Ruination.
+- All six Alternate-Art Runes remain together in one standalone spot.
+- Common, Uncommon, and ordinary Rare cards are not mapped or used as spots.
+- Color/domain wording has been removed from Board 5 spot names.
+- Board 5 now shows one lead card publicly, like Board 3, while Buyer Bags keep
+  the complete mapped bundle.
+- Champion ownership remains unchanged: SIG alone; ON + both AAs + both Epics.
+- Existing live and pending rounds, Buyer Bags, history, and other saved boards
+  remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd from the top folder.
+3. Load saved Board 5 and press Save Board when you are ready to make it live.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.334 — Board 5 SIG Solo / ON + AA + Epic
+
+WHAT CHANGED IN v0.3.334
+
+- Saved Board 5 remains 42 Unleashed spots for one complete six-box case.
+- Every champion Signature is a one-card position. Each ON position receives
+  its Overnumbered, both Alternate Arts, and both Epics.
+- Ordinary Rares are not mapped; distribute them evenly across buyer spots.
+- Vilemaw, Elder Dragon, and Rift Herald keep exactly two printings with the
+  Alternate Art first.
+- Irresistible Faefolk is grouped with Arachnoid Horror; Blue Sentinel is
+  grouped with Hwei and Gutter Palace; The Ruination remains standalone.
+- All six Alternate-Art Runes remain together in their own spot.
+- Existing live and pending rounds, Buyer Bags, history, and other saved
+  boards remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd from the top folder.
+3. Load saved Board 5 and press Save Board when you are ready to make it live.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.331 — Independent Popup Statue and Card Sizing
+
+WHAT CHANGED IN v0.3.331
+
+- Frame Studio added separate Statue / frame size and Live card size sliders.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.330 — Board 4 Final Single-Card Enforcement
+
+WHAT CHANGED IN v0.3.330
+
+- Board 4's one-card rule is now applied after the normal Spiritforged
+  Signature + Champion or Seal + Rune bundle is created.
+- Both regular and Frame Studio custom Board 4 mappings are forced to one
+  public card before they reach the OBS board or purchase popup.
+- A regression now starts with the same two-card Spiritforged bundle and
+  verifies that the final public payload contains only its first card.
+- Every additional mapped card remains intact in Buyer Bags, pull validation,
+  and ownership checks.
+- All other saved boards, connector assignments, saved data, and the separate
+  Deck Viewer are unchanged.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.329 — Board 4 Single-Card Popup Fix
+
+WHAT CHANGED IN v0.3.329
+
+- Saved Board 4 now shows only its first mapped card in the OBS board and
+  purchase popup instead of the incorrect combined two-card plus layout.
+- The first mapped card still controls the Diamond, Fire, or Bomb statue
+  effect and the complete Board 4 spot label remains visible.
+- Every additional mapped card remains assigned to the buyer in Buyer Bags
+  and ownership checks; this is only a public overlay correction.
+- All other saved boards, connector assignments, saved data, and the separate
+  Deck Viewer are unchanged.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.328 — Centered Floating Statue Card
+
+WHAT CHANGED IN v0.3.328
+
+- Reduced the live card to 60 percent of the popup width so the statue opening
+  remains clearly visible around it.
+- Locked the sold card to the exact center of the statue opening.
+- Added stronger depth separation and a restrained six-pixel floating motion
+  to the card only.
+- The transparent Diamond, Fire, or Bomb statue remains completely still
+  behind the card.
+- Boards, mappings, Buyer Bags, connector assignments, saved data, and the
+  separate Deck Viewer are unchanged.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.327 — Transparent 3D Statue Popup
+
+WHAT CHANGED IN v0.3.327
+
+- Restored the Diamond, Fire, and Bomb statue as a free-standing transparent
+  layer behind the live sold card.
+- Removed the large opaque popup shell that made the statue look like a flat
+  rectangular photo.
+- The OBS scene now stays visible around the statue while the buyer name and
+  champion or spot nameplate remain readable.
+- Kept the polished one-time entrance, stable hold, and smooth exit from
+  v0.3.326.
+- Boards, mappings, Buyer Bags, connector assignments, saved data, and the
+  separate Deck Viewer are unchanged.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.326 — Polished OBS Popup Animation
+
+WHAT CHANGED IN v0.3.326
+
+- Replaced the large bouncing entrance with a restrained broadcast-style reveal.
+- The frame arrives first, the sold card settles once, and the buyer/title copy
+  follows in a short readable stagger.
+- The card and themed statue stay still during the hold instead of bobbing,
+  drifting, and pulsing against each other.
+- Added a smooth 420 ms exit so the popup no longer vanishes in one frame.
+- The dedicated popup-only OBS source now applies its saved position, scale,
+  colors, and duration before the reveal begins.
+- Boards, mappings, Buyer Bags, connector assignments, saved data, and the
+  separate Deck Viewer are unchanged.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.325 — Card List Search
+
+WHAT CHANGED IN v0.3.325
+
+- Added Card List Search inside the One Piece and Riftbound Libraries.
+- Choose the game and set, paste collector numbers, and press View Cards to
+  see the exact English card images and names in your pasted order.
+- Accepts short and full formats such as 116, OGN-116, OGN-116/298, 039a,
+  Rune numbers, SP numbers, and starred overnumbers.
+- A copied Markdown table also works; BreakSuite extracts the card numbers.
+- Missing numbers are reported instead of being silently skipped.
+- Show Saved Prices can be turned on or off.
+- Price This List uses your existing BreakSuite price source and supports
+  JustTCG, ChatGPT Batch Import, eBay Active Estimate, and Manual Price.
+- Card List Search is read-only. It does not change inventory quantities,
+  saved cards, Break Boards, mappings, Buyer Bags, or OBS.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.324 — Board 3 Linear Overlay Fix
+
+WHAT CHANGED IN v0.3.324
+
+- Board 3 now displays only the first mapped card for each spot in the OBS
+  board and sale popup.
+- Poro and other multi-card mappings no longer appear as a side-by-side pair
+  with a plus sign on Board 3.
+- The complete mapped ownership and card sequence remain intact behind the
+  first-card overlay preview.
+- Other boards, Buyer Bags, accounting, saved data, and the Whatnot connector
+  are unchanged.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.320 — Pool History Top Hits Only
+
+WHAT CHANGED IN v0.3.320
+
+- Pool History Copy + Message now includes only Alternate Art-or-higher top
+  hits.
+- Promo, Showcase, SP, Ultimate, Overnumbered, Signature, Manga, Treasure
+  Rare, and Gold DON treatments remain included.
+- Plain Epic, Rare, Uncommon, and Common cards stay fully saved in Pull
+  History but are not placed in the buyer message.
+- Buyers with saved cards but no qualifying top hits now show No top hits
+  instead of copying lower-rarity cards.
+- No Pull History records, boards, Buyer Bags, mappings, accounting, OBS
+  overlays, or connector behavior were changed.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.319 — Smooth Live Statue Popups
+
+WHAT CHANGED IN v0.3.319
+
+- Added restrained live motion to the transparent Diamond, Fire, and Bomb statues.
+- The statue breathes slowly, crystals pulse, particles rise, and the platform glows.
+- The live card floats independently in front of the statue.
+- Reduced each statue asset from roughly 2.3 MB to about 0.75 MB.
+- Removed expensive animated filters and uses GPU-friendly transforms and opacity.
+- Preserved the dedicated popup link and first-mapped-card theme selection.
+
+- Replaced the flat concept-sheet picture with three permanent transparent 3D statue assets.
+- The frame has no rectangular photo background and no baked-in card.
+- The live sold card floats in front of the transparent statue opening.
+- Signature uses the blue Diamond statue; Overnumbered uses the Fire statue;
+  Alternate Art uses the gold Bomb statue.
+- Preserved the dedicated popup link and first-mapped-card theme selection.
+
+- Corrected the popup layer order to match the working screenshot.
+- The complete themed frame stays behind the sold card.
+- The sold card is smaller, centered, and floats in front of the frame.
+- Buyer name and mapped title remain above both layers.
+- Preserved the original Diamond, Fire, and Bomb artwork and first-card logic.
+
+- Added the approved three-design concept artwork to the actual live popup.
+- Signature displays the left Hextech Vault artwork.
+- Overnumbered displays the middle Runic Rift artwork.
+- Alternate Art displays the right Champion Ascension artwork.
+- The sold card floats above the selected artwork.
+- The artwork breathes with slow live lighting without covering the card.
+
+- Added a dedicated popup-only OBS address:
+  http://127.0.0.1:8878/popup.html
+- The Copy Card Reveal Link button now copies that exact address.
+- Removed the need for the unreliable ?view=reveal query-string link.
+- Preserved the live Diamond, Fire, and Bomb lighting and first-card theme logic.
+
+- Restored the approved three popup looks from the concept sheet.
+- Signature uses animated icy-blue Diamond lighting.
+- Overnumbered uses animated red-orange Fire lighting.
+- Alternate Art uses animated gold Bomb/explosion lighting.
+- The lighting stays behind the card, with slow sweeps, pulses, and particles.
+- The first mapped card still controls the popup theme.
+------------------------
+- Restored the missing animated scene behind every card-sale popup.
+- Added the Hextech portal, illuminated side pillars, floating particles, and
+  glowing platform behind the live card.
+- Signature uses crystalline white/cyan/purple lighting.
+- Overnumbered uses red/orange fire lighting.
+- Alternate Art and Showcase use a gold burst scene.
+- Epic and Ultimate use an aqua/blue/purple scene.
+- Board 6 still displays only the first mapped card in the popup.
+- Did not change boards, mappings, Buyer Bags, Chaser Tracker, accounting, or
+  connector behavior.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.312 — Last 100 Buyer Message Groups
+
+WHAT CHANGED IN v0.3.312
+------------------------
+- Added a Last 100 Buyers panel under Chaser Tracker only.
+- Uses the 100 most recent unique saved buyers in newest-first order.
+- Formats every buyer as @name separated by one space.
+- Automatically splits the list into copyable groups of no more than 150
+  characters without breaking a username.
+- Each group has its own Copy button for pasting directly into chat.
+- Did not change Royal Chasers, Royal standings, boards, mappings, Buyer Bags,
+  accounting, OBS overlays, or connector behavior.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.311 — Collapsible Top-Hit Buyer Bags
+
+WHAT CHANGED IN v0.3.311
+------------------------
+- Added a small minus/plus button beside Whole Bag pricing on every live and
+  Pending Review Riftbound Buyer Bag.
+- Minus minimizes only that buyer's audit content; the buyer name, spend, and
+  purchased-spot count remain visible. Plus opens the bag again.
+- Copy Results now lists only Alternate Art-or-higher top hits, including
+  Showcase, SP, Ultimate, Overnumbered, and Signature cards.
+- Epic, Rare, Common, and Uncommon pulls remain fully recorded for review,
+  Pull History, and accounting, but are not included in the buyer DM text.
+- Did not change Boards 6, 7, or 9, saved mappings, pricing, buyer records,
+  accounting, OBS overlays, or connector behavior.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.310 — Guaranteed OBS Sale Popups
+
+WHAT CHANGED IN v0.3.310
+------------------------
+- Fixed the regular OBS Card View dropping sale events whenever its optional
+  Static Board toggle was off.
+- The regular Card View and dedicated reveal URL now receive the same popup.
+- Mapped spots explicitly carry the first card's Signature/ON/AA effect even
+  if imported card metadata is incomplete.
+- Added cache-busted OBS assets so old CSS/JavaScript cannot hide the update.
+- The updater closes only a stale listener on BreakSuite port 8878, verifies
+  that v0.3.310 reached the installed folder, and launches that exact copy.
+- Did not change Boards 6, 7, or 9, Buyer Bags, buyers, or connector parsing.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.309 — Mapped Popup Lead Card Fix
+
+WHAT CHANGED IN v0.3.309
+------------------------
+- Fixed mapped Riftbound sale popups reading the hidden board anchor instead
+  of the first card saved in the spot mapping.
+- The overlay and popup now show that exact first mapped card.
+- Its treatment now controls the matching effect: Diamond for Signature,
+  Fire for Overnumbered, and Bomb for Alternate Art.
+- Did not change Boards 6, 7, or 9, Buyer Bags, buyers, or the connector.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.308 — Riftbound Popup Effect Themes
+
+WHAT CHANGED IN v0.3.308
+------------------------
+- Restored the intended Riftbound popup themes: Diamond for Signature,
+  Fire for Overnumbered, and Bomb for Alternate Art.
+- The same three effects now match on the board card and sale popup.
+- Kept the v0.3.307 sale-popup recovery for both OBS Card View URLs.
+- Did not change board 6, board 7, board 9, buyer tools, or connector behavior.
+
+PREVIOUS RELEASE
+----------------
+
+BreakSuite6 v0.3.307 — OBS Sale Popup Recovery
+
+WHAT CHANGED IN v0.3.307
+- Sale popups now appear through both the regular OBS Card View and the dedicated camera-front reveal source.
+- The popup keeps its animated rarity background, buyer name, mapped spot title, and first-card-only Board 6/7/9 behavior.
+- Existing Royal Chasers buyer messaging from v0.3.306 remains included.
+- No Break Board mapping, Connector buyer ownership, Orders History, or Buyer Bags were changed.
+
+BreakSuite6 v0.3.306 — Royal Chasers Buyer Messaging
+
+WHAT CHANGED IN v0.3.306
+- Restored the Royal Chasers buyer-name list inside the Royal Chasers section.
+- Every valid buyer name now has a Message button that opens that buyer's Whatnot profile so you can press Message and send a DM.
+- Locked qualifiers and Royal standings both include the same messaging shortcut.
+- No Break Board mapping, Connector behavior, or OBS overlay layout was changed in this update.
+
+BreakSuite6 v0.3.305 — Board 6/7 Forced Vertical Overlay
+
+WHAT CHANGED IN v0.3.305
+- Detects Boards 6 and 7 by saved slot, including older customized snapshots.
+- Shows only the first card at the top of each spot; every remaining card follows vertically underneath.
+- Removes the horizontal two-card row and false + from the OBS Spot Map and sale popup.
+- Keeps the Mapping Editor's Sequence / + Title controls, exact ownership, Board 9, and connector unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Completely close and reopen BreakSuite6.
+3. In OBS, refresh the Browser Source once.
+
+BreakSuite6 v0.3.304 — Board 6/7 Linear Overlay Repair
+
+WHAT CHANGED IN v0.3.304
+- Board 6 and Board 7 show one lead card followed by the rest of the mapped cards in one straight OBS Spot Map lane.
+- Board 6 and Board 7 sale popups show one card, with no incorrect side-by-side + preview.
+- Their complete mappings, ownership, titles, and 💎 SIG, 🔥 ON, and 💣 AA markers remain unchanged.
+- Vendetta Board 9 keeps the approved 35-spot split from v0.3.303.
+- No saved-board rows, live/pending rounds, history, or Whatnot connector files are changed.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Load Board 6 or Board 7 and press Save Board only when you want that board live.
+3. Refresh the OBS Browser Source once so it loads the corrected display rules.
+
+BreakSuite6 v0.3.301 — Spiritforged Board 6 SIG-First Titles
+
+WHAT CHANGED IN v0.3.301
+- Board 6 Signature-capable champion spots now use the Signature as the first/map card.
+- Board 6 titles use 💎 for SIG, 🔥 for ON, and 💣 for Alternate Art.
+- Existing Board 6 custom card membership is preserved and resequenced safely.
+- Boards 1-5 and 7-10 are unchanged. Live and Pending Buyer Bags are unchanged.
+
+BreakSuite6 v0.3.300 — Frame Studio Mapping Editor
+
+WHAT CHANGED
+- Adds a visual Board Mapping Editor inside Frame Studio for every saved mapped Riftbound board.
+- Click a saved board, then click a Buyer Spot to see every exact card assigned to it.
+- The first card in each spot is its locked anchor and cannot be removed or moved.
+- Remove other cards, move them to another spot, or drag them onto a different Buyer Spot.
+- Add Sequence Card opens Riftbound Library and assigns the exact card without changing the public spot title.
+- Add + Title Card opens Riftbound Library and appends that selected card name to the public spot title once.
+- Change any added card between Sequence and + Title from its dropdown in the mapping editor.
+- Cards already owned by a spot glow in Riftbound Library and show their current Buyer Spot.
+- Prevents duplicate card ownership across the same board.
+- Keeps each saved board's custom mapping separate. Existing live and Pending Buyer Bags keep their original snapshots.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Open Frame Studio and click the saved board you want to edit.
+3. Select a Buyer Spot, then remove/move cards or choose Add Sequence Card / Add + Title Card.
+4. In Riftbound Library, click the exact card you want and use Return to Mapping Editor.
+5. Click Save This Mapping. Load that saved board in Break Board and press Save Board only when you want the edited mapping to become live.
+
+BreakSuite6 v0.3.299 — Compact Board 7 Buyer Bags
+
+WHAT CHANGED
+- Makes the champion sections in Board 7 Buyer Bags smaller and easier to scan.
+- Uses 💎 for Signature, 🔥 for Overnumbered, and 💣 for assigned Alternate Art cards.
+- Removes the repeated long champion-lane note beside the Buyer Bag name.
+- Gives Thrill of the Hunt Epic 184 to Rengar SIG.
+- Gives Rengar, Trophy Hunter Epic 120 to Rengar ON.
+- Keeps both Rengar positions at four cards with no duplicated owner.
+- Changes only Board 7 mapping and Buyer Bag presentation. Boards 1-6 and 8-10 remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Open Break Board and load saved Board 7.
+3. Review UNLEASHED-39-SPOT-BOARD-7-MAP.txt for all exact assignments, including the Rengar Epic swap.
+4. Press Save Board only when you want this 39-position setup to become the live ledger.
+
+BreakSuite6 v0.3.296 — Whole-Board Riftbound Pricing
+
+WHAT CHANGED
+- Adds one Price Entire Board button beside Riftbound cards remaining.
+- One run covers every Remaining Card plus every distinct card displayed inside every current Buyer Bag.
+- Every Buyer Bag also has a Whole Bag button that prices its complete displayed card list at once; + selections are not required for pricing.
+- Shows the same tiny private dollar badge on cards still remaining, so you can call out their value live.
+- ChatGPT Batch Import creates one complete request for the selected whole board or whole bag instead of one card at a time.
+- JustTCG and eBay remain automatic. ChatGPT still uses one copy/paste round because it has no separately billed API connection.
+- Hide Spending removes the price badges from both Remaining Cards and Buyer Bags.
+- Pull selection, Buyer Bag ownership, boards, mappings, history, OBS, and the separate Whatnot connector remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Open Riftbound Breaker Center and choose a Price Source beside Riftbound cards remaining.
+3. Click Price Entire Board to cover Remaining Cards and Buyer Bags together.
+4. With ChatGPT selected, copy the one complete board request, paste it into ChatGPT, paste the one JSON answer back, and click Save Prices.
+5. To refresh only one buyer, click that Buyer Bag's Whole Bag button instead.
+
+BreakSuite6 v0.3.295 — Multi-Source Buyer Bag Pricing
+
+WHAT CHANGED
+- Adds one Price Source selector in Riftbound Buyer Bags and Pull History.
+- JustTCG remains the default automatic source and Card Sniper still uses JustTCG.
+- ChatGPT Import needs no separate OpenAI API: BreakSuite copies the exact-card request, then accepts the JSON answer from your normal ChatGPT conversation.
+- Manual Price shows one unit-price box per exact printing and applies saved quantities automatically.
+- eBay Estimate can run automatically after you add free eBay Production Developer credentials. It uses matching active raw-card asking prices plus shipping; it is not sold-comps data.
+- Saving ChatGPT or Manual prices, or refreshing an automatic source, replaces the whole selected card list with that one source. Old values from another source are not mixed into the total.
+- Boards, mappings, buyers, pulls, history, OBS, and the separate Whatnot connector stay intact.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Open Riftbound Breaker Center or Pull History and choose a Price Source.
+3. Record the exact pulls, then use the price button for that Buyer Bag or saved Pull History record.
+4. For ChatGPT Import, click Copy Request for ChatGPT, paste it into ChatGPT, then paste the JSON answer into BreakSuite and save.
+5. For Manual Price, type each unit price and save. For eBay Estimate, add Production Client ID and Client Secret under Price Source Setup first.
+
+BreakSuite6 v0.3.294 — Compact Buyer Bag Prices
+
+WHAT CHANGED
+- Replaces the large two-line card price tag with a tiny corner badge containing only the dollar amount.
+- Removes the "Current Market," "Price Checked," and "No Match" wording from the cards.
+- Hide Spending now removes every card-price badge completely instead of leaving a Hidden badge behind.
+- Keeps Price Check clearly visible in every live and Pending Review Riftbound Buyer Bag, even before a pull is recorded.
+- If no pull is selected, Price Check tells you to record the exact card with its + button first.
+- Adds Price Feed Setup beside Hide Spending so the one-time JustTCG connection is easy to find.
+- Keeps the corrected Spiritforged Board 6 map, all other boards, saved data, OBS, and the separate Whatnot connector unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Open Riftbound Breaker Center and click Price Feed Setup beside Hide Spending.
+3. Get a free JustTCG key, paste it into Market Data Setup, and click Save Market Access once.
+4. In a Buyer Bag, record each actual pull with + and click Price Check beside that bag heading.
+5. Click Hide Spending before showing the screen; all spending and card-price badges disappear.
+
+BreakSuite6 v0.3.293 — Corrected Spiritforged Board 6
+
+WHAT CHANGED
+- Corrects the saved 39-position Spiritforged setup in Board 6.
+- Returns Shurelya's Requiem to the Soraka champion-family position.
+- Changes Spot 25 to Fizz + Switcheroo.
+- Changes Spot 26 to Premonition + Downwell.
+- Keeps Spot 27 as standalone Last Rites.
+- Removes Switcheroo, Premonition, Downwell, and Last Rites from the Rune/domain pools so every eligible card has one buyer.
+- Replaces saved Board 6 once, while Boards 1-5 and Boards 7-10 remain untouched.
+- Keeps already-sold live and pending rounds on their original Board 6 ownership rules.
+- Keeps Buyer Bag Price Check, Hide Spending, all saved data, OBS, and the separate Whatnot connector unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. Open Break Board and load saved Board 6.
+3. Confirm Spots 25-27 show Fizz + Switcheroo, Premonition + Downwell, and Last Rites.
+4. Press Save Board only when you want the corrected setup to become the live ledger.
+
+BreakSuite6 v0.3.292 — Buyer Bag Price Check
+
+WHAT CHANGED
+- Adds a Price Check button beside every live and Pending Review Riftbound Buyer Bag heading.
+- Checks only the exact cards already recorded as pulls for that buyer.
+- Uses the existing paced JustTCG Near Mint English market feed and stores each result on the matching central Library card.
+- Shows the current market value directly on every successfully matched card in the Buyer Bag.
+- A checked price is carried into Pull History when the box is completed and archived.
+- Hide Spending now hides every buyer-spend amount, live/pending total, and market-price badge together.
+- Boards, mappings, buyers, pulls, histories, OBS, and the separate Whatnot connector are unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP and run RUN-THIS-UPDATE.cmd.
+2. If needed, open Card Sniper, expand Market Data Setup, and connect your JustTCG API key once.
+3. In a live or Pending Review Buyer Bag, record the exact cards that were pulled.
+4. Click Price Check beside that Buyer's Bag heading.
+5. Click Hide Spending before showing the screen when you want every financial value hidden.
+
+BreakSuite6 v0.3.291 — Ten Boards + Spiritforged 39-Spot Board 6
+
+WHAT CHANGED
+- Expands Saved Board Setups from five slots to ten without changing Boards 1-5.
+- Adds the approved 39-position Spiritforged setup once in saved Board 6.
+- Splits all twelve former champion pairs into 24 separate champion positions.
+- Gives Fizz + Premonition one position, Shurelya's Requiem one position, and Last Rites one position.
+- Gives every Seal its own standalone position.
+- Keeps each Showcase Rune with its unreserved Rare/Epic domain cards in six separate Rune/color positions.
+- Prevents named solo cards, Seals, featured champion families, and dual-domain cards from having two owners.
+- Applies the same map to listings, Buyer Bags, pull checks, Pending Review, purchase popups, and the OBS Spot Map.
+- Preserves the current live ledger, buyers, pulls, histories, expenses, connector, and every existing board.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 6.
+4. Confirm it shows 39 Riftbound cards and Buyer Bag mode says Mapped groups.
+5. Review SPIRITFORGED-39-SPOT-MAP.txt, then use Save Board when you want this setup live.
+
+BreakSuite6 v0.3.290 — Unified Business Expense Report
+
+WHAT CHANGED
+- Combines every business expense source into one continuous table, sorted newest to oldest.
+- Box costs, Whatnot fees, giveaways/inventory adjustments, shipping supplies, equipment, sealed inventory purchases, and review-only entries now appear together.
+- Keeps an Accounting Treatment column so included, separately tracked, duplicate, and personal-use amounts remain clearly identified without splitting the records apart.
+- Changes the print layout from sideways landscape to upright portrait.
+- Preserves the Business Expenses tab, year selector, summary totals, and Print / Save PDF button.
+- Does not change or delete the database, saved boards, buyer records, pull history, expense entries, overlays, or connector logic.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Business Expenses and choose the tax year.
+4. Click Print / Save PDF to see every saved expense together in one upright report.
+
+BreakSuite6 v0.3.289 — Business Expense Print Report
+
+WHAT CHANGED
+- Keeps the Business Expenses tab inside the full BreakSuite application.
+- Adds a Print / Save PDF button beside the tax-year selector.
+- Builds a clean, year-specific report from saved BreakSuite records.
+- Itemizes completed breaks, gross sales, Whatnot fees, box costs, net results, automatic giveaway/inventory adjustments, and every manual business expense.
+- Clearly separates sold inventory cost, unsold inventory purchases, duplicate manual fee entries, and owner/personal use so they are not silently deducted twice.
+- Shows current accounting review warnings on the printed report.
+- Does not change or delete the database, saved boards, buyer records, pull history, expense entries, overlays, or connector logic.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Business Expenses in BreakSuite and choose the tax year.
+4. Click Print / Save PDF.
+5. Choose a printer, or choose Microsoft Print to PDF to create a file you can upload for review.
+
+BreakSuite6 v0.3.288 — Horizontal Unleashed Buyer Bags
+
+WHAT CHANGED
+- Every Unleashed 19-spot Buyer Bag now shows its owned cards in one compact left-to-right grid.
+- Champion cards, Baron and the six AA Runes, and every Poro/color bundle stay visually together.
+- Large + / PAIRED separators and separate vertical card sections are removed from this Board 1 profile.
+- The horizontal layout works in both the live Buyer Bag and Pending Review.
+- This is a visual-only update. The approved 19-spot ownership map and all saved data remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Load and save Board 1 when you are ready to run the Unleashed case.
+4. Open a Buyer Bag to see all owned cards flowing together from left to right.
+
+BreakSuite6 v0.3.287 — Unleashed 19-Spot Case Board One
+
+WHAT CHANGED
+- Saved Board 1 is replaced once with the approved 19-position Unleashed case break.
+- Spots 1-12 are the twelve champion-family spots.
+- Spot 13 is Baron Nashor + all six booster Alternate-Art Runes (UNL-R01a through UNL-R06a).
+- Spots 14-19 are the six Poro/color lanes with their named chase and unreserved Rare/Epic domain hits.
+- The six promotional "b" Runes are excluded, and no Rune belongs to a color lane.
+- Listing labels, Buyer Bags, pull validation, Pending Review, Pull History, purchase popups, and OBS use the same map.
+- The current live ledger, pending rounds, histories, buyers, purchases, and pull selections are not changed.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 1.
+4. Confirm it shows 19 Riftbound cards and Buyer Bag mode says Mapped groups.
+5. Review UNLEASHED-19-SPOT-CASE-MAP.txt, then use Save Board when you want this setup live.
+
+BreakSuite6 v0.3.286 — Short Buyer Pull Messages
+
+WHAT CHANGED
+- Shortens copied buyer messages across live One Piece breaks, live Riftbound breaks, Pending Review, and Pull History.
+- Every message now greets the buyer, thanks them for stopping by, lists their exact pulls, says "I truly appreciate your support!", and ends with exactly five stars.
+- Removes the five-star review request, congratulations wording, party emoji, and smile emoji.
+- No saved history, buyer, purchase, pull, price, Board, or mapping data is changed or deleted.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Copy any buyer message from a live Buyer Bag, Pending Review, or Pull History.
+
+BreakSuite6 v0.3.285 — Pull History Spend-or-Hit Green Alerts
+
+WHAT CHANGED
+- Corrects the Pull History green-message rule to use either qualifying condition.
+- A buyer's entire tile and Copy + Message button glow green when the buyer spent strictly over $100 OR pulled a premium hit.
+- Exactly $100 alone does not trigger the alert; $100.01 or more does.
+- Premium hits include Alt Art/Showcase, SP, Ultimate, Overnumbered, and Signature cards.
+- Copied messages begin with the saved buyer handle and include the agreed five-star review request.
+- No saved history, buyer, purchase, pull, price, Board, or mapping data is changed or deleted.
+- All Vendetta and Singles updates remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Pull History.
+4. Any buyer meeting either condition will have a green tile ready for Copy + Message.
+
+BreakSuite6 v0.3.284 — Pull History $100 Green Message Alerts
+
+WHAT CHANGED
+- Pull History buyer cards glow green when that buyer spent $100 or more in the saved break.
+- The whole buyer tile and its Copy + Message button use the green alert.
+- The threshold includes buyers who spent exactly $100.
+- Copied messages begin with the saved buyer handle, for example: Hi @username,
+- The existing exact pull list and thank-you wording remain unchanged.
+- No saved history, buyer, purchase, or pull data is changed or deleted.
+- The Vendetta popup and Rune-listing updates from v0.3.283 remain unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Pull History and find any buyer who spent $100 or more in that saved break.
+4. Their full tile will glow green; use Copy + Message to copy the named pull summary.
+
+BreakSuite6 v0.3.283 — Vendetta Combined Purchase Popups + Rune Listings
+
+WHAT CHANGED
+- Vendetta live purchase popups now show the complete mapped combination instead of only the anchor card.
+- Signature positions show every included champion, including Ambessa + Morgana + Riven.
+- Each SP/color position shows both champions plus its owned Rune name.
+- Example: Sona + Kha'Zix + Calm Rune.
+- Copy Listing and its preview use the same champion-and-Rune names with no collector numbers.
+- Buyer Bag ownership, chase-card mapping, all 22 Rival ON assignments, and the compact linear layout are unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Load and save Board 5 for the live box.
+4. Copy the listing or test a live assignment to see the complete Vendetta spot name.
+
+BreakSuite6 v0.3.282 — Vendetta Copy Listing Champion Names
+
+WHAT CHANGED
+- Copy Listing now writes the complete champion combination for every mapped Vendetta position.
+- The copy-ready preview shows the same complete combinations before copying.
+- Listing names contain champion names only: no collector numbers, Rune names, chase-card names, or domain-card descriptions.
+- Examples include Renekton + Rengar, Ambessa + Morgana + Riven, and Kai'Sa + Swain.
+- Buyer Bag ownership, card visualization, the 15-position balance, SP pairings, and the linear layout are unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Load saved Board 5 and click Copy Listing.
+4. Each Whatnot listing name will show every champion owned by that position.
+
+BreakSuite6 v0.3.281 — Ambessa Vendetta Balance Update
+
+WHAT CHANGED
+- Moves the Riven Rival ON family from Zed to Ambessa.
+- Zed is now Zed + Gangplank.
+- Ambessa is now Ambessa + Morgana + Riven.
+- Keeps all 22 Rival ON champion families assigned exactly once across the 15 mapped positions.
+- Keeps the approved six SP/color pairings and the compact linear Vendetta Buyer Bag layout.
+- Buyer Bags, listings, pull ownership, copied results, Pending Review, and OBS all use the updated ownership.
+- The live ledger, pending/history records, saved buyers, and all other boards are not changed.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Load saved Board 5 and review the updated Zed and Ambessa labels.
+4. Use Save Board when you want this setup live.
+
+BreakSuite6 v0.3.280 — Linear Vendetta Buyer Bags
+
+WHAT CHANGED
+- Vendetta Buyer Bags now use the same clean, continuous horizontal card grid as Spiritforged.
+- Cards follow one another left to right and wrap naturally when the Buyer Bag becomes narrower.
+- The oversized "+ / PAIRED" separators and separate family columns are removed from Vendetta bags.
+- The cleaner layout applies to both the live Buyer Bag and Pending Review.
+- Vendetta's 15-position price-balanced ownership map is unchanged.
+- Board 1 Singles keeps its compact five-card layout; Spiritforged and all other board mappings are unchanged.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Load Board 5 and open a Vendetta Buyer Bag.
+4. Its mapped cards will now appear in one compact, responsive sequence without the large plus dividers.
+
+BreakSuite6 v0.3.279 — Price-Balanced Vendetta Board 5
+
+WHAT CHANGED
+- Saved Board 5 is replaced once with 15 mapped Vendetta positions: nine Signature-family anchors and six Crystal Rose/color anchors.
+- Akali remains a standalone premium family.
+- Every other headline position receives at least one Rival ON champion family; all 22 Rival ONs have exactly one owner.
+- The six SP/color bundles are price-balanced: Sett + Kayle, Ezreal + Diana, Lux + Irelia, Sona + Kha'Zix, Kai'Sa + Swain, and Ahri + Draven.
+- Sona deliberately receives the lowest-priced loose ON because its Calm bundle already includes Astral Heron and Helm of Suppression.
+- Kayle 185/166 is restored; it was missing from the former 96-position Vendetta list.
+- Buyer Bags, pull selection, copied results, listing labels, and the OBS Spot Map all use the same 15-position ownership map.
+- Board 1 remains Singles with the compact five-card display from v0.3.278.
+- The current live ledger and all Pending Review/history records are not changed.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and load saved Board 5.
+4. Confirm it says 15 Riftbound cards and Buyer Bag mode says Mapped groups.
+5. That historical layout is superseded by VENDETTA-16-SPOT-BOARD-9-MAP.txt.
+
+BreakSuite6 v0.3.278 — Compact Five-Card Singles Display
+
+WHAT CHANGED
+- Exact-position Singles cards are compact again instead of using the large mapped-bundle panel.
+- Buyer Bags show five Singles cards across on a normal desktop window.
+- The OBS Spot Map shows five Singles positions at once and rolls through larger boards five at a time.
+- Each card still keeps its exact purchased position and pull quantity controls.
+- Champion, Poro, color, pair, and combo boards keep their existing mapped layout.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open or reload saved Board 1.
+4. Buyer Bags and the Singles Spot Map will automatically use the compact five-card layout.
+
+BreakSuite6 v0.3.277 — Per-Board Singles Buyer Bags
+
+WHAT CHANGED
+- Every reusable Riftbound board now saves its own Buyer Bag mode.
+- Saved Board 1 is switched to Singles automatically once.
+- Singles shows exactly the card at each purchased position in the Buyer Bag, Spot Map, Pending Review, and OBS claim reveal.
+- Other boards keep Mapped groups, so champion, Poro, color, pair, and combo mappings are unchanged.
+- Each live box snapshots its mode, so changing or loading another board cannot alter a box already in review.
+- Singles boards keep every Rune as its own position instead of merging it into a Poro bundle.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Break Board and click saved Board 1.
+4. Confirm Buyer Bag mode says Singles · exact positions.
+5. Save Board when you want that board live. Each buyer will see only the exact single at every position they purchased.
+6. For a champion or bundle board, choose Mapped groups and save that setup.
+
+BreakSuite6 v0.3.270 — Self-Healing OBS Reveal Overlay
+
+WHAT CHANGED
+- The dedicated reveal popup now uses request timeouts so one hung localhost request cannot freeze the popup forever.
+- The reveal source automatically retries and self-reloads after a sustained 20-second connection failure.
+- OBS reveal polling stays fast at 500 ms even when OBS reports the browser source as hidden.
+- Heartbeats are timeout-protected and cannot block the reveal loop.
+- Refocusing the browser source or recovering network connectivity forces an immediate refresh.
+- BreakSuite database, buyers, pull history, board assignments, and connector logic are unchanged.
+
+RECOMMENDED OBS URL
+http://127.0.0.1:8878/overlay.html?view=reveal
+
+IMPORTANT
+No software can guarantee 100% uptime, but this patch removes the main failure mode where a stuck browser request could leave the popup dead until a manual refresh.
+
+BreakSuite6 v0.3.269 — Pull History Only Profit/Cooked
+
+WHAT CHANGED
+- Who's Winning / Profit / Cooked now uses ONLY saved Pull History data.
+- Older Orders History is ignored for buyer win/loss results because those older records do not prove what the buyer pulled.
+- The tracked spend comes from Pull History spot snapshots and card value comes from the exact saved Pull History cards.
+- Pull History records from before spot/payment snapshots existed are excluded rather than guessed.
+- A tracked spot with no recorded hit counts as $0 recorded hit value. Missing spot prices or card prices stay Needs Pricing.
+- Buyer Case Lookup follows the same Pull History-only rule.
+- Check Pull History shows the exact coverage period and validates only those tracked records.
+- Loyalty / Top 10 still keeps all saved Orders History so older buyer spending is not lost.
+- Business Profit + Tax still uses Orders History + expenses; its accounting verification no longer backfills or changes Pull History.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Buyer Analytics → Who's Winning.
+4. Click Check Pull History.
+5. The coverage line tells you exactly when Profit/Cooked tracking starts.
+6. Older Orders History remains available for loyalty and accounting but does not affect Profit/Cooked.
+
+IMPORTANT
+- This update does not delete old orders or old Pull History.
+- It changes which records are allowed into Profit/Cooked so the result only uses data that contains both tracked spend and pull history.
+- Origins Board 2 mapping and Buyer Bag layouts are unchanged.
+BreakSuite6 v0.3.337 — Direct Business Report Downloads
+
+WHAT CHANGED
+- Download PDF now saves a real PDF file directly instead of opening the Windows printer dialog.
+- Download Excel CSV saves the complete selected-year report as an Excel-compatible spreadsheet file.
+- Print remains available as a separate button when a paper copy is actually wanted.
+- Exported files include the summary totals and every reconciled expense row without changing saved records.
+
+HOW TO USE
+1. Extract this entire ZIP.
+2. Run RUN-THIS-UPDATE.cmd.
+3. Open Business Expenses and choose the tax year.
+4. Click Download PDF or Download Excel CSV, choose a folder and save the file.

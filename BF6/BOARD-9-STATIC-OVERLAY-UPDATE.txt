@@ -1,0 +1,14 @@
+BreakSuite6 v0.3.385 - Board 9 Static OBS Overlay
+
+Board 9 Spiritforged 110-card static overlay:
+- 4 fixed lanes.
+- Public display priority: Signature -> Overnumbered -> Alternate Art/Showcase -> Epic.
+- Selling spot numbers / live assignment positions are NOT changed.
+- Sold cards collapse out and remaining cards repack upward.
+- Responsive row sizing uses both Browser Source width and height to prevent cards from visually stacking when OBS dimensions change.
+
+Board 10 Vendetta:
+- Keeps its existing 5-lane design and card order.
+- Receives the same responsive width/height cell safety so Browser Source resizing does not make cards collide.
+
+Boards 6 and 7 are unchanged.

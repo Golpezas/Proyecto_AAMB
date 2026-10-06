@@ -1,0 +1,51 @@
+VENDETTA BOARD 1 — 33 MAPPED SPOTS
+
+SIGNATURE CHAMPIONS — matching Rare, Epic, AA, ON, SIG, and signature Spell cards
+01 Akali — VEN-189* + VEN-189
+02 Renekton — VEN-190* + VEN-190 + VEN-177
+03 Zed — VEN-191* + VEN-191 + VEN-169
+04 Nasus — VEN-192* + VEN-192 + VEN-178
+05 Shen — VEN-193* + VEN-193 + VEN-170
+06 Jayce — VEN-194* + VEN-194 + VEN-175
+07 Mel — VEN-195* + VEN-195 + VEN-188
+08 Ambessa — VEN-196* + VEN-196 + VEN-187
+09 Kennen — VEN-197* + VEN-197
+
+OTHER CHAMPIONS — one family per spot, including its ON
+10 Vi — VEN-167
+11 Jinx — VEN-168
+12 Riven — VEN-171
+13 Draven — VEN-172
+14 Swain — VEN-173
+15 Irelia — VEN-174
+16 Viktor — VEN-176
+17 Rengar — VEN-179
+18 Kha'Zix — VEN-180
+19 Gangplank — VEN-181
+20 Illaoi — VEN-182
+21 Diana — VEN-183
+22 Leona — VEN-184
+23 Kayle — VEN-185
+24 Morgana — VEN-186
+
+SP — each exact printing alone; no color bundles
+25 Kai'Sa — VEN-SP1
+26 Sona — VEN-SP2
+27 Ahri — VEN-SP3
+28 Sett — VEN-SP4
+29 Ezreal — VEN-SP5
+30 Lux — VEN-SP6
+
+31 Astral Heron — VEN-044 alone
+32 All Showcase Runes — VEN-R01A/B through VEN-R06A/B
+33 Remaining Gear & Spells — unclaimed Vendetta Rare, Epic, and AA Gear/Spell cards
+
+Signature Spells VEN-140, 142, 144, 146, 148, 150, 152, 154, and 156 belong
+to Akali, Renekton, Zed, Nasus, Shen, Jayce, Mel, Ambessa, and Kennen in
+that order. Matching champion Units, Gear, and Spells go only to that champion.
+Common and Uncommon Gear/Spells and promotional printings are excluded.
+The six requested SP Showcase printings remain in spots 25–30. Helm of
+Suppression (VEN-045) is generic Gear in Spot 33. Each listed card has one
+owner. This installer changes saved Board 1 and the
+editable Board 1 draft only when Board 1 is already loaded. Live and pending
+rounds, Buyer Bags, order history, and other saved boards are unchanged.

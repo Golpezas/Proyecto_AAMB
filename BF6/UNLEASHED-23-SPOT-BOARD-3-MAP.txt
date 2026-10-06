@@ -1,0 +1,81 @@
+BREAKSUITE6 v0.3.363
+UNLEASHED — SAVED BOARD 3 — 23-SPOT MAP
+
+01 — Jhin
+02 — Rengar
+03 — Pyke
+04 — Vi
+05 — Lillia
+06 — Master Yi
+07 — Vex
+08 — Ivern
+09 — Diana
+10 — LeBlanc
+11 — Kha'Zix
+12 — Poppy
+
+Champion rule:
+Each champion owns its complete eight-card booster family: Signature,
+Overnumbered, two Alternate Arts, two Epics, and two Rares. Promotional
+printings are excluded.
+
+13 — Baron Nashor
+     1. UNL-238/219 — Ultimate
+     2. UNL-147A/219 — Alternate Art
+     3. UNL-147/219 — Epic
+
+14 — Pouty Poro + Fury Rune
+     Red / Fury: Pouty Poro, UNL-R01A, and every unreserved Rare/Epic Fury
+     Unit, Champion Unit, Gear, and Spell. Inviolus Vox and Red Brambleback
+     remain here. Irresistible Faefolk moves to Spot 23.
+
+15 — Lonely Poro + Calm Rune
+     Green / Calm: Lonely Poro, UNL-R02A, and every unreserved Rare/Epic Calm
+     Unit, Champion Unit, Gear, and Spell. Vilemaw moves to Spot 20 and Alpha
+     Wildclaw moves to Spot 23.
+
+16 — Plundering Poro + Mind Rune
+     Blue / Mind: Plundering Poro, UNL-R03A, and every unreserved Rare/Epic
+     Mind Unit, Champion Unit, Gear, and Spell. Gutter Palace remains here.
+     Blue Sentinel moves to Spot 23.
+
+17 — Veteran Poro + Body Rune
+     Orange / Body: Veteran Poro, UNL-R04A, and every unreserved Rare/Epic
+     Body Unit, Champion Unit, Gear, and Spell. Arachnoid Horror remains here.
+     Elder Dragon moves to Spot 21.
+
+18 — Mystic Poro + Chaos Rune
+     Purple / Chaos: Mystic Poro, UNL-R05A, and every unreserved Rare/Epic
+     Chaos Unit, Champion Unit, Gear, and Spell. Cursed Sarcophagus remains
+     here. Rift Herald moves to Spot 22.
+
+19 — Daring Poro + Order Rune
+     Yellow / Order: Daring Poro, UNL-R06A, The Ruination, and every other
+     unreserved Rare/Epic Order Unit, Champion Unit, Gear, and Spell.
+
+20 — Vilemaw
+     1. UNL-060A/219 — Alternate Art
+     2. UNL-060/219 — Epic
+
+21 — Elder Dragon
+     1. UNL-118A/219 — Alternate Art
+     2. UNL-118/219 — Epic
+
+22 — Rift Herald
+     1. UNL-179A/219 — Alternate Art
+     2. UNL-179/219 — Epic
+
+23 — Irresistible Faefolk + Alpha Wildclaw + Blue Sentinel
+     1. UNL-112/219 — Irresistible Faefolk
+     2. UNL-057/219 — Alpha Wildclaw
+     3. UNL-087A/219 — Blue Sentinel Alternate Art
+     4. UNL-087/219 — Blue Sentinel Epic
+
+OWNERSHIP SAFETY
+- Every exact card ID has one Board 3 owner only.
+- The former standalone All Runes spot is removed.
+- Only booster Alternate-Art Runes R01A through R06A are included.
+- Promotional Rune B printings, promotional cards, and Common/Uncommon color
+  cards are excluded.
+- Loading Board 3 does not change the live board. Press Save Board only when
+  ready to use this setup for a new break.

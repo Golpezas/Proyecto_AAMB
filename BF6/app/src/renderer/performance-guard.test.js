@@ -1,0 +1,73 @@
+'use strict';
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const appSource = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
+const styles = fs.readFileSync(path.join(__dirname, 'styles.css'), 'utf8');
+const indexSource = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+const mainSource = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+const preloadSource = fs.readFileSync(path.join(__dirname, '..', 'preload.js'), 'utf8');
+
+assert.match(appSource, /const HISTORY_PAGE_SIZE = 10;/);
+assert.match(appSource, /if \(state\.view !== 'history'\) return;/);
+assert.match(appSource, /async function refreshBreakBoard\(cards, \{ preserveScroll = false \} = \{\}\)/);
+assert.match(appSource, /const scrollPosition = preserveScroll \? \{ x: window\.scrollX, y: window\.scrollY \} : null;/);
+assert.match(appSource, /requestAnimationFrame\(\(\) => \{\s*restore\(\);\s*requestAnimationFrame\(restore\);/);
+assert.ok((appSource.match(/refreshBreakBoard\(undefined, \{ preserveScroll: true \}\)/g) || []).length >= 7, 'Buyer Bag paths that still rerender must preserve scroll');
+assert.match(appSource, /function updateRiftboundAuditQuantityControl/);
+assert.match(appSource, /function updateBuyerBagSelectedCount/);
+assert.match(appSource, /const result = await window\.breakSuite\.setPendingRoundPullQuantity/);
+assert.match(appSource, /const result = await window\.breakSuite\.setRiftboundChampionPullQuantity/);
+const liveQuantityFunction = mainSource.slice(
+  mainSource.indexOf('function setRiftboundChampionPullQuantity'),
+  mainSource.indexOf('function clearRiftboundBuyerPullSelections')
+);
+assert.doesNotMatch(liveQuantityFunction, /broadcastBreakBoardChange/);
+assert.match(appSource, /getOrderHistory\(\{ limit: state\.orderHistoryVisibleCount \}\)/);
+assert.match(appSource, /getPullHistory\(\{ limit: state\.pullHistoryVisibleCount \}\)/);
+assert.match(appSource, /if \(state\.historyTab === 'pulls'\)/);
+assert.doesNotMatch(appSource, /Promise\.all\(\[\s*window\.breakSuite\.getOrderHistory\(\),\s*window\.breakSuite\.getPullHistory\(\)/);
+assert.match(appSource, /data-history-load-more=\\?"orders\\?"/);
+assert.match(appSource, /data-history-load-more=\\?"pulls\\?"/);
+assert.match(appSource, /data-pull-history-delete/);
+assert.match(mainSource, /pull-history:delete/);
+assert.match(mainSource, /idx_cards_history_identity/);
+assert.match(mainSource, /const includePulls = payload\?\.includePulls === true;/);
+assert.match(mainSource, /items: listItems\.all\(history\.id\)/);
+assert.doesNotMatch(appSource, /function savedBuyerPullsMarkup/);
+assert.doesNotMatch(appSource, /function savedBuyerBagCard[\s\S]*?saved-history-card-thumb/);
+assert.match(appSource, /Exact pulled cards and their images remain available in Pull History/);
+assert.match(appSource, /loading=\\?"lazy\\?" decoding=\\?"async\\?"/);
+assert.doesNotMatch(appSource, /loading=\\?"eager\\?" decoding=\\?"sync\\?"/);
+assert.match(styles, /content-visibility:auto/);
+assert.doesNotMatch(indexSource, /Recent Hits Overlay|history-hits-pane|copy-hit-overlay/);
+assert.doesNotMatch(appSource, /getOrderHitTracker|renderOrderHitTracker|copyHitOverlay|openHitOverlay/);
+assert.doesNotMatch(mainSource, /requestPath === '\/big-hit-tracker|requestPath === '\/api\/big-hit-tracker|history:copy-hit-overlay|history:open-hit-overlay/);
+assert.doesNotMatch(preloadSource, /getOrderHitTracker|copyOrderHitTrackerOverlay|openOrderHitTrackerOverlay/);
+assert.match(mainSource, /let staticOverlayEnabled = false;/);
+assert.match(mainSource, /const revealOnly = requestUrl\.searchParams\.get\('view'\) === 'reveal';/);
+assert.match(mainSource, /if \(!staticOverlayEnabled && !revealOnly\)[\s\S]*?enabled: false,[\s\S]*?cards: \[\],[\s\S]*?claim: boardReveal && overlayClaimQueue\.size\(\) \? browserOverlayClaim\(browserOverlayCards\(\)\) : null/);
+assert.match(mainSource, /claim: \(revealOnly \|\| boardReveal\) \? browserOverlayClaim\(cards\) : null/);
+assert.match(indexSource, /Enable Static OBS Board/);
+assert.match(appSource, /setStaticOverlayEnabled/);
+assert.match(preloadSource, /getStaticOverlayStatus/);
+const browserOverlaySource = fs.readFileSync(path.join(__dirname, 'browser-overlay.js'), 'utf8');
+const connectorBackgroundSource = fs.readFileSync(path.join(__dirname, '..', '..', 'BreakSuite6_Whatnot_Connector', 'background.js'), 'utf8');
+assert.match(browserOverlaySource, /overlayEndpoint = revealOnly \? '\/api\/overlay\?view=reveal' : '\/api\/overlay'/);
+assert.match(browserOverlaySource, /fetchWithTimeout\(`/);
+assert.match(browserOverlaySource, /cache: 'no-store'/);
+assert.match(browserOverlaySource, /AbortController/);
+assert.match(browserOverlaySource, /if \(claimKey\) showClaim\(claim\);/);
+assert.match(browserOverlaySource, /if \(revealOnly \|\| boardRevealActive\) processClaim\(payload\.claim \|\| null\)/);
+assert.match(browserOverlaySource, /const refreshMs = revealOnly \? 500 : \(overlayEnabled \|\| boardRevealActive \? 750 : 2000\);/);
+assert.match(browserOverlaySource, /const heartbeatMs = revealOnly \|\| overlayEnabled \? 5000 : 15000;/);
+assert.match(mainSource, /announced: card\.claim_announced === true/);
+assert.match(connectorBackgroundSource, /accepted: delivery\.announced === true/);
+assert.match(connectorBackgroundSource, /if \(result\.announced !== true\)/);
+assert.match(connectorBackgroundSource, /'live-row-stability\.js', 'assigned-buyer-parser\.js', 'whatnot-content\.js'/);
+assert.equal(fs.existsSync(path.join(__dirname, 'big-hit-tracker.html')), false);
+assert.equal(fs.existsSync(path.join(__dirname, 'big-hit-tracker.css')), false);
+assert.equal(fs.existsSync(path.join(__dirname, 'big-hit-tracker.js')), false);
+
+console.log('Renderer performance and Recent Hits cleanup guard checks passed.');

@@ -1,0 +1,74 @@
+BREAKSUITE6 v0.3.375
+BOARD 7 — VENDETTA + UNLEASHED COMBINED — 56 SPOTS
+
+SOURCE ORDER
+- Positions 01–33: exact saved Board 1 Vendetta mapping
+- Positions 34–56: exact saved Board 3 Unleashed mapping
+- Every public/custom listing label begins with [VEN] or [UNL].
+- Board 1 and Board 3 themselves are not changed.
+
+VENDETTA — BOARD 1 COPY — POSITIONS 01–33
+01 [VEN] Akali
+02 [VEN] Renekton
+03 [VEN] Zed
+04 [VEN] Nasus
+05 [VEN] Shen
+06 [VEN] Jayce
+07 [VEN] Mel
+08 [VEN] Ambessa
+09 [VEN] Kennen
+10 [VEN] Vi
+11 [VEN] Jinx
+12 [VEN] Riven
+13 [VEN] Draven
+14 [VEN] Swain
+15 [VEN] Irelia
+16 [VEN] Viktor
+17 [VEN] Rengar
+18 [VEN] Kha'Zix
+19 [VEN] Gangplank
+20 [VEN] Illaoi
+21 [VEN] Diana
+22 [VEN] Leona
+23 [VEN] Kayle
+24 [VEN] Morgana
+25 [VEN] Kai'Sa · VEN-SP1
+26 [VEN] Sona · VEN-SP2
+27 [VEN] Ahri · VEN-SP3
+28 [VEN] Sett · VEN-SP4
+29 [VEN] Ezreal · VEN-SP5
+30 [VEN] Lux · VEN-SP6
+31 [VEN] Astral Heron · VEN-044
+32 [VEN] All Showcase Runes · VEN-R01A/B–R06A/B
+33 [VEN] Remaining Gear & Spells · Rare, Epic, AA
+
+UNLEASHED — BOARD 3 COPY — POSITIONS 34–56
+34 [UNL] Jhin
+35 [UNL] Rengar
+36 [UNL] Pyke
+37 [UNL] Vi
+38 [UNL] Lillia
+39 [UNL] Master Yi
+40 [UNL] Vex
+41 [UNL] Ivern
+42 [UNL] Diana
+43 [UNL] LeBlanc
+44 [UNL] Kha'Zix
+45 [UNL] Poppy
+46 [UNL] Baron Nashor
+47 [UNL] Pouty Poro + Fury Rune
+48 [UNL] Lonely Poro + Calm Rune
+49 [UNL] Plundering Poro + Mind Rune
+50 [UNL] Veteran Poro + Body Rune
+51 [UNL] Mystic Poro + Chaos Rune
+52 [UNL] Daring Poro + Order Rune
+53 [UNL] Vilemaw
+54 [UNL] Elder Dragon
+55 [UNL] Rift Herald
+56 [UNL] Irresistible Faefolk + Alpha Wildclaw + Blue Sentinel
+
+COPY LISTING SAFETY
+- Board 7 uses custom mapped labels, so the set prefix is carried into Copy Listing.
+- Vendetta Gear/Spells is explicitly identified as [VEN].
+- Unleashed lines are explicitly identified as [UNL].
+- Mapping ownership is copied from the two source boards; no cards are reassigned between source spots.

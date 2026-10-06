@@ -14,3 +14,7 @@ venv/
 .env
 .env.*
 !.env.example
+
+# BF6 (BreakSuite6 working copy)
+BF6/app/node_modules/
+BF6/app/release*/

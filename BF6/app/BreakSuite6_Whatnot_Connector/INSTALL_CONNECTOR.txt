@@ -1,0 +1,62 @@
+BREAKSUITE6 WHATNOT CONNECTOR
+
+1. Install and open the current BreakSuite6 update first.
+2. In BreakSuite6: build your Break Board and press Save Board ✓.
+3. In Brave or Chrome, open: brave://extensions or chrome://extensions
+4. Turn on Developer mode.
+5. Click Load unpacked.
+6. Select this entire BreakSuite6_Whatnot_Connector folder.
+   If it was already loaded from the current app folder, click Reload on the
+   extension and refresh the Whatnot Live Manager tab so connector v0.3.47
+   replaces the old content script. If it points to an older extracted ZIP,
+   load this update's connector folder instead.
+7. Keep your Whatnot Live Manager tab open, then click the BreakSuite6 Connector icon.
+8. Click Open OBS Card View. Use that browser page as your OBS Browser Source:
+   http://127.0.0.1:8878/overlay.html?obs=1
+9. Keep the one selected Whatnot Live Manager tab open. Live assignments are
+   watched without scrolling the list; other Whatnot tabs are ignored.
+10. Always-on sync locks to this live tab automatically and reads the complete
+    Assigned list while you browse other tabs. Reconnect + Scan Now and Refresh
+    Assigned List are optional recovery checks.
+
+MULTI-BOX RULE: after Save Board & Start Next Box, open this updated connector
+and press Reconnect + Scan Now once before the new box's first sale. Connector
+v0.3.47 saves that new ledger's Assigned-count baseline and sends only rows
+created for the new box. The same buyer and spot number may safely repeat in a
+later box. A delayed event carrying the old ledger key is rejected by BreakSuite.
+
+At startup, always-on sync silently baselines the complete current Assigned
+list. After that, every confirmed Assigned-count increase announces all newly
+added purchases, including several that arrive between scans. If Whatnot paints
+the newest buyer before its Assigned count refreshes, the connector confirms
+that stable top row and sends it without requiring a manual refresh. BreakSuite
+shows card reveals one at a time. Existing rows never replay through the OBS
+card popup.
+
+LIVE SCAN SPEED (v0.3.46):
+The scanner skips a forced scroll when Whatnot already shows the confirmed
+newest buyer at the top and avoids measuring every page element to find the
+Assigned heading. Rapid purchases remain in order; waiting popups catch up.
+
+AUTOMATIC ASSIGNED CHECK (v0.3.47):
+The watcher checks newly counted buyers at the top even when the seller has
+scrolled elsewhere. If the heading is stale, it checks offscreen new rows
+twice before announcing them. A successful manual scan advances the automatic
+baseline, and Verify Live Ready reports the watcher's last check.
+
+The connector sends the buyer name, assigned spot number, and the confirmed
+price shown in that Assigned row. Pending Payment rows are never sent.
+BreakSuite6 uses its saved live ledger to resolve the card; Whatnot never
+supplies card data.
+
+POPUP ACKNOWLEDGMENT FIX (v0.3.45):
+The connector advances its live Assigned counter only after BreakSuite confirms
+that the exact purchase was placed in the popup queue. A temporary repaint of
+an older Assigned row can no longer swallow the next buyer's popup.
+
+FALSE @will FIX (v0.3.44):
+Whatnot can render helper text such as “Add winner will …”. Older connector
+parsing could treat the word after “winner” as a username and create @will.
+The connector now accepts the current Sold to: buyer row/profile evidence and
+requires punctuation for generic Winner/Buyer labels, so that helper sentence
+is ignored. Reload the unpacked extension once after installing this update.

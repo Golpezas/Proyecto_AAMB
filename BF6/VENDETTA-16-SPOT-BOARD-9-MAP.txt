@@ -1,0 +1,34 @@
+VENDETTA BOARD 9 — 16 COMBINED MAPPED SPOTS
+Restored: 2026-09-23
+
+SIGNATURE / CHAMPION SPOTS
+01 — Akali
+02 — Renekton + Rengar
+03 — Zed + Gangplank
+04 — Nasus + Vi
+05 — Shen + Jinx
+06 — Jayce + Viktor
+07 — Mel + Illaoi
+08 — Ambessa + Morgana
+09 — Kennen + Leona
+
+CRYSTAL ROSE / COLOR SPOTS
+10 — Kai'Sa + Swain + Red/Fury Showcase Rune + Endless Riches + Rare Fury cards
+11 — Sona + Riven + Green/Calm Showcase Rune + Rare Calm cards
+12 — Astral Heron + Irelia + Helm of Suppression
+13 — Ahri + Draven + Blue/Mind Showcase Rune + Bottled Constellation + Rare Mind cards
+14 — Sett + Kha'Zix + Orange/Body Showcase Rune + Cataclysmic Duel + Corrupted Dragon + Rare Body cards
+15 — Ezreal + Diana + Purple/Chaos Showcase Rune + Ocean Drake + Kharox + Rare Chaos cards
+16 — Lux + Kayle + Yellow/Order Showcase Rune + Shady Spectacles + Rare Order cards
+
+OWNERSHIP RULE
+- Every Signature anchor owns its complete champion family, including its matching ON, plus the paired Rival ON champion family shown above.
+- Every Crystal Rose SP/color anchor owns its complete SP family, one paired Rival ON champion family, its Showcase Rune, its named chase cards, and its matching Rare domain cards.
+- Astral Heron is a separate spot and owns the Irelia Rival ON family plus Helm of Suppression.
+- Every mapped card has exactly one owner. Riven belongs to Sona; Irelia belongs to Astral Heron; Kha'Zix belongs to Sett; Kayle belongs to Lux.
+
+DISPLAY RULE
+Board 9 shows one anchor card publicly for each position. The full combined mapping remains visible in Buyer Bags and is used for ownership checks.
+
+INSTALLATION RULE
+This release replaces saved Board 9 once. Other saved boards, the current live ledger, pending rounds, Buyer Bags, history, and connector data are not changed.

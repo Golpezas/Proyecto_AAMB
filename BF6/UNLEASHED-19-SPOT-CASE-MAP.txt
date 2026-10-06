@@ -1,0 +1,43 @@
+BREAKSUITE6 — UNLEASHED 19-SPOT CASE MAP
+
+BOARD
+- Saved Board: Board 1
+- Buyer Bag mode: Mapped groups
+- Total positions: 19
+
+POSITIONS
+01 — Jhin
+02 — Rengar
+03 — Pyke
+04 — Vi
+05 — Lillia
+06 — Master Yi
+07 — Vex
+08 — Ivern
+09 — Diana
+10 — LeBlanc
+11 — Kha'Zix
+12 — Poppy
+13 — Baron Nashor + All 6 AA Runes
+14 — Red / Fury — Pouty Poro + Irresistible Faefolk
+15 — Green / Calm — Lonely Poro + Vilemaw
+16 — Orange / Body — Plundering Poro + Elder Dragon
+17 — Blue / Mind — Veteran Poro + Blue Sentinel
+18 — Purple / Chaos — Mystic Poro + Rift Herald
+19 — Yellow / Order — Daring Poro + The Ruination
+
+OWNERSHIP RULES
+- Champion positions receive every matching Rare, Epic, Alternate Art, Overnumbered, and signed Overnumbered printing pulled from the case.
+- Position 13 receives every Baron Nashor printing plus exactly these six booster Alternate-Art Runes:
+  UNL-R01a Fury Rune
+  UNL-R02a Calm Rune
+  UNL-R03a Mind Rune
+  UNL-R04a Body Rune
+  UNL-R05a Chaos Rune
+  UNL-R06a Order Rune
+- Promotional Rune "b" printings are not case pulls and are not included.
+- Each color position receives its Poro, named chase, and unreserved Rare/Epic cards in the matching domain.
+- No Rune belongs to Positions 14-19; all six booster AA Runes belong only to Position 13.
+
+The same ownership is used by Copy Listing, Buyer Bags, live and pending pull selection, Pull History, purchase popups, and the OBS Spot Map.
+Buyer Bags display every owned card in one compact, continuous left-to-right grid without separate group columns.

@@ -1,0 +1,707 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BreakSuite6 v0.3.375 — Origins Board 8 · 25 Spots</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="breaker-center.css" />
+    <link rel="stylesheet" href="frame-studio.css" />
+    <link rel="stylesheet" href="sales-sign.css" />
+    <link rel="stylesheet" href="card-sniper.css" />
+    <link rel="stylesheet" href="card-sniper-whatnot.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">B6</div>
+          <div><strong>BreakSuite</strong><span>OFFICIAL CARD LIBRARY</span></div>
+        </div>
+        <nav class="navigation" aria-label="Application navigation">
+          <button class="nav-item active" data-view="library-onepiece"><span>▦</span> One Piece Library</button>
+          <button class="nav-item" data-view="library-riftbound"><span>◇</span> Riftbound Library</button>
+          <button class="nav-item" data-view="playable-market" title="Open the standalone Playable Market webpage"><span>↗</span> Playable Market ↗</button>
+          <button class="nav-item" data-view="break"><span>▤</span> Break Board</button>
+          <button class="nav-item" data-view="sniper"><span>⌖</span> Card Sniper</button>
+          <button class="nav-item" data-view="studio"><span>◇</span> Frame Studio</button>
+          <button class="nav-item" data-view="breaker"><span>♜</span> Breaker Center</button>
+          <button class="nav-item" data-view="riftbound-breaker"><span>◈</span> Riftbound Breaker Center</button>
+          <button class="nav-item" data-view="history"><span>▤</span> Orders History</button>
+          <button class="nav-item" data-view="expenses"><span>▣</span> Business Expenses</button>
+          <button class="nav-item" data-view="buyers"><span>♛</span> Buyer Analytics</button>
+          <button class="nav-item" data-view="chaser"><span>◉</span> Chaser Tracker</button>
+          <button class="nav-item" data-view="royal"><span>♛</span> Royal Chasers</button>
+          <button class="nav-item" data-view="tracker"><span>▦</span> Box Tracker</button>
+          <button class="nav-item" data-view="sales"><span>✦</span> Sold Singles</button>
+          <button class="nav-item" data-view="connector"><span>↯</span> Connector</button>
+          <button class="nav-item" data-view="saved"><span>♥</span> One Piece Saved Cards</button>
+          <button class="nav-item" data-view="import"><span>⇣</span> Import Manager</button>
+          <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
+        </nav>
+        <div class="sidebar-foot">
+          <div class="source-pill"><i></i> Official data only</div>
+          <p>Separate game libraries<br />v0.3.375</p>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="view-kicker">CARD CATALOG</p>
+            <h1 id="view-title">Your One Piece Card Library</h1>
+          </div>
+          <button class="primary-button" id="import-button"><span>＋</span> Import Official Cards</button>
+        </header>
+
+        <section class="dashboard-stats" aria-label="Library summary">
+          <article><span>Official cards</span><strong id="total-count">0</strong><small>in your local catalog</small></article>
+          <article><span>Sets imported</span><strong id="set-count">0</strong><small>official catalog sets</small></article>
+          <article><span>Saved cards</span><strong id="saved-count">0</strong><small>your personal shortcuts</small></article>
+          <article><span>Database</span><strong class="ready-value">Ready</strong><small>stored on this computer</small></article>
+        </section>
+        <section id="sales-view" class="view-panel hidden"><div class="sales-panel"><p class="eyebrow">LIVE PROMOTION SIGN</p><h2>Sold Singles</h2><p>Write any message for your viewers. Choose a transparent One Piece or Riftbound board and use the same OBS link.</p><form id="sales-sign-form"><label>Sign message<textarea id="sales-sign-text" maxlength="240" rows="4" placeholder="RIFTBOUND BREAK • WELCOME IN!"></textarea></label><div class="sales-sign-controls"><label>Board design<select id="sales-sign-board"><option value="primary">Primary pirate board</option><option value="secondary">Secondary pirate board</option><option value="riftbound">Riftbound recall board</option></select></label><label>Size<select id="sales-sign-size"><option value="small">Small</option><option value="medium">Medium</option><option value="large">Large</option></select></label><button class="primary-button" type="submit">Save Sign</button><button id="copy-sales-sign-overlay" class="secondary-button" type="button">Copy OBS Link</button></div></form><p id="sales-sign-status" class="tracker-status"></p><div id="sales-sign-preview" class="sales-sign-preview"></div></div></section>
+        <section id="chaser-view" class="view-panel hidden"><div class="history-heading"><div><p class="eyebrow">CURRENT BREAK MILESTONES</p><h2>Live Chasers</h2><p>First confirmed Buyer Bag total to reach the amount earns the next spot. The order stays locked until you Reset.</p></div><button class="secondary-button" id="chaser-copy">Copy OBS Link</button></div><section class="history-panel"><form id="chaser-form" class="history-save-form"><label>Selected Library card<input id="chaser-card" placeholder="Choose a card in Library" readonly /></label><label>Spend amount<input id="chaser-threshold" inputmode="decimal" value="10.00" /></label><label>Spots<select id="chaser-slots"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15" selected>15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option></select></label><div class="history-save-actions"><button class="primary-button" type="submit">Start / Update Live Chasers</button><button class="secondary-button" id="chaser-refresh" type="button">Refresh Now</button><button class="danger-button" id="chaser-reset" type="button">Reset Live Chasers</button><button class="secondary-button" id="chaser-copy-names" type="button">Copy Names</button></div></form><p id="chaser-status" class="history-status"></p></section><section id="chaser-preview" class="history-panel"></section><section class="history-panel recent-buyer-copy-panel"><div class="recent-buyer-copy-heading"><div><p class="eyebrow">BUYER MESSAGE LIST</p><h3>Last 100 Buyers</h3><p>Unique buyer names in newest-first order. Each group is limited to 150 characters for quick chat messages.</p></div><button class="secondary-button" id="chaser-recent-buyers-refresh" type="button">Refresh Buyers</button></div><p id="chaser-recent-buyers-status" class="history-status"></p><div id="chaser-recent-buyers-list" class="recent-buyer-copy-list"></div></section></section>
+        <section id="royal-view" class="view-panel hidden"><div class="history-heading"><div><p class="eyebrow">SAVED BUYER LOYALTY</p><h2>Royal Chasers</h2><p>Tracks saved Buyer Analysis spending. The first buyer total to reach the amount earns the next spot; the order stays locked until Reset.</p></div><button class="secondary-button" id="royal-copy">Copy OBS Link</button></div><section class="history-panel"><form id="royal-form" class="history-save-form"><label>Royal chase card<input id="royal-card" placeholder="Choose a card in Library" readonly /></label><label>Spend amount<input id="royal-threshold" inputmode="decimal" value="250.00" /></label><label>Spots<select id="royal-slots"><option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option><option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option><option value="13">13</option><option value="14">14</option><option value="15" selected>15</option><option value="16">16</option><option value="17">17</option><option value="18">18</option><option value="19">19</option><option value="20">20</option></select></label><div class="history-save-actions"><button class="primary-button" type="submit">Save / Update Royal Chasers</button><button class="secondary-button" id="royal-refresh" type="button">Refresh Now</button><button class="danger-button" id="royal-reset" type="button">Reset Royal Chasers</button><button class="secondary-button" id="royal-copy-names" type="button">Copy Names</button></div></form><p id="royal-status" class="history-status"></p></section><section id="royal-preview" class="history-panel"></section></section>
+
+        <section id="library-view" class="view-panel">
+          <div id="mapping-library-mode" class="mapping-library-mode hidden" aria-live="polite">
+            <div><span>BOARD MAPPING MODE</span><strong id="mapping-library-title">Choose cards for a saved spot</strong><small id="mapping-library-feedback">Click a card once to add or move it. Bright cards are already assigned somewhere on this board.</small></div>
+            <button id="mapping-library-return" class="primary-button" type="button">← Return to Mapping Editor</button>
+          </div>
+          <div class="toolbar">
+            <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search by card name, number, or set" /></label>
+            <label class="select-box hidden" id="set-filter-box">Set <select id="set-select"><option value="All">All sets</option></select></label>
+            <label class="select-box">Rarity <select id="rarity-select"><option value="All">All</option></select></label>
+          </div>
+          <section id="card-list-search" class="card-list-search" aria-labelledby="card-list-search-title">
+            <div class="card-list-search-heading">
+              <div><p class="eyebrow">PASTE &amp; VISUALIZE</p><h2 id="card-list-search-title">Card List Search</h2><p>Choose a game and set, paste card numbers, then display the exact English cards without changing inventory.</p></div>
+              <button id="card-list-search-toggle" class="secondary-button" type="button" aria-expanded="false">Open Card List Search</button>
+            </div>
+            <div id="card-list-search-body" class="card-list-search-body hidden">
+              <div class="card-list-search-controls">
+                <label>Card game<select id="card-list-game"><option value="RIFTBOUND">Riftbound</option><option value="ONEPIECE">One Piece</option></select></label>
+                <label>Set<select id="card-list-set"><option value="">Choose a set</option></select></label>
+                <label class="card-list-price-toggle"><input id="card-list-show-prices" type="checkbox" checked /><span>Show saved prices</span></label>
+              </div>
+              <label class="card-list-input-label" for="card-list-input">Card numbers
+                <textarea id="card-list-input" rows="6" spellcheck="false" placeholder="Paste one per line or separated by commas&#10;116, 156, 029, 077&#10;OGN-039a/298"></textarea>
+              </label>
+              <div class="card-list-search-actions">
+                <button id="card-list-view" class="primary-button" type="button">⌕ View Cards</button>
+                <button id="card-list-price" class="secondary-button" type="button" disabled>Price This List</button>
+                <button id="card-list-clear" class="ghost-button" type="button">Clear</button>
+                <span id="card-list-status" class="card-list-status" aria-live="polite">Paste card numbers to begin.</span>
+              </div>
+              <div id="card-list-missing" class="card-list-missing hidden" aria-live="polite"></div>
+              <div id="card-list-results" class="card-list-results" aria-live="polite"></div>
+            </div>
+          </section>
+          <div class="catalog-layout">
+            <div class="catalog-column">
+              <div class="section-heading"><div><h2 id="grid-title">All Cards</h2><p id="grid-count">Waiting for official import</p></div><div class="grid-actions"><span class="quick-add-hint" id="quick-add-hint">Double-click a One Piece card to add it to Break Board</span><button class="ghost-button" id="clear-filters">Clear filters</button></div></div>
+              <div id="card-grid" class="card-grid" aria-live="polite"></div>
+            </div>
+            <aside id="preview-panel" class="preview-panel" aria-live="polite"></aside>
+          </div>
+        </section>
+
+        <section id="sniper-view" class="view-panel hidden">
+          <div class="sniper-shell">
+            <section class="sniper-hero">
+              <div>
+                <p id="sniper-eyebrow" class="eyebrow">ONE PIECE MARKET HUNTER</p>
+                <h2>Card Sniper</h2>
+                <p id="sniper-description">Choose a One Piece set and search live market data.</p>
+              </div>
+              <div class="sniper-controls">
+                <label>Game
+                  <select id="sniper-game">
+                    <option value="ONEPIECE">One Piece</option>
+                    <option value="RIFTBOUND">Riftbound</option>
+                  </select>
+                </label>
+                <label>Set
+                  <select id="sniper-set"><option value="">Choose a set</option></select>
+                </label>
+                <button id="sniper-scan" class="primary-button">⌕ Search Set Now</button>
+              </div>
+            </section>
+            <p id="sniper-status" class="sniper-scan-status">Choose a One Piece set to begin.</p>
+            <section class="sniper-summary">
+              <article class="sniper-stat"><span>Cards scanned</span><strong id="sniper-count">—</strong></article>
+              <article class="sniper-stat"><span>Snipes</span><strong id="sniper-snipe-count">—</strong></article>
+              <article class="sniper-stat"><span>Best discount</span><strong id="sniper-best">—</strong></article>
+              <article class="sniper-stat"><span>Last scan</span><strong id="sniper-last">—</strong></article>
+            </section>
+            <div class="sniper-table-wrap"><table class="sniper-table"><thead><tr><th>Card</th><th>Rarity / Variant</th><th>Current</th><th>30D Avg</th><th>Below Avg</th><th>24H</th><th>7D</th><th>30D</th><th>Signal</th><th>Whatnot</th><th>Buy</th></tr></thead><tbody id="sniper-body"><tr><td colspan="11" class="sniper-empty">No set searched yet.</td></tr></tbody></table></div>
+            <p class="sniper-whatnot-note">Whatnot Search opens live listings matched with the card name, set, collector number, rarity, and variant. Whatnot asking prices are shown for comparison only and do not change the JustTCG SNIPE signal.</p>
+            <details class="sniper-api">
+              <summary>Market &amp; Buyer Price Setup <span id="sniper-market-badge" class="sniper-badge">JustTCG not connected</span></summary>
+              <form id="sniper-market-form" class="sniper-api-grid">
+                <label>Riftbound Board / Buyer Bag / Pull History source
+                  <select id="sniper-buyer-price-source">
+                    <option value="justtcg">JustTCG — automatic</option>
+                    <option value="chatgpt">ChatGPT Batch Import — no extra API</option>
+                    <option value="ebay">eBay Active Estimate — automatic</option>
+                    <option value="manual">Manual Price — type it yourself</option>
+                  </select>
+                </label>
+                <label>JustTCG API key <span>(also powers Card Sniper)</span><input id="sniper-justtcg-key" type="password" autocomplete="new-password" placeholder="Leave blank to keep saved key" /></label>
+                <label>eBay Production Client ID<input id="sniper-ebay-client-id" type="password" autocomplete="new-password" placeholder="Leave blank to keep saved ID" /></label>
+                <label>eBay Production Client Secret<input id="sniper-ebay-client-secret" type="password" autocomplete="new-password" placeholder="Leave blank to keep saved secret" /></label>
+                <button class="secondary-button" type="submit">Save Price Source</button>
+              </form>
+              <div class="sniper-market-actions"><button id="sniper-get-key" class="ghost-button" type="button">Get JustTCG Key ↗</button><button id="sniper-get-ebay-key" class="ghost-button" type="button">Get Free eBay Developer Keys ↗</button></div>
+              <p id="sniper-pc-state" class="maintenance-status">Only the selected pricing source runs. ChatGPT batches the entire displayed board or bag in one request; Manual needs no API account.</p>
+            </details>
+          </div>
+        </section>
+
+        <section id="playable-market-view" class="view-panel hidden">
+          <div class="pm-shell">
+            <section class="pm-hero">
+              <div class="pm-hero-copy">
+                <p class="eyebrow">RIFTBOUND PLAYABLE PRICE BOARD</p>
+                <h2>Playable Market</h2>
+                <p>Follow standard playable printings like stocks—short-term momentum, buyable dips, sell signals, and the reason behind each move.</p>
+                <span class="pm-no-api"><i></i> Assistant-researched · no pricing API</span>
+              </div>
+              <div class="pm-hero-actions">
+                <label>Set
+                  <select id="pm-set"><option value="ALL">All tracked sets</option></select>
+                </label>
+                <button id="pm-research" class="primary-button" type="button">✦ Research with ChatGPT</button>
+              </div>
+            </section>
+
+            <p id="pm-status" class="pm-status" aria-live="polite">Loading your playable market…</p>
+
+            <section class="pm-summary" aria-label="Playable market summary">
+              <article><span>Tracked playables</span><strong id="pm-tracked">—</strong><small id="pm-tracked-note">across selected sets</small></article>
+              <article class="pm-hot-stat"><span>On fire / rising</span><strong id="pm-hot">—</strong><small>short-term momentum</small></article>
+              <article class="pm-dip-stat"><span>Buy-dip watch</span><strong id="pm-dips">—</strong><small>down with a catalyst</small></article>
+              <article><span id="pm-mover-label">Biggest 24H move</span><strong id="pm-mover">—</strong><small id="pm-last-research">No research saved yet</small></article>
+            </section>
+
+            <section class="pm-market-panel">
+              <div class="pm-toolbar">
+                <label class="pm-search"><span>⌕</span><input id="pm-search" type="search" placeholder="Search card, number, set, or catalyst" /></label>
+                <label>Signal
+                  <select id="pm-signal">
+                    <option value="ALL">All signals</option>
+                    <option value="ON_FIRE">🔥 On fire</option>
+                    <option value="RISING">↗ Rising</option>
+                    <option value="BUY_DIP">◎ Buy dip</option>
+                    <option value="TAKE_PROFIT">◈ Take profit</option>
+                    <option value="WATCH">Watch</option>
+                    <option value="STABLE">Stable</option>
+                  </select>
+                </label>
+                <label>Rank by
+                  <select id="pm-sort">
+                    <option value="change">Active-window change</option>
+                    <option value="price">Current price</option>
+                    <option value="updated">Latest research</option>
+                    <option value="name">Card name</option>
+                  </select>
+                </label>
+                <button id="pm-direction" class="pm-direction" type="button" data-direction="desc" title="Reverse sort order">↓ Highest first</button>
+              </div>
+
+              <div class="pm-window-row">
+                <div id="pm-window-tabs" class="pm-window-tabs" role="group" aria-label="Price-change window">
+                  <button type="button" class="active" data-pm-window="24h">24H</button>
+                  <button type="button" data-pm-window="7d">7D</button>
+                  <button type="button" data-pm-window="30d">30D</button>
+                  <button type="button" data-pm-window="90d">90D</button>
+                </div>
+                <p><b id="pm-ranking-title">24H momentum ranking</b><span>Every change shows both dollars and percent.</span></p>
+              </div>
+
+              <div class="pm-table-wrap">
+                <table class="pm-table">
+                  <thead><tr><th>Playable card</th><th>Tier</th><th>Current</th><th data-window-heading="24h">24H</th><th data-window-heading="7d">7D</th><th data-window-heading="30d">30D</th><th data-window-heading="90d">90D</th><th>Signal</th><th>Market</th></tr></thead>
+                  <tbody id="pm-body"><tr><td colspan="9" class="pm-empty">Loading tracked playables…</td></tr></tbody>
+                </table>
+              </div>
+              <div class="pm-legend">
+                <span><i class="pm-dot up"></i> Price up</span>
+                <span><i class="pm-dot down"></i> Price down</span>
+                <span><i class="pm-dot neutral"></i> No verified reference</span>
+                <p>Research is saved as dated snapshots. Always confirm the exact printing and listing condition before buying or selling.</p>
+              </div>
+            </section>
+          </div>
+        </section>
+
+        <section id="break-view" class="view-panel hidden">
+          <div class="break-heading">
+            <div><p class="eyebrow">OVERLAY SELECTION</p><h2>Break Board</h2><p>Set your working card order, then save it as the live ledger. The copied Whatnot listing keeps that block number first, so the connector returns the correct card to this board.</p></div>
+            <div class="break-actions"><button class="primary-button" id="save-break-board">✓ Save Board</button><button class="secondary-button" id="add-more-break-cards">＋ Add More Cards</button><button class="secondary-button" id="open-break-overlay">Open Overlay Display</button><button class="secondary-button" id="copy-break-listing">Copy Listing</button><button class="secondary-button" id="edit-break-listing-notes">Edit Listing Notes</button><button class="danger-button" id="clear-break-board">Clear Working Board</button></div>
+          </div>
+          <section class="board-presets-panel" aria-labelledby="board-presets-title">
+            <div class="section-heading"><div><p class="eyebrow">SAVED BOARD SETUPS</p><h2 id="board-presets-title">Ten reusable boards</h2><p>Keep separate games and custom combinations without replacing another setup. Loading a setup changes only this working board; use Save Board when you want it live.</p></div><span class="preset-live-note">LIVE BOARD STAYS SAFE</span></div>
+            <div id="break-preset-slots" class="break-preset-slots" aria-label="Saved board setups"></div>
+            <div class="preset-actions"><label for="break-preset-name">Selected setup name<input id="break-preset-name" maxlength="80" placeholder="Example: Riftbound Origins Break" /></label><label for="break-board-game">Card library<select id="break-board-game"><option value="ONEPIECE">One Piece Library</option><option value="RIFTBOUND">Riftbound Library</option></select></label><label for="break-bag-mode">Buyer Bag mode<select id="break-bag-mode"><option value="MAPPED">Mapped groups</option><option value="SINGLES">Singles · exact positions</option></select></label><button class="secondary-button" id="save-break-preset">Save Current Board to Selected Setup</button><button class="ghost-button preset-clear-button" id="clear-break-preset">Clear Selected Setup</button></div>
+            <p id="break-preset-status" class="maintenance-status" aria-live="polite">Select one of ten setup squares, then save this working board to it.</p>
+          </section>
+          <div class="break-layout">
+            <section class="break-board-panel">
+              <div class="section-heading"><div><h2>Overlay Cards</h2><p id="break-board-count">0 cards selected</p></div><span class="board-live-pill" id="board-live-pill">SAVE TO GO LIVE</span></div>
+              <div id="break-board-grid" class="break-board-grid" aria-live="polite"></div>
+            </section>
+            <aside class="listing-panel">
+              <p class="eyebrow">LIVE READY CHECK</p>
+              <div id="break-ready-checks" class="ready-checks" aria-live="polite"></div>
+              <p class="eyebrow listing-eyebrow">COPY-READY LISTING</p>
+              <p class="listing-help">Copy Listing gives every card a numbered Available Spot Name and its matching Description. Paste it into the first Whatnot table cell.</p>
+              <pre id="break-listing-preview" class="listing-preview">No cards selected yet.</pre>
+              <p id="break-board-status" class="maintenance-status" aria-live="polite">Select a card in Library, then use Add to Break Board.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section id="studio-view" class="view-panel hidden">
+          <div class="studio-heading">
+            <div><p class="eyebrow">VIEWER OVERLAY CUSTOMIZATION</p><h2>Frame Studio</h2><p>Create the visual style for your public OBS card board. These controls affect card frames, the outer LED frame, the board placement, and the claim reveal. The buyer handle appears only with the short Spot Taken announcement; pricing and internal block data never appear.</p></div>
+            <div class="studio-heading-actions"><span class="studio-live-indicator">● Overlay updates after Save</span><button class="secondary-button" id="studio-reset">Reset style</button><button class="primary-button" id="studio-save">▣ Save &amp; Apply</button></div>
+          </div>
+          <section class="studio-panel mapping-editor-panel" aria-labelledby="mapping-editor-heading">
+            <div class="mapping-editor-heading">
+              <div><p class="eyebrow">SAVED BOARD MAPPING</p><h3 id="mapping-editor-heading">Board Mapping Editor</h3><p>Open a saved board, choose a spot, then remove, move, or add exact cards. Each card can belong to only one spot. The current live board and Pending Buyer Bags keep the mapping they started with.</p></div>
+              <div class="mapping-board-controls"><label>Saved board<select id="mapping-board-select"></select></label><span id="mapping-editor-state" class="mapping-editor-state">Choose a board</span></div>
+            </div>
+            <div id="mapping-board-list" class="mapping-board-list" aria-label="Saved boards"></div>
+            <div class="mapping-editor-layout">
+              <aside class="mapping-spot-browser">
+                <div class="mapping-column-head"><strong>Buyer spots</strong><span id="mapping-spot-count">0 spots</span></div>
+                <div id="mapping-spot-list" class="mapping-spot-list"></div>
+              </aside>
+              <div id="mapping-spot-workspace" class="mapping-spot-workspace">
+                <div class="mapping-empty"><b>Choose a mapped Riftbound board</b><span>Its saved buyer spots and exact card ownership will appear here.</span></div>
+              </div>
+            </div>
+            <div class="mapping-editor-footer">
+              <div class="mapping-legend"><span><i class="mapping-legend-glow"></i> Already mapped</span><span>🔒 Anchor stays with its purchased spot</span><span>💎 Signature</span><span>🔥 Overnumbered</span><span>💣 Alternate Art</span></div>
+              <div class="mapping-editor-actions"><button id="mapping-reset" class="ghost-button" type="button">Restore Built-in Map</button><button id="mapping-save" class="primary-button" type="button">▣ Save This Mapping</button></div>
+            </div>
+            <p id="mapping-editor-status" class="studio-status" aria-live="polite">Choose one of your saved boards to view its mapping.</p>
+          </section>
+          <div class="studio-layout">
+            <aside class="studio-panel studio-style-panel">
+              <p class="eyebrow">FRAME STYLE</p>
+              <div id="studio-frame-styles" class="studio-style-list">
+                <button class="studio-style-choice" data-frame-style="color-sync"><span class="studio-style-art style-color-sync"><i></i><i></i><i></i></span><span><b>Color Sync</b><small>Custom neon colors</small></span></button>
+                <button class="studio-style-choice" data-frame-style="haki-crack"><span class="studio-style-art style-haki-crack"><i></i><i></i><i></i></span><span><b>Haki Crack</b><small>Sharp energy fracture</small></span></button>
+                <button class="studio-style-choice" data-frame-style="holo-reactor"><span class="studio-style-art style-holo-reactor"><i></i><i></i><i></i></span><span><b>Holo Reactor</b><small>Clean sci-fi circuit</small></span></button>
+                <button class="studio-style-choice" data-frame-style="boss-awakening"><span class="studio-style-art style-boss-awakening"><i></i><i></i><i></i></span><span><b>Boss Awakening</b><small>Big fire energy</small></span></button>
+              </div>
+            </aside>
+
+            <section class="studio-panel studio-preview-panel">
+              <div class="studio-panel-title"><p class="eyebrow">LIVE CARD PREVIEW</p><span>Viewer-safe preview</span></div>
+              <div id="studio-preview" class="studio-preview" data-frame-style="color-sync" data-corner-shape="rounded" data-particles="true">
+                <div class="studio-preview-frame"><div id="studio-preview-cards" class="studio-preview-cards"></div></div>
+                <div id="studio-preview-popup" class="studio-preview-popup">
+                  <img class="studio-preview-popup-statue" src="assets/popup-statue-diamond.png" alt="" />
+                  <div id="studio-preview-popup-card" class="studio-preview-popup-card"><span>CARD</span></div>
+                  <span class="studio-preview-popup-badge">CLAIM REVEAL</span>
+                </div>
+              </div>
+              <p class="studio-preview-help">The live Browser Source keeps the six-card-wide board. Move and scale it here without changing the saved card order.</p>
+            </section>
+
+            <aside class="studio-panel studio-controls-panel">
+              <div class="studio-panel-title"><p class="eyebrow">FRAME CONTROLS</p><span>Preview first · save when ready</span></div>
+              <label class="studio-color-row">Primary color<input id="studio-primary-color" data-studio-control type="color" value="#55dcff" /></label>
+              <label class="studio-color-row">Secondary color<input id="studio-secondary-color" data-studio-control type="color" value="#9b7dff" /></label>
+              <label class="studio-slider">Glow intensity <output id="studio-glow-output">78%</output><input id="studio-glow" data-studio-control type="range" min="20" max="100" value="78" /></label>
+              <label class="studio-slider">Frame thickness <output id="studio-thickness-output">3 px</output><input id="studio-thickness" data-studio-control type="range" min="1" max="8" value="3" /></label>
+              <label class="studio-slider">Motion speed <output id="studio-pulse-output">55%</output><input id="studio-pulse" data-studio-control type="range" min="15" max="100" value="55" /></label>
+              <label class="studio-toggle"><input id="studio-particles" data-studio-control type="checkbox" checked /><span></span> LED corner particles</label>
+              <label class="studio-select">Card-corner shape<select id="studio-corner-shape" data-studio-control><option value="rounded">Rounded</option><option value="bevel">Beveled</option><option value="square">Square</option></select></label>
+            </aside>
+          </div>
+
+          <div class="studio-placement-grid">
+            <section class="studio-panel studio-placement-panel">
+              <p class="eyebrow">VIEWER BOARD POSITION</p><h3>Card board</h3><p>Adjust the full six-card-wide viewer board. It still packs remaining cards tightly upward and does not show buyer information.</p>
+              <div class="studio-control-grid">
+                <label class="studio-slider">Horizontal <output id="studio-board-x-output">50%</output><input id="studio-board-x" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Vertical <output id="studio-board-y-output">50%</output><input id="studio-board-y" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Card scale <output id="studio-board-scale-output">100%</output><input id="studio-board-scale" data-studio-control type="range" min="68" max="122" value="100" /></label>
+              </div>
+            </section>
+            <section class="studio-panel studio-placement-panel">
+              <p class="eyebrow">CLAIM POPUP</p><h3>Card announcement</h3><p>Position and scale the full reveal, or resize the 3D statue and live card independently. It shows Spot Taken and the buyer handle above the card and remains above the board. If more sales are waiting, earlier reveals shorten to three seconds; the last uses your display time.</p>
+              <div class="studio-control-grid">
+                <label class="studio-slider">Horizontal <output id="studio-popup-x-output">50%</output><input id="studio-popup-x" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Vertical <output id="studio-popup-y-output">50%</output><input id="studio-popup-y" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Popup size <output id="studio-popup-scale-output">100%</output><input id="studio-popup-scale" data-studio-control type="range" min="65" max="135" value="100" /></label>
+                <label class="studio-slider">Statue / frame size <output id="studio-popup-statue-scale-output">92%</output><input id="studio-popup-statue-scale" data-studio-control type="range" min="60" max="130" value="92" /></label>
+                <label class="studio-slider">Live card size <output id="studio-popup-card-scale-output">90%</output><input id="studio-popup-card-scale" data-studio-control type="range" min="60" max="130" value="90" /></label>
+                <label class="studio-slider">Display time <output id="studio-popup-duration-output">8 sec</output><input id="studio-popup-duration" data-studio-control type="range" min="2" max="15" value="8" /></label>
+              </div>
+            </section>
+          </div>
+          <p id="studio-status" class="studio-status" aria-live="polite">Adjust the preview, then choose Save &amp; Apply when you want the viewer overlay to use it.</p><button id="copy-card-reveal-link" class="secondary-button" type="button">Copy Camera-Front Card Reveal Link</button>
+        </section>
+
+        <section id="connector-view" class="view-panel hidden">
+          <div class="connector-stack">
+            <section class="connector-card">
+              <p class="eyebrow">LOCAL OVERLAY CONNECTOR</p>
+              <h2>One reusable live ledger</h2>
+              <p>The connector receives only the Whatnot buyer and assigned spot number, such as <b>17</b>. BreakSuite looks up block 17 in the saved board and removes that exact card from the overlay. Card names, stars, and diamonds are never used for matching.</p>
+              <div class="connector-endpoint"><span>Local endpoint</span><code>http://127.0.0.1:8878/api/ledger/number</code></div>
+              <div id="connector-status" class="connector-status" aria-live="polite">Checking local connector…</div>
+            </section>
+            <section class="connector-card connector-check-card">
+              <p class="eyebrow">READY CHECKLIST</p>
+              <h2>Display handoff</h2>
+              <div id="connector-checks" class="ready-checks" aria-live="polite"></div>
+              <div class="connector-test-row"><label for="connector-test-block">Simulate an Assigned spot<select id="connector-test-block" disabled><option>Save a board first</option></select></label><label for="connector-test-buyer">Test buyer<input id="connector-test-buyer" value="Test Buyer" maxlength="180" /></label><button class="secondary-button" id="send-connector-test" disabled>Send Test Assignment</button></div>
+              <div class="connector-test-actions"><button class="secondary-button" id="run-connector-stress-test" disabled>Run Full Stress Test · 15 Test Buyers</button><button class="secondary-button" id="reset-connector-test" disabled>Reset Test Assignments</button></div>
+              <p id="connector-test-result" class="maintenance-status" aria-live="polite">The one-card test sends the same buyer + spot-number information as an Assigned row. Full Stress Test clears prior simulated calls, then shares every ready saved block across up to 15 random Test Buyers. Neither test contacts Whatnot; Reset restores only simulated assignments.</p>
+            </section>
+          </div>
+        </section>
+
+        <section id="breaker-view" class="view-panel hidden">
+          <div class="breaker-heading">
+            <div><p class="eyebrow">INTERNAL BREAK CONTROL</p><h2>Breaker Center</h2><p>Track priority cards, buyer bags, confirmed buyer spend, and buyer activity from the saved live ledger. This page is for you only and is never shown in the OBS overlay.</p></div>
+            <div id="breaker-summary" class="breaker-summary" aria-live="polite"></div>
+          </div>
+          <section class="breaker-panel spot-odds-panel">
+            <div class="section-heading breaker-odds-heading"><div><p class="eyebrow">LIVE SPOT FORECAST</p><h2>Top-hit spot odds</h2><p>For the next randomly assigned available spot. These are board spot odds, not booster-pack pull odds.</p></div><div id="breaker-odds-total" class="breaker-odds-total" aria-live="polite"></div></div>
+            <div id="breaker-odds" class="breaker-odds" aria-live="polite"></div>
+          </section>
+          <section class="breaker-panel priority-panel">
+            <div class="section-heading"><div><h2>Priority cards remaining</h2><p>Choose a rarity group to see exactly what is left. Assigned cards disappear from this tracker and move into Buyer Bags below.</p></div></div>
+            <div id="breaker-priority-tabs" class="breaker-priority-tabs" aria-label="Priority rarity groups"></div>
+            <div id="breaker-priority-cards" class="breaker-priority-cards" aria-live="polite"></div>
+          </section>
+          <div class="breaker-columns">
+            <section class="breaker-panel buyer-bags-panel">
+              <div class="section-heading"><div><h2>Buyer Bags</h2><p>Each assigned buyer keeps their cards and confirmed Whatnot spend together for packing and buyer giveaways.</p></div></div>
+              <div class="pull-history-save-bar"><div><b>Pull History</b><span>Select the exact cards being sent across every Buyer Bag, then save one snapshot for this live board.</span></div><button id="save-pull-history" class="primary-button" type="button">▣ Save Selected Pulls</button><p id="pull-history-save-status" aria-live="polite"></p></div>
+              <div class="buyer-box-destination automatic"><div><p class="eyebrow">AUTOMATIC BOX TRACKER</p><b>No separate tracker save</b><span>Your selected pulls transfer automatically when you save this break to Order History and choose Box or Case.</span></div></div>
+              <div id="breaker-bags" class="buyer-bags" aria-live="polite"></div>
+            </section>
+            <aside class="breaker-panel buyer-ranking-panel">
+              <p class="eyebrow">LIVE ACTIVITY</p><h2>Buyer spending</h2><p class="ranking-help">Ranks buyers by confirmed spend, then by assigned cards. Pending payments never count.</p>
+              <ol id="breaker-ranking" class="buyer-ranking" aria-live="polite"></ol>
+            </aside>
+          </div>
+        </section>
+
+        <section id="riftbound-breaker-view" class="view-panel hidden">
+          <div class="breaker-heading">
+            <div><p class="eyebrow">RIFTBOUND INTERNAL BREAK CONTROL</p><h2>Riftbound Breaker Center</h2><p>Track Riftbound top hits, collector treatments, buyer bags, confirmed buyer spend, and assignments from the saved Riftbound live ledger. One Piece cards and rarity groups never appear here.</p></div>
+            <div id="riftbound-breaker-summary" class="breaker-summary" aria-live="polite"></div>
+          </div>
+          <section class="breaker-panel pending-rounds-panel">
+            <div class="section-heading"><div><p class="eyebrow">MULTI-BOX REVIEW QUEUE</p><h2>Pending Buyer Bags</h2><p>Starting the next saved board safely moves the prior box here. Review exact pulls, copy each buyer's result, then use Complete &amp; Archive to send that box to Orders History, Pull History, and Buyer Analytics.</p></div><div class="pending-round-actions"><span class="pending-review-pill">PENDING REVIEW</span><button id="finish-live-round" class="secondary-button" type="button">Finish Live Box for Review</button></div></div>
+            <div id="pending-break-rounds" class="pending-break-rounds" aria-live="polite"></div>
+          </section>
+          <section class="breaker-panel riftbound-obs-link-panel">
+            <div class="section-heading">
+              <div><p class="eyebrow">OBS VIEWER SOURCES</p><h2>Static Board &amp; Rolling Spot Map</h2><p>Enable only the OBS source you want to use. Both sources stay idle and generate no visual card data until enabled.</p></div>
+              <div class="riftbound-spot-overview-actions">
+                <button id="toggle-static-overlay" class="secondary-button" type="button" aria-pressed="false">Enable Static OBS Board</button>
+                <button id="copy-static-overlay" class="secondary-button" type="button">Copy Static OBS Board Link</button>
+                <span id="static-overlay-status" class="riftbound-spot-map-overlay-status">Static board idle — no card data or images are being generated.</span>
+                <button id="toggle-riftbound-spot-map" class="secondary-button" type="button" aria-pressed="false">Enable OBS Spot Map</button>
+                <button id="copy-riftbound-spot-map-overlay" class="secondary-button" type="button">Copy OBS Spot Map Link</button>
+                <span id="riftbound-spot-map-overlay-status" class="riftbound-spot-map-overlay-status">Idle — no mapped-card data or images are being generated.</span>
+              </div>
+            </div>
+          </section>
+          <section class="breaker-panel spot-odds-panel">
+            <div class="section-heading breaker-odds-heading"><div><p class="eyebrow">RIFTBOUND LIVE SPOT FORECAST</p><h2>Top-hit spot odds</h2><p>For the next randomly assigned available Riftbound spot. These are board spot odds, not booster-pack pull odds.</p></div><div id="riftbound-breaker-odds-total" class="breaker-odds-total" aria-live="polite"></div></div>
+            <div id="riftbound-breaker-odds" class="breaker-odds" aria-live="polite"></div>
+          </section>
+          <section class="breaker-panel priority-panel">
+            <div class="section-heading"><div><h2>Riftbound cards remaining</h2><p>Load every displayed card price at once, then use the small private price tags to call out values during your show. Assigned cards move into their Buyer Bags below.</p></div><div class="riftbound-privacy-actions"><label class="buyer-price-source-label">Price source<select id="buyer-price-source"><option value="justtcg">JustTCG</option><option value="chatgpt">ChatGPT Batch Import</option><option value="ebay">eBay Estimate</option><option value="manual">Manual</option></select></label><button id="refresh-riftbound-board-prices" class="primary-button compact-button" type="button">Price Entire Board</button><button id="open-buyer-price-feed" class="secondary-button compact-button" type="button" title="Open source help and API keys">API Keys / Help</button><button id="toggle-riftbound-spending" class="secondary-button compact-button" type="button" aria-pressed="false" title="Hide spending and every private market-price tag">Hide Spending</button><span class="preset-live-note">RIFTBOUND ONLY</span></div></div>
+            <p id="riftbound-board-price-status" class="buyer-bag-price-status board-price-status" aria-live="polite">Price every Remaining Card and every card displayed inside Buyer Bags together.</p>
+            <div id="riftbound-breaker-priority-tabs" class="breaker-priority-tabs" aria-label="Riftbound rarity and collector-treatment groups"></div>
+            <p class="riftbound-symbol-help"><strong>Quick symbol key:</strong> Circle = Common · Triangle = Uncommon · Pink square = Rare (Legends) · Orange pentagon = Epic · Gold hexagon = Showcase. Signature, Overnumbered, Alternate Art, and Ultimate use the same gold hexagon; the group name beside it tells you which treatment you are tracking.</p>
+            <div id="riftbound-breaker-priority-cards" class="breaker-priority-cards" aria-live="polite"></div>
+          </section>
+          <div class="breaker-columns">
+            <section class="breaker-panel buyer-bags-panel">
+              <div class="section-heading"><div><h2>Riftbound Buyer Bags</h2><p>Each Whole Bag button prices every distinct card displayed in that buyer's complete bag at the same time. The + buttons remain only for recording actual pulls.</p></div><span class="preset-live-note">NO ONE PIECE MIXING</span></div>
+              <div class="pull-history-save-bar"><div><b>Pull History</b><span>Select every exact card actually pulled for all buyers, then save one snapshot for this live board.</span></div><div class="riftbound-buyer-lookup"><label for="riftbound-buyer-card-search">Find buyer by card</label><div class="riftbound-buyer-lookup-input"><span>⌕</span><input id="riftbound-buyer-card-search" type="search" autocomplete="off" spellcheck="false" placeholder="Card # or name…" aria-label="Find a Riftbound buyer by card number or card name" /></div><div id="riftbound-buyer-card-search-results" class="riftbound-buyer-search-results hidden" role="listbox" aria-live="polite"></div></div><button id="save-riftbound-pull-history" class="primary-button" type="button">▣ Save Selected Pulls</button><p id="riftbound-pull-history-save-status" aria-live="polite"></p></div>
+              <div id="riftbound-breaker-bags" class="buyer-bags" aria-live="polite"></div>
+            </section>
+            <aside id="riftbound-spending-panel" class="breaker-panel buyer-ranking-panel">
+              <p class="eyebrow">RIFTBOUND LIVE ACTIVITY</p><h2>Buyer spending</h2><p class="ranking-help">Ranks Riftbound buyers by confirmed spend, then by assigned cards. Pending payments never count.</p>
+              <ol id="riftbound-breaker-ranking" class="buyer-ranking" aria-live="polite"></ol>
+            </aside>
+          </div>
+        </section>
+
+        <section id="history-view" class="view-panel hidden">
+          <div class="history-heading">
+            <div><p class="eyebrow">PRIVATE BREAK ACCOUNTING</p><h2>Orders History</h2><p>Store a permanent snapshot of each completed box and calculate true net profit after Whatnot commission, payment processing, transaction charges, fee tax, and box cost. It does not change your live board, overlay, buyer bags, pull history, or Whatnot assignments.</p></div>
+            <div id="history-summary" class="history-summary" aria-live="polite"></div>
+          </div>
+          <div class="history-tabs" role="tablist" aria-label="Orders History sections">
+            <button class="history-tab active" type="button" data-history-tab="orders" role="tab" aria-selected="true">Orders</button>
+            <button class="history-tab" type="button" data-history-tab="pulls" role="tab" aria-selected="false">Pull History</button>
+          </div>
+          <div id="history-orders-pane">
+          <section class="history-panel history-save-panel">
+            <div class="section-heading"><div><p class="eyebrow">STORE CURRENT BREAK</p><h2>Save the completed break</h2><p>Only confirmed Assigned spots are included. Pending payment, cancelled, refunded, and test spots are excluded. Standard U.S. TCG Whatnot fees are prefilled and every rate remains editable.</p></div></div>
+            <div class="history-save-sequence"><b>Required order</b><span>1. Select actual cards in Buyer Bags</span><span>2. Save Selected Pulls</span><span>3. Choose Auto or Current Open Case</span><small>The break copies the deliberate Pull History snapshot and updates Box Tracker in the same save.</small></div>
+            <form id="history-save-form" class="history-save-form">
+              <label>Break / box name<input id="history-break-name" maxlength="140" placeholder="Example: OP-16 Booster Box #1" /></label>
+              <label>Your box cost<input id="history-box-cost" inputmode="decimal" placeholder="Example: 120.00" /></label>
+              <fieldset class="history-tracker-type history-tracker-destination"><legend>Where should Box Tracker save it?</legend><label><input type="radio" name="history-tracker-destination-mode" value="AUTO" checked /><span><b>Auto record</b><small>Save as its own Box or Case</small></span></label><label><input type="radio" name="history-tracker-destination-mode" value="OPEN_CASE" /><span><b>Current open case</b><small>Add this as the next box</small></span></label><label class="history-open-case-picker">Open case<select id="history-open-case-select" disabled><option value="">No open cases yet</option></select></label><p id="history-open-case-help">Auto keeps the existing standalone record behavior.</p></fieldset>
+              <fieldset id="history-tracker-type" class="history-tracker-type"><legend>What did you open?</legend><label><input type="radio" name="history-tracker-record-type" value="BOX" checked /><span><b>Box</b><small>One booster box</small></span></label><label><input type="radio" name="history-tracker-record-type" value="CASE" /><span><b>Case</b><small>A complete sealed case</small></span></label><p>Used only for an Auto record. A current open case always receives this save as its next box.</p></fieldset>
+              <details class="history-fee-settings" open>
+                <summary>Whatnot fee calculation <span>Standard U.S. TCG defaults</span></summary>
+                <div class="history-fee-fields">
+                  <label>Commission %<input id="history-whatnot-commission" inputmode="decimal" value="8.00" /></label>
+                  <label>Processing %<input id="history-whatnot-processing" inputmode="decimal" value="2.90" /></label>
+                  <label>Fee per transaction<input id="history-whatnot-transaction-fee" inputmode="decimal" value="0.30" /></label>
+                  <label>Transactions <span>(blank = priced spots)</span><input id="history-whatnot-transaction-count" inputmode="numeric" placeholder="Automatic" /></label>
+                  <label>Tax on processing fee % <span>(Texas default)</span><input id="history-whatnot-fee-tax" inputmode="decimal" value="6.60" /></label>
+                  <label>Additional Whatnot fees<input id="history-whatnot-additional-fees" inputmode="decimal" placeholder="0.00" /></label>
+                  <label class="history-actual-fee-field">Actual total Whatnot fees <span>(optional override)</span><input id="history-whatnot-actual-fees" inputmode="decimal" placeholder="Use this after checking your Whatnot statement" /></label>
+                </div>
+                <small>The automatic estimate uses captured sales for the 2.9% processing base. Because Whatnot applies processing to the buyer's full order value, including shipping and tax, enter the statement's actual total fees when you want an exact final result.</small>
+              </details>
+              <label class="history-notes-label">Notes <span>(optional)</span><textarea id="history-notes" maxlength="1200" rows="3" placeholder="Case notes, pack notes, or anything you want to remember."></textarea></label>
+              <div class="history-save-actions"><button class="primary-button" type="submit">▣ Save Current Break to History</button><p id="history-save-status" class="history-status" aria-live="polite">Save Selected Pulls first. This box save will copy that Pull History snapshot without changing the live board.</p></div>
+            </form>
+          </section>
+          <section class="history-panel">
+            <div class="section-heading"><div><p class="eyebrow">SAVED BOX RECORDS</p><h2>Buyer order history</h2><p>Each saved box now shows gross sales, Whatnot deductions, payout, box cost, and real net profit. Existing records use the standard fee defaults automatically.</p></div></div>
+            <div id="history-records" class="history-records" aria-live="polite"></div>
+          </section>
+          </div>
+          <div id="history-pulls-pane" class="hidden">
+            <section class="history-panel">
+              <div class="section-heading"><div><p class="eyebrow">EXACT CARDS ACTUALLY PULLED</p><h2>Pull History</h2><p>These records come only from cards you explicitly select in Buyer Bags and save with “Save Selected Pulls.” Price a saved run with one source at a time to compare each buyer’s captured spot payments with pull value. A saved ×2 quantity counts twice.</p></div><div class="pull-history-privacy-actions"><label class="buyer-price-source-label">Price source<select id="pull-history-price-source"><option value="justtcg">JustTCG</option><option value="chatgpt">ChatGPT Batch Import</option><option value="ebay">eBay Estimate</option><option value="manual">Manual</option></select></label><button id="open-pull-price-feed" class="secondary-button compact-button" type="button">Price Source Setup</button><button id="toggle-pull-history-buyer-values" class="secondary-button compact-button" type="button" aria-pressed="false">Hide Buyer Values</button><span id="pull-history-privacy-state" class="preset-live-note">BUYER VALUES VISIBLE</span></div></div>
+              <div class="pull-history-message-selection"><div><b>Combine buyer messages</b><span id="pull-history-selection-state">Select 2 or more boxes to combine the same buyer across those boxes</span></div><button id="clear-pull-history-selection" class="secondary-button compact-button" type="button" disabled>Clear Selection</button></div>
+              <p id="history-pull-status" class="history-status" aria-live="polite">Only the 10 newest pull records load initially. Older records remain saved until you request them.</p>
+              <div id="pull-history-records" class="history-records" aria-live="polite"></div>
+            </section>
+          </div>
+        </section>
+
+        <section id="expenses-view" class="view-panel hidden">
+          <div class="history-heading"><div><p class="eyebrow">PRIVATE BUSINESS ACCOUNTING</p><h2>Business Expenses</h2><p>Record supplies, inventory, and operating purchases separately from each saved break. This stays private and never changes your live board, buyer history, overlay, or connector.</p></div><div id="expense-summary" class="history-summary" aria-live="polite"></div></div>
+          <section class="history-panel business-snapshot-panel">
+            <div class="business-snapshot-heading">
+              <div><p class="eyebrow">PROFIT + TAX PLANNING</p><h2>Business Snapshot</h2><p>Year-to-date revenue, fees, sold-box cost, operating expenses, tracked profit, and a planning-only federal tax estimate from the records already saved in BreakSuite.</p></div>
+              <div class="business-snapshot-actions"><label>Tax year<select id="business-expense-year" aria-label="Business snapshot tax year"></select></label><button class="secondary-button" id="business-snapshot-refresh" type="button">✓ Verify + Recalculate</button><button class="primary-button business-print-button" id="business-expense-pdf" type="button">⇩ Download PDF</button><button class="primary-button" id="business-expense-excel" type="button">⇩ Download Excel CSV</button><button class="secondary-button" id="business-expense-print" type="button">▤ Print</button></div>
+            </div>
+            <div id="business-snapshot" class="business-snapshot" aria-live="polite"></div>
+            <div id="business-snapshot-health" class="business-snapshot-health" aria-live="polite"></div>
+            <p class="business-tax-disclaimer">Planning estimate only — not a tax return. Federal income tax depends on your other income, filing status, deductions, credits, and other tax facts. State income tax and Additional Medicare Tax are not calculated here.</p>
+          </section>
+          <section class="history-panel history-save-panel"><div class="section-heading"><div><p class="eyebrow">ADD PURCHASE</p><h2>Record what you spent</h2><p>Use this for supplies, sealed inventory, giveaways/make-goods, damaged or lost inventory, equipment, or any other business expense. Owner / Personal Use is tracked but excluded from deductible totals.</p></div></div>
+            <form id="expense-save-form" class="history-save-form expense-save-form"><label>What did you buy?<input id="expense-name" maxlength="140" placeholder="Example: 7×4 bubble mailers" required /></label><label>Amount paid<input id="expense-amount" inputmode="decimal" placeholder="Example: 24.99" required /></label><label>Category<select id="expense-category"><option>Shipping supplies</option><option>Inventory / sealed product</option><option>Promotional Giveaway</option><option>Customer Compensation / Make-Good</option><option>Damaged Inventory</option><option>Lost Inventory</option><option>Owner / Personal Use</option><option>Whatnot fees</option><option>Equipment</option><option>Other</option></select></label><label>Store / vendor <input id="expense-vendor" maxlength="140" placeholder="Optional" /></label><label>Date purchased<input id="expense-date" type="date" /></label><label class="history-notes-label">Notes <span>(optional)</span><textarea id="expense-notes" maxlength="1200" rows="3" placeholder="Optional details, receipt note, or case/box reference."></textarea></label><div class="history-save-actions"><button class="primary-button" type="submit">＋ Save Expense</button><p id="expense-status" class="history-status" aria-live="polite">Your expenses are private and separate from Whatnot and the live break.</p></div></form>
+          </section>
+          <section class="history-panel"><div class="section-heading"><div><p class="eyebrow">SAVED PURCHASES</p><h2>Expense records</h2><p>Use this together with Orders History to see the actual money you have put into supplies and inventory.</p></div></div><div id="expense-records" class="expense-records" aria-live="polite"></div></section>
+        </section>
+
+        <section id="buyers-view" class="view-panel hidden">
+          <div class="history-heading">
+            <div><p class="eyebrow">LOYALTY &amp; GIVEAWAY PLANNING</p><h2>Buyer Analytics</h2><p>Buyer loyalty still uses saved Orders History, but Profit/Cooked is now a separate Pull History-only view. Older orders without recorded pulls can never affect a buyer's win/loss result.</p></div>
+            <div id="buyer-analytics-summary" class="history-summary" aria-live="polite"></div>
+          </div>
+          <section class="history-panel buyer-case-panel">
+            <div class="section-heading"><div><p class="eyebrow">FULL BUYER HISTORY &amp; RESULTS</p><h2>Buyer Case Lookup</h2><p>Enter the buyer's Whatnot username to review only the period captured in Pull History: tracked spot spend, exact saved pulls, market value, and Profit/Cooked result. Older Orders-only breaks are intentionally excluded.</p></div><span class="buyer-case-private">PRIVATE AUDIT</span></div>
+            <form id="buyer-case-form" class="buyer-case-form">
+              <label for="buyer-case-query">Whatnot username</label>
+              <div><input id="buyer-case-query" list="buyer-case-suggestions" maxlength="180" autocomplete="off" placeholder="Example: @kod" /><button class="primary-button" type="submit">Search Buyer</button></div>
+              <datalist id="buyer-case-suggestions"></datalist>
+              <p id="buyer-case-status" class="history-status" aria-live="polite">Searches Pull History only for Profit/Cooked. Older Orders History is excluded.</p>
+            </form>
+            <div id="buyer-case-results" class="buyer-case-results" aria-live="polite"></div>
+          </section>
+          <section class="history-panel buyer-outcomes-panel">
+            <div class="section-heading"><div><p class="eyebrow">MARKET VALUE − AMOUNT PAID</p><h2>Who's Winning?</h2><p>See who is on profit and who is getting cooked only from breaks captured in Pull History. Anything from before Pull History tracking is ignored because we cannot prove what that buyer pulled.</p></div></div>
+            <div class="buyer-purchase-audit">
+              <div><b>Pull History accuracy check</b><span>Checks only saved Pull History spot payments and saved card prices. It never mixes older Orders-only purchases into Profit/Cooked.</span></div>
+              <button id="buyer-purchase-audit-button" class="primary-button" type="button">✓ Check Pull History</button>
+            </div>
+            <p id="buyer-purchase-audit-status" class="history-status">Run this after saving pulls or refreshing prices. Profit/Cooked has a hard Pull History cutoff; older Orders-only records are excluded.</p>
+            <div id="buyer-purchase-audit-summary" class="buyer-purchase-audit-summary" aria-live="polite"></div>
+            <div class="buyer-outcome-tabs" role="tablist" aria-label="Buyer result filter"><button type="button" class="active" data-buyer-outcome="all">All Results</button><button type="button" data-buyer-outcome="profit">On Profit</button><button type="button" data-buyer-outcome="cooked">Getting Cooked</button><button type="button" data-buyer-outcome="incomplete">Needs Pricing</button></div>
+            <div id="buyer-outcome-summary" class="buyer-outcome-summary" aria-live="polite"></div>
+            <div id="buyer-outcome-list" class="buyer-outcome-list" aria-live="polite"></div>
+          </section>
+          <section class="history-panel buyer-analytics-panel">
+            <div class="section-heading"><div><p class="eyebrow">TOP 10 BUYERS</p><h2>Giveaway leaderboard</h2><p>Loyalty ranking still uses all confirmed spend from saved Orders History. This leaderboard is separate from the Pull History-only Profit/Cooked calculation.</p></div></div>
+            <ol id="buyer-top-ten" class="buyer-analytics-top-ten" aria-live="polite"></ol>
+          </section>
+          <section class="history-panel buyer-analytics-panel">
+            <div class="section-heading"><div><p class="eyebrow">BUYER CONSISTENCY</p><h2>Full buyer analysis</h2><p>This section remains your all-orders loyalty view: saved spend, purchase count, breaks, and weekly activity. Profit/Cooked is shown only in the Pull History section above.</p></div></div>
+            <div id="buyer-analytics-list" class="buyer-analytics-list" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="tracker-view" class="view-panel hidden">
+          <div class="tracker-heading">
+            <div><p class="eyebrow">LIVE CASE + AUTOMATIC ARCHIVE</p><h2>Box Tracker</h2><p>Keep a case open across separate breaks, archive each Buyer Bag into its next box, then finalize the case into Saved Records.</p></div>
+            <div class="tracker-overlay-actions"><button class="secondary-button" id="copy-tracker-overlay">Copy Totals OBS Link</button><button class="primary-button" id="open-tracker-overlay">Open Totals Overlay</button></div>
+          </div>
+          <div class="tracker-link-grid">
+            <section class="tracker-panel tracker-link-panel"><p class="eyebrow">TOTALS OVERLAY</p><strong>Saved hit totals</strong><code>http://127.0.0.1:8878/box-tracker.html?obs=1</code><span>Shows the cumulative rarity totals for whichever Box Tracker record you select.</span></section>
+            <section class="tracker-panel tracker-link-panel active-case-link-panel"><p class="eyebrow">ACTIVE CASE STATUS</p><strong>Viewer case progress</strong><code>http://127.0.0.1:8878/active-case.html?obs=1</code><span>Follows the current open case only: case name, set, boxes opened, next box, remaining boxes, and tracked hits.</span><div><button class="secondary-button" id="copy-active-case-overlay" type="button">Copy Active Case OBS Link</button><button class="primary-button" id="open-active-case-overlay" type="button">Open Active Case Overlay</button></div></section>
+          </div>
+          <div class="tracker-tabs" role="tablist" aria-label="Box Tracker sections"><button class="active" type="button" data-tracker-tab="live" role="tab" aria-selected="true">Live Cases</button><button type="button" data-tracker-tab="saved" role="tab" aria-selected="false">Saved Records</button></div>
+          <section id="live-case-create-panel" class="tracker-panel live-case-create-panel">
+            <div class="tracker-control-heading"><div><p class="eyebrow">START OR CONTINUE A CASE</p><h2>Live Cases</h2><p>Create the case once. Every completed Buyer Bag can then be sent to its next available box without changing Orders History, Pull History, or the live board.</p></div></div>
+            <form id="open-case-form" class="open-case-form">
+              <label>Case name<input id="open-case-name" maxlength="140" placeholder="Example: Unleashed Case #2" required /></label>
+              <label>Game<select id="open-case-game"><option value="RIFTBOUND">Riftbound</option><option value="ONEPIECE">One Piece</option></select></label>
+              <label>Set<select id="open-case-set" required></select></label>
+              <label>Boxes in case<input id="open-case-boxes" type="number" min="1" max="100" step="1" value="6" required /></label>
+              <button id="create-open-case" class="primary-button" type="submit">＋ Create Open Case</button>
+            </form>
+          </section>
+          <section class="tracker-panel tracker-auto-control">
+            <div class="tracker-control-heading"><div><p id="tracker-list-eyebrow" class="eyebrow">CURRENT OPEN CASES</p><h2 id="tracker-list-title">Choose the case you are opening</h2><p id="tracker-list-copy">Selecting an open case also makes it the source used by the Active Case Status OBS overlay.</p></div><div class="tracker-live-case-actions"><button id="edit-open-case" class="secondary-button" type="button">Edit Case</button><button id="finalize-open-case" class="primary-button" type="button">✓ Finalize Case</button><button id="delete-open-case" class="history-delete-button" type="button">Delete Live Case</button></div></div>
+            <label class="tracker-select-label"><span id="tracker-select-label">View open case</span><select id="tracker-select" aria-label="Box Tracker record"></select></label>
+            <form id="open-case-edit-form" class="open-case-edit-form hidden">
+              <label>Case name<input id="edit-open-case-name" maxlength="140" required /></label>
+              <label>Boxes in case<input id="edit-open-case-boxes" type="number" min="1" max="100" step="1" required /></label>
+              <div><button class="primary-button" id="save-open-case-edit" type="submit">Save Case Changes</button><button class="secondary-button" id="cancel-open-case-edit" type="button">Cancel</button></div>
+              <p>Game and set stay locked so archived boxes cannot be mixed with another product.</p>
+            </form>
+            <div class="tracker-auto-flow" aria-label="Live Case flow"><span><b>1</b>Create case</span><i>→</i><span><b>2</b>Archive each box</span><i>→</i><span><b>3</b>Finalize case</span></div>
+            <p id="tracker-status" class="tracker-status" aria-live="polite">Save a break to Order History to create its tracker automatically.</p>
+          </section>
+          <section class="tracker-panel tracker-board-panel">
+            <div class="tracker-board-heading"><div><p class="eyebrow">ARCHIVED BREAK</p><h2 id="tracker-board-title">No saved tracker records yet</h2><p id="tracker-board-copy">The game, set, and selected hits are detected automatically from the saved break.</p></div><div id="tracker-summary" class="tracker-summary" aria-live="polite"></div></div>
+            <div id="tracker-box-grid" class="tracker-box-grid" aria-live="polite"></div>
+          </section>
+          <section class="tracker-panel tracker-hit-summary-panel">
+            <div class="tracker-hit-summary-heading"><div><p class="eyebrow">QUALIFYING HITS</p><h2>Tracked totals</h2><p>Riftbound records show Epic, SP, Alternate Art, Overnumbered, and Signature. One Piece keeps its established premium-hit groups.</p></div><div id="tracker-hit-summary" class="tracker-hit-summary" aria-live="polite"></div></div>
+          </section>
+          <section class="tracker-panel tracker-hit-record-panel tracker-auto-hits">
+            <div><p class="eyebrow">EXACT CARDS &amp; BUYERS</p><h2 id="tracker-hit-record-title">No tracked hits yet</h2><p id="tracker-hit-record-copy">Archive a break to build this list automatically.</p></div>
+            <div id="tracker-hit-winner-list" class="tracker-hit-winner-list" aria-live="polite"></div>
+          </section>
+          <div class="tracker-legacy-controls hidden" hidden aria-hidden="true">
+            <button id="new-tracker" type="button">Legacy new tracker</button><button id="delete-tracker" type="button">Legacy delete tracker</button>
+            <form id="tracker-settings-form"><input id="tracker-name" /><input id="tracker-product" /><input id="tracker-total-boxes" type="number" value="1" /><button id="save-tracker-settings" type="submit">Legacy save</button></form>
+            <input id="tracker-overlay-title" /><button id="save-tracker-overlay-title" type="button">Legacy overlay title</button>
+            <button id="save-tracker-case-record" type="button">Legacy case record</button><div id="tracker-case-records"></div>
+            <form id="tracker-hit-form">
+              <label>Manga<input name="mangaCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>SP<input name="spCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Secret Rare (SEC)<input name="secCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Secret Rare Alt Art (SEC AA)<input name="secAaCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Leader Alternate Art (L AA)<input name="leaderAaCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Super Rare Alt Art (SR AA)<input name="srAaCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Rare Alt Art (R AA)<input name="rAaCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Treasure Rare (TR)<input name="trCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Gold DON!!<input name="goldDonCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <label>Epic<input name="epicCount" type="number" min="0" max="99" step="1" value="0" /></label><label>Alternate Art<input name="altArtCount" type="number" min="0" max="99" step="1" value="0" /></label><label>Overnumbered<input name="overnumberedCount" type="number" min="0" max="99" step="1" value="0" /></label><label>Signature<input name="signatureCount" type="number" min="0" max="99" step="1" value="0" /></label>
+              <button type="submit" id="save-tracker-hits">Legacy save hits</button>
+            </form>
+            <form id="tracker-hit-winner-form"><input name="cardName" /><select name="rarity"><option value=""></option></select><input name="buyerName" /><input name="note" /><button type="submit" id="save-tracker-hit-winner">Legacy add hit</button></form>
+          </div>
+        </section>
+
+        <section id="import-view" class="view-panel hidden">
+          <div class="setup-card import-card"><div class="setup-icon">⇣</div><p class="eyebrow">OFFICIAL BANDAI SOURCE</p><h2>Download and save the complete card catalog</h2><p>One click downloads the public card details from the official Bandai One Piece Card Game card list. Every card is saved into your local library as it downloads, together with its official image cache.</p><div class="info-strip"><span>✓</span> Official Bandai data only. No pricing, inventory, break assignments, or legacy catalog information.</div><button class="primary-button" id="run-import"><span>⇣</span> Download Official Cards</button><div class="import-status" id="import-status"><strong>Ready to download</strong><span>Your cards and images will stay saved after you close the app.</span></div><div class="import-progress hidden" id="import-progress"><div><span id="import-progress-label">Preparing official import…</span><b id="import-progress-count">0 cards</b></div><div class="progress-track"><i id="import-progress-bar"></i></div></div></div>
+          <div class="setup-card import-card riftbound-import-card"><div class="setup-icon">R</div><p class="eyebrow">RIFTBOUND METADATA + OPENRIFT ARTWORK</p><h2>Sync cards and clean library images</h2><p>Official gallery sync keeps the Riftbound card records current, then matches every English card image from OpenRift by exact set and collector number. Origins, Proving Grounds, Spiritforged, Unleashed, and Vendetta are all covered, including starred signatures and over-numbers.</p><div id="riftbound-set-list" class="riftbound-set-list" aria-live="polite"></div><div class="info-strip"><span>✓</span> Image matching uses the printed set code and number—not the card name, title, or rarity label. Full-resolution OpenRift card faces are cached locally so normal browsing stays smooth.</div><form id="riftbound-api-form" class="riftbound-api-form hidden"><label>Optional approved Riot API key<input id="riftbound-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="RGAPI-…" /></label><button class="secondary-button" type="submit">Save API Key</button><button class="ghost-button" id="open-riot-developer-portal" type="button">Riot Developer Portal ↗</button></form><p id="riftbound-api-state" class="maintenance-status">No API key needed for Official Gallery Sync</p><div class="riftbound-import-actions"><button class="primary-button" id="run-riftbound-import"><span>⇣</span> Sync Cards + Images</button><button class="secondary-button" id="run-openrift-image-refresh" type="button">Refresh OpenRift Images Only</button><button class="secondary-button" id="run-riftbound-json-import" type="button">Import JSON Backup</button></div><div class="import-status" id="riftbound-import-status"><strong>Ready to sync</strong><span>Only the Riftbound Library image fields are changed by an image-only refresh.</span></div><p class="riot-disclaimer">BreakSuite6 is not endorsed by Riot Games. OpenRift is an independent public catalog. Riot Games and all associated properties are trademarks or registered trademarks of Riot Games, Inc.</p></div>
+        </section>
+
+        <section id="settings-view" class="view-panel hidden">
+          <div class="settings-stack">
+            <div class="settings-card"><p class="eyebrow">LOCAL APPLICATION</p><h2>Library settings</h2><dl><div><dt>Catalog sources</dt><dd>Official Bandai One Piece and official Riftbound gallery data</dd></div><div><dt>Database</dt><dd id="database-state">Checking local database…</dd></div><div><dt>Data policy</dt><dd>Read-only official catalog with optional saved-card shortcuts</dd></div></dl></div>
+            <div class="settings-card maintenance-card"><p class="eyebrow">LIBRARY REPAIR</p><h2>Remove duplicates and sync DON!! cards</h2><p>The repair keeps each distinct official image variant, removes repeated copies, and adds only missing DON!! printings from every supported set. It never re-imports the normal catalog or removes your saved-card shortcuts.</p><div class="maintenance-actions"><button class="secondary-button" id="repair-library">Repair &amp; Sync DON!! Cards</button><span class="maintenance-status" id="repair-status" aria-live="polite">The first update sync runs automatically in the background. You can run this again to check for newer DON!! printings.</span></div></div>
+            <div class="settings-card danger-card"><p class="eyebrow">START FRESH</p><h2>Clear the local library</h2><p>This removes every local card record, saved-card shortcut, and import history. Your downloaded official image cache is kept safely, and you can immediately import the catalog again.</p><form id="reset-library-form" class="reset-form"><label for="reset-library-confirmation">Type <b>DELETE</b> to confirm<input id="reset-library-confirmation" autocomplete="off" spellcheck="false" placeholder="DELETE" /></label><button class="danger-button" type="submit">Clear Library &amp; Start Fresh</button></form><p class="maintenance-status" id="reset-status" aria-live="polite"></p></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <section id="business-print-report" class="business-print-report" aria-hidden="true"></section>
+    <div id="listing-notes-modal" class="listing-notes-modal hidden" role="dialog" aria-modal="true" aria-labelledby="listing-notes-title">
+      <form id="listing-notes-form" class="listing-notes-dialog">
+        <p class="eyebrow">COPY-READY DESCRIPTION</p>
+        <h2 id="listing-notes-title">Edit Listing Notes</h2>
+        <p id="listing-notes-game">These notes apply to every listing on the current board.</p>
+        <label for="listing-notes-text">Whatnot listing notes<textarea id="listing-notes-text" maxlength="2000" rows="9" spellcheck="true"></textarea></label>
+        <small>Pasted line breaks are converted to spaces so every card remains on one Whatnot row.</small>
+        <div class="listing-notes-actions"><button type="button" class="ghost-button" id="reset-listing-notes">Use Default</button><button type="button" class="secondary-button" id="cancel-listing-notes">Cancel</button><button type="submit" class="primary-button">Save for This Game</button></div>
+      </form>
+    </div>
+    <div id="pull-history-card-modal" class="listing-notes-modal hidden" role="dialog" aria-modal="true" aria-labelledby="pull-history-card-title">
+      <form id="pull-history-card-form" class="listing-notes-dialog pull-history-card-dialog">
+        <p class="eyebrow">CORRECT SAVED PULL HISTORY</p>
+        <h2 id="pull-history-card-title">Add a missed card</h2>
+        <p id="pull-history-card-description">Choose the exact printing that was missed. This corrects the saved buyer bag and its linked Box Tracker without reopening the live board.</p>
+        <div class="pull-history-card-fields">
+          <label for="pull-history-card-spot">Buyer spot<select id="pull-history-card-spot"></select></label>
+          <label for="pull-history-card-quantity">Quantity<input id="pull-history-card-quantity" type="number" min="1" max="99" step="1" value="1"></label>
+        </div>
+        <label class="pull-history-card-search-label" for="pull-history-card-search">Find the exact card<input id="pull-history-card-search" type="search" autocomplete="off" placeholder="Type card name or number…"></label>
+        <div id="pull-history-card-results" class="pull-history-card-results" aria-live="polite"></div>
+        <p id="pull-history-card-status" class="maintenance-status" aria-live="polite"></p>
+        <div class="listing-notes-actions"><button type="button" class="secondary-button" id="cancel-pull-history-card">Cancel</button><button type="submit" class="primary-button" id="save-pull-history-card" disabled>Add Card to History</button></div>
+      </form>
+    </div>
+    <div id="price-input-modal" class="listing-notes-modal hidden" role="dialog" aria-modal="true" aria-labelledby="price-input-title">
+      <form id="price-input-form" class="listing-notes-dialog price-input-dialog">
+        <p class="eyebrow" id="price-input-eyebrow">PRIVATE CARD PRICING</p>
+        <h2 id="price-input-title">Price exact cards</h2>
+        <p id="price-input-description">Enter one unit price for each exact printing.</p>
+        <div id="price-input-chatgpt" class="price-input-chatgpt hidden">
+          <button id="copy-chatgpt-price-request" class="secondary-button" type="button">Copy Complete Request</button>
+          <span>Every displayed card in the chosen board, bag, history, or search list is included together. Paste the request into this ChatGPT conversation, then paste its one JSON answer below.</span>
+          <label for="price-input-json">ChatGPT JSON response<textarea id="price-input-json" rows="9" spellcheck="false" placeholder='{"prices":[{"id":123,"priceUsd":12.34,"sourceUrl":"https://…"}]}'></textarea></label>
+        </div>
+        <div id="price-input-manual" class="price-input-manual hidden" aria-live="polite"></div>
+        <p id="price-input-status" class="maintenance-status" aria-live="polite"></p>
+        <div class="listing-notes-actions"><button type="button" class="secondary-button" id="cancel-price-input">Cancel</button><button type="submit" class="primary-button" id="save-price-input">Save Prices</button></div>
+      </form>
+    </div>
+    <div id="pm-research-modal" class="pm-modal hidden" role="dialog" aria-modal="true" aria-labelledby="pm-research-title">
+      <form id="pm-research-form" class="pm-dialog pm-research-dialog">
+        <button id="pm-research-close" class="pm-modal-close" type="button" aria-label="Close">×</button>
+        <p class="eyebrow">ASSISTANT MARKET RESEARCH</p>
+        <h2 id="pm-research-title">Research one Riftbound set</h2>
+        <p id="pm-research-description">Copy the exact catalog request into this ChatGPT conversation, then paste the JSON answer below.</p>
+        <div class="pm-research-steps">
+          <section>
+            <span>STEP 1</span>
+            <h3>Copy the complete request</h3>
+            <p>It asks for competitive playability, exact standard printings, four historical price references, reliable links, news or meta catalysts, and a buy/sell signal.</p>
+            <button id="pm-copy-request" class="secondary-button" type="button">Copy Research Request</button>
+          </section>
+          <section>
+            <span>STEP 2</span>
+            <h3>Paste the JSON result</h3>
+            <label for="pm-json">Assistant response<textarea id="pm-json" rows="11" spellcheck="false" placeholder='{"setCode":"OGN","researchedAt":"2026-09-22T12:00:00Z","cards":[…]}'></textarea></label>
+          </section>
+        </div>
+        <label class="pm-replace"><input id="pm-replace-set" type="checkbox" checked /><span><b>Replace this set’s playable list</b><small>Cards omitted from the new research leave the active list; their saved price history is kept.</small></span></label>
+        <p id="pm-research-status" class="pm-status" aria-live="polite"></p>
+        <div class="pm-dialog-actions"><button id="pm-research-cancel" class="secondary-button" type="button">Cancel</button><button id="pm-import" class="primary-button" type="submit">Import Market Research</button></div>
+      </form>
+    </div>
+    <div id="pm-detail-modal" class="pm-modal hidden" role="dialog" aria-modal="true" aria-labelledby="pm-detail-title">
+      <div class="pm-dialog pm-detail-dialog">
+        <button id="pm-detail-close" class="pm-modal-close" type="button" aria-label="Close">×</button>
+        <div id="pm-detail-content"></div>
+      </div>
+    </div>
+    <script src="riftbound-breaker-groups.js"></script>
+    <script src="card-list-search.js"></script>
+    <script src="whatnot-buyer-link.js"></script>
+    <script src="pull-history-buyer-message.js"></script>
+    <script src="app.js"></script>
+    <script src="card-sniper.js"></script>
+  </body>
+</html>

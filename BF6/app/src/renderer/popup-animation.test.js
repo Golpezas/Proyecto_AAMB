@@ -1,0 +1,115 @@
+'use strict';
+
+const assert = require('node:assert/strict');
+const fs = require('node:fs');
+const path = require('node:path');
+
+const browser = fs.readFileSync(path.join(__dirname, 'browser-overlay.js'), 'utf8');
+const css = fs.readFileSync(path.join(__dirname, 'browser-overlay.css'), 'utf8');
+const html = fs.readFileSync(path.join(__dirname, 'browser-overlay.html'), 'utf8');
+const studioHtml = fs.readFileSync(path.join(__dirname, 'index.html'), 'utf8');
+const studioJs = fs.readFileSync(path.join(__dirname, 'app.js'), 'utf8');
+const studioCss = fs.readFileSync(path.join(__dirname, 'frame-studio.css'), 'utf8');
+const main = fs.readFileSync(path.join(__dirname, '..', 'main.js'), 'utf8');
+
+assert.match(browser, /const CLAIM_EXIT_DURATION_MS = 220;/);
+assert.match(browser, /function playClaimReveal\(\)/);
+assert.match(browser, /function finishClaimReveal\(\)/);
+assert.match(browser, /const CLAIM_STATUE_BY_EFFECT = Object\.freeze/);
+assert.match(browser, /const statueAsset = statue && useLabeledStatue \? `\$\{statue\}-board10` : statue/);
+assert.match(browser, /class="claim-statue-wrap"><img class="claim-statue"[^>]*popup-statue-\$\{statueAsset\}\.png\?v=357/);
+assert.match(browser, /'chase-diamond': 'signature'/);
+assert.match(browser, /'chase-ultimate': 'ultimate'/);
+assert.match(browser, /'chase-heart': 'heart'/);
+assert.match(browser, /'chase-construction': 'construction'/);
+assert.match(browser, /'chase-rose': 'rose'/);
+assert.match(browser, /const BOARD_NINE_STATIC_OVERLAY_PROFILE = 'spiritforged-board-9-priority-four'/);
+assert.match(browser, /const BOARD_TEN_STATIC_OVERLAY_PROFILE = 'vendetta-board-10-dense-five'/);
+assert.match(browser, /if \(usesBoardNineStaticLayout\(cards\)\) return 4/);
+assert.match(browser, /if \(usesBoardTenStaticLayout\(cards\)\) return 5/);
+assert.match(browser, /stage\.dataset\.layout = boardNineStaticLayout/);
+assert.match(browser, /BOARD_NINE_STATIC_OVERLAY_PROFILE/);
+assert.match(browser, /priorityOrderBoardNine\(viewerCards\)/);
+assert.match(browser, /function settleBoardTenCascade\(card, oldRect, oldIndex, nextIndex, columns, cascadeOrder\)/);
+assert.match(browser, /BOARD_TEN_CASCADE_CARD_LIMIT = 20/);
+assert.match(browser, /Math\.floor\(oldIndex \/ columns\) === Math\.floor\(nextIndex \/ columns\)/);
+assert.match(browser, /duration: 220, delay/);
+assert.match(browser, /makeDepartureCard\(card, oldRects\.get\(id\), boardNineStaticLayout \|\| boardTenStaticLayout\)/);
+assert.match(browser, /popup_label/);
+assert.match(browser, /'RIFTBOUND · RARITY'/);
+assert.match(browser, /function claimSceneMarkup\(effectClass, useLabeledStatue = false\)/);
+assert.doesNotMatch(browser, /class="claim-statue-label"/);
+assert.doesNotMatch(browser, /data-label-size/);
+assert.match(browser, /const CLAIM_PLAQUE_BY_EFFECT = Object\.freeze/);
+assert.match(browser, /'chase-ultimate': 'ULTIMATE'/);
+assert.match(browser, /const statuePlaqueLabel = viewerCardFilter\.gameFor\(displayCard\) === 'RIFTBOUND'/);
+assert.match(browser, /claimSceneMarkup\(effectClass, Boolean\(statuePlaqueLabel\)\)/);
+assert.match(browser, /const effectClass = viewerCardFilter\.popupEffectClass\(card\)/);
+assert.doesNotMatch(browser, /if \(bundleCards\.length === 2\)/);
+assert.doesNotMatch(browser, /claimReveal\.className = `claim-reveal paired-claim/);
+assert.match(browser, /const claimTakenMarkup = `<div class="claim-taken"/);
+assert.match(browser, /const externalNameplateMarkup = exactLabel/);
+assert.match(browser, /statuePlaqueLabel \? ' statue-label-only' : ''/);
+assert.match(browser, /class="claim-scene" aria-hidden="true">\$\{statueMarkup\}/);
+assert.match(browser, /CLAIM_STATUE_BY_EFFECT\[effectClass\] \? ' has-statue' : ''/);
+assert.match(browser, /classList\.add\('is-exiting'\)/);
+assert.match(browser, /getAnimations\(\{ subtree: true \}\)/);
+assert.match(browser, /totalDurationMs - CLAIM_EXIT_DURATION_MS/);
+assert.match(browser, /applyViewerStyle\(payload\.style \|\| \{\}\);/);
+assert.match(browser, /popupStatueScale: bounded\(style\.popupStatueScale, 92, 60, 130\)/);
+assert.match(browser, /popupCardScale: bounded\(style\.popupCardScale, 90, 60, 130\)/);
+assert.match(browser, /setProperty\('--popup-statue-size', `\$\{viewerStyle\.popupStatueScale\}%`\)/);
+assert.match(browser, /setProperty\('--popup-card-width', `\$\{60 \* viewerStyle\.popupCardScale \/ 100\}%`\)/);
+assert.match(browser, /setProperty\('--popup-card-max-height', `\$\{70 \* viewerStyle\.popupCardScale \/ 100\}%`\)/);
+assert.doesNotMatch(browser, /if \(!payload\.claim\) claimReveal\.classList\.remove\('is-visible'\)/);
+assert.match(browser, /if \(revealOnly \|\| boardRevealActive\) processClaim\(payload\.claim \|\| null\)/);
+
+assert.match(css, /\.claim-reveal\.is-visible[^}]*claim-reveal-in 220ms/);
+assert.match(css, /\.claim-reveal\.is-exiting[^}]*claim-reveal-out 220ms/);
+assert.match(css, /#claim-reveal\.is-visible > \* \{ animation: none; \}/);
+assert.match(css, /\.claim-statue-wrap\{[^}]*width:var\(--popup-statue-size,92%\)[^}]*height:var\(--popup-statue-size,92%\)/);
+assert.match(css, /\.claim-statue\{[^}]*inset:0[^}]*width:100%[^}]*height:100%[^}]*object-fit:contain/);
+assert.doesNotMatch(css, /claim-statue-label/);
+assert.match(css, /#claim-reveal\.statue-label-only\{grid-template-rows:minmax\(0,1fr\);height:min\(calc\(var\(--popup-height\) \+ 78px\),calc\(100vh - 30px\)\)\}/);
+assert.match(css, /#claim-reveal\.statue-label-only>\.claim-taken,[^}]*\.claim-champion-name\{[^}]*opacity:0[^}]*visibility:hidden/);
+assert.match(css, /\.claim-reveal:not\(\.paired-claim\)>\.claim-art\{[^}]*width:var\(--popup-card-width,54%\)[^}]*max-height:var\(--popup-card-max-height,63%\)[^}]*place-self:center/);
+assert.doesNotMatch(css, /claim-card-hover/);
+assert.match(css, /#claim-reveal\.has-statue \{[^}]*background: transparent[^}]*box-shadow: none[^}]*clip-path: none/);
+assert.match(css, /#claim-reveal\.has-statue::before,[\s\S]*?#claim-reveal\.has-statue \.claim-scene::after \{[^}]*display: none/);
+assert.match(css, /data-layout="spiritforged-board-9-priority-four"[^}]*grid-template-columns: repeat\(4, minmax\(0, 1fr\)\)/);
+assert.match(css, /data-layout="vendetta-board-10-dense-five"[^}]*grid-template-rows: repeat\(var\(--rows\), clamp\(68px, min\(9\.35vh, 8\.4vw\), 126px\)\)/);
+assert.doesNotMatch(css, /background-image:url\('\/assets\/popup-statue-/);
+assert.doesNotMatch(css, /claim-card-float|claim-concept-live|claim-statue-particles/);
+assert.match(html, /overlay\.css\?v=368/);
+assert.match(html, /overlay\.js\?v=368/);
+for (const statue of ['signature', 'fire', 'bomb', 'heart', 'construction', 'rose']) {
+  assert.equal(fs.existsSync(path.join(__dirname, 'assets', `popup-statue-${statue}.png`)), true, `${statue} popup statue must ship with the renderer`);
+  assert.equal(fs.existsSync(path.join(__dirname, 'assets', `popup-statue-${statue}-board10.png`)), true, `${statue} Board 10 labeled statue must ship with the renderer`);
+}
+assert.equal(fs.existsSync(path.join(__dirname, 'assets', 'popup-statue-ultimate-board10.png')), true, 'Ultimate labeled popup statue must ship with the renderer');
+
+assert.match(studioHtml, /id="studio-popup-statue-scale"[^>]*min="60"[^>]*max="130"[^>]*value="92"/);
+assert.match(studioHtml, /id="studio-popup-card-scale"[^>]*min="60"[^>]*max="130"[^>]*value="90"/);
+assert.match(studioHtml, /id="studio-preview-popup-card" class="studio-preview-popup-card"/);
+assert.match(studioJs, /popupStatueScale: boundedStudioNumber\(source\.popupStatueScale, DEFAULT_OVERLAY_STYLE\.popupStatueScale, 60, 130\)/);
+assert.match(studioJs, /popupCardScale: boundedStudioNumber\(source\.popupCardScale, DEFAULT_OVERLAY_STYLE\.popupCardScale, 60, 130\)/);
+assert.match(studioJs, /setProperty\('--studio-popup-statue-scale', String\(normalized\.popupStatueScale \/ 100\)\)/);
+assert.match(studioJs, /setProperty\('--studio-popup-card-scale', String\(normalized\.popupCardScale \/ 100\)\)/);
+assert.match(studioCss, /\.studio-preview-popup-statue \{[^}]*scale\(var\(--studio-popup-statue-scale\)\)/);
+assert.match(studioCss, /\.studio-preview-popup-card \{[^}]*width: 60%[^}]*scale\(var\(--studio-popup-card-scale\)\)/);
+assert.match(main, /popupStatueScale: boundedNumber\(style\.popupStatueScale, DEFAULT_OVERLAY_STYLE\.popupStatueScale, 60, 130\)/);
+assert.match(main, /popupCardScale: boundedNumber\(style\.popupCardScale, DEFAULT_OVERLAY_STYLE\.popupCardScale, 60, 130\)/);
+assert.match(main, /SPIRITFORGED_BOARD_NINE_STATIC_OVERLAY_PROFILE = 'spiritforged-board-9-priority-four'/);
+assert.match(main, /VENDETTA_BOARD_TEN_STATIC_OVERLAY_PROFILE = 'vendetta-board-10-dense-five'/);
+assert.match(main, /static_overlay_profile: staticOverlayProfile/);
+assert.match(main, /popup_label: String\(card\.break_popup_label \|\| ''\)/);
+for (const statue of ['signature', 'fire', 'bomb', 'heart', 'construction', 'rose']) {
+  assert.match(main, new RegExp(`/assets/popup-statue-${statue}\\.png`), `${statue} popup statue must be served to OBS`);
+  assert.match(main, new RegExp(`/assets/popup-statue-${statue}-board10\\.png`), `${statue} Board 10 labeled statue must be served to OBS`);
+}
+assert.match(main, /\/assets\/popup-statue-ultimate-board10\.png/);
+assert.match(main, /if \(revealOnly\) overlayRevealSourcePresence\.noteDedicatedSource\(\)/);
+assert.match(main, /claim: \(revealOnly \|\| boardReveal\) \? browserOverlayClaim\(cards\) : null/);
+assert.match(main, /enabled: false,[\s\S]*?cards: \[\],[\s\S]*?claim: boardReveal && overlayClaimQueue\.size\(\) \? browserOverlayClaim\(browserOverlayCards\(\)\) : null/);
+
+console.log('OBS popup animation lifecycle checks passed.');

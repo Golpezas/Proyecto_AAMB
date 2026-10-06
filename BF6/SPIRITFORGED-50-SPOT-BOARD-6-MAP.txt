@@ -1,0 +1,80 @@
+BREAKSUITE6 — SPIRITFORGED 50-SPOT BOARD 6
+
+CHAMPION CHASE SPLIT
+01 — 💎 Teemo · SIG SFD-230*/221
+02 — 🔥 Teemo · ON SFD-230/221
+03 — 🔥 Rumble · ON SFD-240/221
+04 — 💎 Sett · SIG SFD-232*/221
+05 — 🔥 Sett · ON SFD-232/221
+06 — 🔥 Lucian · ON SFD-241/221
+07 — 💎 Darius · SIG SFD-236*/221
+08 — 🔥 Darius · ON SFD-236/221
+09 — 🔥 Draven · ON SFD-242/221
+10 — 💎 Vayne · SIG SFD-223*/221
+11 — 🔥 Vayne · ON SFD-223/221
+12 — 🔥 Rek'Sai · ON SFD-243/221
+13 — 💎 Aphelios · SIG SFD-224*/221
+14 — 🔥 Aphelios · ON SFD-224/221
+15 — 🔥 Ornn · ON SFD-244/221
+16 — 💎 Yone · SIG SFD-233*/221
+17 — 🔥 Yone · ON SFD-233/221
+18 — 🔥 Jax · ON SFD-245/221
+19 — 💎 Irelia, Fervent · SIG SFD-225*/221
+20 — 🔥 Irelia, Fervent · ON SFD-225/221
+21 — ⭐ Irelia, Fervent · ALT SFD-057A/221 + EPIC SFD-057/221
+22 — 🔥 Irelia, Blade Dancer · ON SFD-246/221
+23 — 💎 Soraka · SIG SFD-239*/221
+24 — 🔥 Soraka · ON SFD-239/221
+25 — 🔥 Azir · ON SFD-247/221
+26 — 💎 Ahri · SIG SFD-227*/221
+27 — 🔥 Ahri · ON SFD-227/221
+28 — 🔥 Ezreal · ON SFD-248/221
+29 — 💎 Bard · SIG SFD-228*/221
+30 — 🔥 Bard · ON SFD-228/221
+31 — 🔥 Renata Glasc · ON SFD-249/221
+32 — 💎 Yasuo · SIG SFD-235*/221
+33 — 🔥 Yasuo · ON SFD-235/221
+34 — 🔥 Sivir · ON SFD-250/221
+35 — 💎 Karma · SIG SFD-237*/221
+36 — 🔥 Karma · ON SFD-237/221
+37 — 🔥 Fiora · ON SFD-251/221
+
+STANDALONE SEALS
+38 — 🔥 Seal of Rage · ON SFD-222/221
+39 — 🔥 Seal of Focus · ON SFD-226/221
+40 — 🔥 Seal of Insight · ON SFD-229/221
+41 — 🔥 Seal of Strength · ON SFD-231/221
+42 — 🔥 Seal of Discord · ON SFD-234/221
+43 — 🔥 Seal of Unity · ON SFD-238/221
+
+RUNES
+44 — 💣 ALL RUNES · AA
+     Fury / Calm / Mind / Body / Chaos / Order Showcase-Alternate Art Runes
+
+RARE+ NON-CHAMPION COLOR POOLS
+45 — Fury · Rare+ Gear / Spell / Unit
+46 — Calm · Rare+ Gear / Spell / Unit
+47 — Mind · Rare+ Gear / Spell / Unit
+48 — Body · Rare+ Gear / Spell / Unit
+49 — Chaos · Rare+ Gear / Spell / Unit
+50 — Order · Rare+ Gear / Spell / Unit
+
+OWNERSHIP RULES
+- Signature lanes own the exact Signature printing shown in the title.
+- For Teemo, Sett, Darius, Vayne, Aphelios, Yone, Soraka, Ahri, Bard, Yasuo, and Karma, the matching ON lane owns the Overnumbered plus the remaining champion-family printings; the Signature is excluded.
+- Irelia, Fervent is a three-way split: Signature only, Overnumbered only, and ALT SFD-057A/221 + EPIC SFD-057/221 only.
+- Irelia, Blade Dancer owns the remaining non-Fervent Irelia family.
+- Rumble, Lucian, Draven, Rek'Sai, Ornn, Jax, Azir, Ezreal, Renata Glasc, Sivir, and Fiora keep their matching champion family in their ON lane.
+- Each Seal remains its own standalone chase spot.
+- Spot 44 owns all Spiritforged Showcase / Alternate-Art Runes. Regular Common Runes are not mapped hits.
+- Spots 45-50 contain Rare/Epic non-champion Gear, Spell, and Unit cards only, grouped by matching domain/color.
+- Premonition goes to Mind. Last Rites, Downwell, and Switcheroo go to Chaos. Other qualifying cards follow their matching domain/color.
+- Champion Units such as Fizz are excluded from the six Rare+ non-champion color pools.
+- Dual-domain Rare/Epic cards follow their first printed domain so one card can never belong to two buyers.
+- Common/Uncommon cards are not part of the mapped hit spots.
+
+INSTALL SAFETY
+- This v4 migration replaces saved Board 6 with the new 50-spot design one time.
+- The old Board 6 custom-map rows are cleared because their 38/39 positions no longer match this layout.
+- Existing live and pending rounds retain their saved ownership snapshots.
+- Boards 1-5 and 7-10 are not changed.

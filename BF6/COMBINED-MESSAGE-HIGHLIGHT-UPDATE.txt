@@ -1,0 +1,8 @@
+BreakSuite6 v0.3.380 - Combined Buyer Message Highlight
+
+When 2 or more Pull History breaks are checked for Combine:
+- Clicking Copy Combined for a buyer marks that buyer as Messaged across every selected break.
+- The same buyer name/card is highlighted red in all selected combined sections.
+- Their message button changes to Messaged ✓ so you can immediately see they were already handled.
+- The red handled state resets whenever the Combine box selection changes or is cleared, because the combined message scope has changed.
+- A handled buyer can still be clicked again intentionally to resend the message.

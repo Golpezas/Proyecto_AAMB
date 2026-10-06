@@ -1,0 +1,64 @@
+{
+  "name": "breaksuite6",
+  "version": "0.3.385",
+  "description": "Simplified Prepare Show and Recover / Recheck List with complete current-round Assigned scanning.",
+  "main": "src/main.js",
+  "private": true,
+  "scripts": {
+    "test:sniper": "node src/modules/CardSniper.test.js",
+    "test:playable-market": "node src/modules/PlayableMarket.test.js",
+    "start": "electron .",
+    "preverify": "node --check src/renderer/playable-market.js && node src/modules/PlayableMarket.test.js && node --check src/renderer/card-list-search.js && node src/renderer/card-list-search.test.js && node --check src/renderer/whatnot-buyer-link.js && node src/renderer/whatnot-buyer-link.test.js && node --check src/renderer/pull-history-buyer-message.js && node src/renderer/pull-history-buyer-message.test.js && node src/renderer/pull-history-buyer-values.test.js && node src/renderer/buyer-bag-pricing.test.js && node src/renderer/riftbound-spot-overview.test.js && node src/renderer/performance-guard.test.js && node src/renderer/popup-animation.test.js && node src/modules/OverlayClaimQueue.test.js && node src/modules/OverlayClaimReconciliation.test.js && node --check BreakSuite6_Whatnot_Connector/assigned-buyer-parser.js && node BreakSuite6_Whatnot_Connector/assigned-buyer-parser.test.js && node --check BreakSuite6_Whatnot_Connector/live-row-stability.js && node BreakSuite6_Whatnot_Connector/live-row-stability.test.js && node BreakSuite6_Whatnot_Connector/assignment-count-gate.test.js && node BreakSuite6_Whatnot_Connector/live-watcher.test.js",
+    "verify": "node --check src/main.js && node --check src/preload.js && node --check src/renderer/app.js && node --check src/renderer/box-tracker.js && node --check src/renderer/active-case.js && node src/modules/BreakBoard.test.js && node src/modules/RiftboundVendettaBoardOne.test.js && node src/modules/RiftboundUnleashedBoardThree.test.js && node src/modules/RiftboundCombinedBoardSeven.test.js && node src/modules/RiftboundLinearOverlay.test.js && node src/modules/PullHistory.test.js && node src/modules/PullHistoryCorrection.test.js && node src/modules/BoxTracker.test.js && node src/modules/BreakOrderHistory.test.js && node src/modules/AutomaticBoxTracker.test.js && node src/modules/LiveCaseTracker.test.js && node src/modules/OrderTrackerDestination.test.js && node src/modules/OrderHitTracker.test.js && node --check src/renderer/card-list-search.js && node src/renderer/card-list-search.test.js && node --check src/modules/BusinessExpenseExport.js && node src/modules/BusinessExpenseExport.test.js && node src/modules/BusinessExpenseReport.test.js && node src/modules/BusinessSnapshot.test.js",
+    "smoke": "electron . --smoke-test",
+    "package:win": "electron-packager . BreakSuite6 --platform=win32 --arch=x64 --out=release --asar --prune=true --ignore=/(release|release-v.*|Installer-Staging.*)($|/)",
+    "package:installer": "electron-builder --win nsis --x64"
+  },
+  "dependencies": {
+    "cheerio": "^1.1.2"
+  },
+  "build": {
+    "appId": "com.breaksuite.library",
+    "productName": "BreakSuite6",
+    "directories": {
+      "output": "release-v0322-installer"
+    },
+    "files": [
+      "src/**/*",
+      "Assets/**/*",
+      "Database/**/*",
+      "Images/**/*",
+      "Modules/**/*",
+      "Settings/**/*",
+      "README.md",
+      "package.json"
+    ],
+    "asar": true,
+    "win": {
+      "signAndEditExecutable": false,
+      "target": [
+        {
+          "target": "nsis",
+          "arch": [
+            "x64"
+          ]
+        }
+      ],
+      "artifactName": "BreakSuite6-Setup-${version}.${ext}"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": false,
+      "perMachine": false,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true,
+      "shortcutName": "BreakSuite6",
+      "deleteAppDataOnUninstall": false
+    }
+  },
+  "devDependencies": {
+    "@electron/packager": "^19.0.0",
+    "electron": "^37.2.6",
+    "electron-builder": "^26.0.12"
+  }
+}

@@ -1,0 +1,54 @@
+UNLEASHED — BOARD 5 — 26-SPOT CHARACTER CASE BREAK
+
+OWNERSHIP RULES
+- One buyer owns the selected spot across the complete six-box case.
+- Each named champion owns its complete eight-card booster family:
+  Signature, Overnumbered, two Alternate Arts, two Epics, and two Rares.
+- Each Poro owns its Poro card plus every unreserved regular Rare Unit or
+  Rare Champion Unit in the matching domain.
+- Gear and Spell cards do not go to the Poros. Unreserved Rare and Epic Gear
+  and Spell hits belong to Spot 21; Common and Uncommon cards are excluded.
+- Champion-family Gear or Spell cards remain with their named champion.
+- Named creature bundles own every matching printing of the names displayed.
+- All Rune Alts means the six booster Alternate-Art Runes only.
+- Promotional cards, regular Runes, Legends, and unmapped Common/Uncommon
+  Units are excluded from the 26 ownership maps.
+- The public overlay shows one lead card; Buyer Bags retain the full mapping.
+
+01  Baron
+    Includes: every Baron Nashor printing
+02  Master Yi
+03  Vex
+04  Ivern
+05  Kha'Zix
+06  Vi
+07  Jhin
+08  Pyke
+09  LeBlanc
+10  Diana
+11  Poppy
+12  Rengar
+13  Lillia
+14  Elder Dragon
+15  Lonely Poro
+    Includes: all unreserved Rare Calm Units and Rare Calm Champion Units
+16  Red Brambleback / Irresistible Faefolk
+17  Plundering Poro
+    Includes: all unreserved Rare Mind Units and Rare Mind Champion Units
+18  Alpha Wildclaw / Inviolus Vox / Arachnoid Horror
+19  Pouty Poro
+    Includes: all unreserved Rare Fury Units and Rare Fury Champion Units
+20  All Rune Alts
+21  All Gears / All Spells
+    Includes: unreserved Rare and Epic Gear/Spell hits only
+    Excludes: Common and Uncommon Gear/Spell cards
+22  Veteran Poro
+    Includes: all unreserved Rare Body Units and Rare Body Champion Units
+23  Mystic Poro
+    Includes: all unreserved Rare Chaos Units and Rare Chaos Champion Units
+24  Vilemaw
+25  Daring Poro
+    Includes: all unreserved Rare Order Units and Rare Order Champion Units
+26  Rift Herald / Blue Sentinel
+
+No mapped card is assigned to more than one position.

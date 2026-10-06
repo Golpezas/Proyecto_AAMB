@@ -1,0 +1,19 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BreakSuite6 — Break Board Display</title>
+    <link rel="stylesheet" href="overlay.css" />
+  </head>
+  <body>
+    <main class="overlay-shell">
+      <header class="overlay-header">
+        <div><p>BREAKSUITE6 · LIVE BREAK BOARD</p><h1>Selected Cards</h1></div>
+        <div class="overlay-header-status"><strong id="overlay-last-call">Waiting for a block</strong><strong id="overlay-count">0 cards</strong></div>
+      </header>
+      <section id="overlay-grid" class="overlay-grid" aria-live="polite"></section>
+    </main>
+    <script src="overlay.js"></script>
+  </body>
+</html>

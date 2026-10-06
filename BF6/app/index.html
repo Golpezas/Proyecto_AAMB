@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>BreakSuite6 v0.3.52 — One Piece Card Library</title>
+    <link rel="stylesheet" href="styles.css" />
+    <link rel="stylesheet" href="breaker-center.css" />
+    <link rel="stylesheet" href="frame-studio.css" />
+  </head>
+  <body>
+    <div class="app-shell">
+      <aside class="sidebar">
+        <div class="brand">
+          <div class="brand-mark">B6</div>
+          <div><strong>BreakSuite</strong><span>OFFICIAL CARD LIBRARY</span></div>
+        </div>
+        <nav class="navigation" aria-label="Application navigation">
+          <button class="nav-item active" data-view="library"><span>▦</span> Library</button>
+          <button class="nav-item" data-view="break"><span>▤</span> Break Board</button>
+          <button class="nav-item" data-view="studio"><span>◇</span> Frame Studio</button>
+          <button class="nav-item" data-view="breaker"><span>♜</span> Breaker Center</button>
+          <button class="nav-item" data-view="history"><span>▤</span> Orders History</button>
+          <button class="nav-item" data-view="connector"><span>↯</span> Connector</button>
+          <button class="nav-item" data-view="saved"><span>♥</span> Saved Cards</button>
+          <button class="nav-item" data-view="import"><span>⇣</span> Import Manager</button>
+          <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
+        </nav>
+        <div class="sidebar-foot">
+          <div class="source-pill"><i></i> Official data only</div>
+          <p>One Piece Card Game<br />Library v0.3.52</p>
+        </div>
+      </aside>
+
+      <main class="workspace">
+        <header class="topbar">
+          <div>
+            <p class="eyebrow" id="view-kicker">CARD CATALOG</p>
+            <h1 id="view-title">Your One Piece Card Library</h1>
+          </div>
+          <button class="primary-button" id="import-button"><span>＋</span> Import Official Cards</button>
+        </header>
+
+        <section class="dashboard-stats" aria-label="Library summary">
+          <article><span>Official cards</span><strong id="total-count">0</strong><small>in your local catalog</small></article>
+          <article><span>Sets imported</span><strong id="set-count">0</strong><small>official Bandai sets</small></article>
+          <article><span>Saved cards</span><strong id="saved-count">0</strong><small>your personal shortcuts</small></article>
+          <article><span>Database</span><strong class="ready-value">Ready</strong><small>stored on this computer</small></article>
+        </section>
+
+        <section id="library-view" class="view-panel">
+          <div class="toolbar">
+            <label class="search-box"><span>⌕</span><input id="search-input" type="search" placeholder="Search by card name, number, or set" /></label>
+            <label class="select-box">Rarity <select id="rarity-select"><option value="All">All</option></select></label>
+          </div>
+          <div class="catalog-layout">
+            <div class="catalog-column">
+              <div class="section-heading"><div><h2 id="grid-title">All Cards</h2><p id="grid-count">Waiting for official import</p></div><div class="grid-actions"><span class="quick-add-hint">Double-click a card to add it to Break Board</span><button class="ghost-button" id="clear-filters">Clear filters</button></div></div>
+              <div id="card-grid" class="card-grid" aria-live="polite"></div>
+            </div>
+            <aside id="preview-panel" class="preview-panel" aria-live="polite"></aside>
+          </div>
+        </section>
+
+        <section id="break-view" class="view-panel hidden">
+          <div class="break-heading">
+            <div><p class="eyebrow">OVERLAY SELECTION</p><h2>Break Board</h2><p>Set your working card order, then save it as the live ledger. The copied Whatnot listing keeps that block number first, so the connector returns the correct card to this board.</p></div>
+            <div class="break-actions"><button class="primary-button" id="save-break-board">✓ Save Board</button><button class="secondary-button" id="open-break-overlay">Open Overlay Display</button><button class="secondary-button" id="copy-break-listing">Copy Listing</button><button class="danger-button" id="clear-break-board">Clear Working Board</button></div>
+          </div>
+          <section class="board-presets-panel" aria-labelledby="board-presets-title">
+            <div class="section-heading"><div><p class="eyebrow">SAVED BOARD SETUPS</p><h2 id="board-presets-title">Five reusable boards</h2><p>Keep separate 49-card, 82-card, or custom boards. Loading a setup changes only this working board; use Save Board when you want it live.</p></div><span class="preset-live-note">LIVE BOARD STAYS SAFE</span></div>
+            <div id="break-preset-slots" class="break-preset-slots" aria-label="Saved board setups"></div>
+            <div class="preset-actions"><label for="break-preset-name">Selected setup name<input id="break-preset-name" maxlength="80" placeholder="Example: OP-16 · 82 cards" /></label><button class="secondary-button" id="save-break-preset">Save Current Board to Selected Setup</button><button class="ghost-button preset-clear-button" id="clear-break-preset">Empty Selected Board</button></div>
+            <p id="break-preset-status" class="maintenance-status" aria-live="polite">Select one of five setup squares, then save this working board to it.</p>
+          </section>
+          <div class="break-layout">
+            <section class="break-board-panel">
+              <div class="section-heading"><div><h2>Overlay Cards</h2><p id="break-board-count">0 cards selected</p></div><span class="board-live-pill" id="board-live-pill">SAVE TO GO LIVE</span></div>
+              <div id="break-board-grid" class="break-board-grid" aria-live="polite"></div>
+            </section>
+            <aside class="listing-panel">
+              <p class="eyebrow">LIVE READY CHECK</p>
+              <div id="break-ready-checks" class="ready-checks" aria-live="polite"></div>
+              <p class="eyebrow listing-eyebrow">COPY-READY LISTING</p>
+              <p class="listing-help">Copy Listing gives every card a numbered Available Spot Name and its matching Description. Paste it into the first Whatnot table cell.</p>
+              <pre id="break-listing-preview" class="listing-preview">No cards selected yet.</pre>
+              <p id="break-board-status" class="maintenance-status" aria-live="polite">Select a card in Library, then use Add to Break Board.</p>
+            </aside>
+          </div>
+        </section>
+
+        <section id="studio-view" class="view-panel hidden">
+          <div class="studio-heading">
+            <div><p class="eyebrow">VIEWER OVERLAY CUSTOMIZATION</p><h2>Frame Studio</h2><p>Create the visual style for your public OBS card board. These controls affect card frames, the outer LED frame, the board placement, and the claim reveal. The buyer handle appears only with the short Spot Taken announcement; pricing and internal block data never appear.</p></div>
+            <div class="studio-heading-actions"><span class="studio-live-indicator">● Overlay updates after Save</span><button class="secondary-button" id="studio-reset">Reset style</button><button class="primary-button" id="studio-save">▣ Save &amp; Apply</button></div>
+          </div>
+          <div class="studio-layout">
+            <aside class="studio-panel studio-style-panel">
+              <p class="eyebrow">FRAME STYLE</p>
+              <div id="studio-frame-styles" class="studio-style-list">
+                <button class="studio-style-choice" data-frame-style="color-sync"><span class="studio-style-art style-color-sync"><i></i><i></i><i></i></span><span><b>Color Sync</b><small>Custom neon colors</small></span></button>
+                <button class="studio-style-choice" data-frame-style="haki-crack"><span class="studio-style-art style-haki-crack"><i></i><i></i><i></i></span><span><b>Haki Crack</b><small>Sharp energy fracture</small></span></button>
+                <button class="studio-style-choice" data-frame-style="holo-reactor"><span class="studio-style-art style-holo-reactor"><i></i><i></i><i></i></span><span><b>Holo Reactor</b><small>Clean sci-fi circuit</small></span></button>
+                <button class="studio-style-choice" data-frame-style="boss-awakening"><span class="studio-style-art style-boss-awakening"><i></i><i></i><i></i></span><span><b>Boss Awakening</b><small>Big fire energy</small></span></button>
+              </div>
+            </aside>
+
+            <section class="studio-panel studio-preview-panel">
+              <div class="studio-panel-title"><p class="eyebrow">LIVE CARD PREVIEW</p><span>Viewer-safe preview</span></div>
+              <div id="studio-preview" class="studio-preview" data-frame-style="color-sync" data-corner-shape="rounded" data-particles="true">
+                <div class="studio-preview-frame"><div id="studio-preview-cards" class="studio-preview-cards"></div></div>
+                <div id="studio-preview-popup" class="studio-preview-popup"><span>CLAIM REVEAL</span></div>
+              </div>
+              <p class="studio-preview-help">The live Browser Source keeps the six-card-wide board. Move and scale it here without changing the saved card order.</p>
+            </section>
+
+            <aside class="studio-panel studio-controls-panel">
+              <div class="studio-panel-title"><p class="eyebrow">FRAME CONTROLS</p><span>Preview first · save when ready</span></div>
+              <label class="studio-color-row">Primary color<input id="studio-primary-color" data-studio-control type="color" value="#55dcff" /></label>
+              <label class="studio-color-row">Secondary color<input id="studio-secondary-color" data-studio-control type="color" value="#9b7dff" /></label>
+              <label class="studio-slider">Glow intensity <output id="studio-glow-output">78%</output><input id="studio-glow" data-studio-control type="range" min="20" max="100" value="78" /></label>
+              <label class="studio-slider">Frame thickness <output id="studio-thickness-output">3 px</output><input id="studio-thickness" data-studio-control type="range" min="1" max="8" value="3" /></label>
+              <label class="studio-slider">Motion speed <output id="studio-pulse-output">55%</output><input id="studio-pulse" data-studio-control type="range" min="15" max="100" value="55" /></label>
+              <label class="studio-toggle"><input id="studio-particles" data-studio-control type="checkbox" checked /><span></span> LED corner particles</label>
+              <label class="studio-select">Card-corner shape<select id="studio-corner-shape" data-studio-control><option value="rounded">Rounded</option><option value="bevel">Beveled</option><option value="square">Square</option></select></label>
+            </aside>
+          </div>
+
+          <div class="studio-placement-grid">
+            <section class="studio-panel studio-placement-panel">
+              <p class="eyebrow">VIEWER BOARD POSITION</p><h3>Card board</h3><p>Adjust the full six-card-wide viewer board. It still packs remaining cards tightly upward and does not show buyer information.</p>
+              <div class="studio-control-grid">
+                <label class="studio-slider">Horizontal <output id="studio-board-x-output">50%</output><input id="studio-board-x" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Vertical <output id="studio-board-y-output">50%</output><input id="studio-board-y" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Card scale <output id="studio-board-scale-output">100%</output><input id="studio-board-scale" data-studio-control type="range" min="68" max="122" value="100" /></label>
+              </div>
+            </section>
+            <section class="studio-panel studio-placement-panel">
+              <p class="eyebrow">CLAIM POPUP</p><h3>Card announcement</h3><p>Set where the large reveal appears and how long viewers see it. It shows Spot Taken and the buyer handle above the card, and always stays above the board and LED frame.</p>
+              <div class="studio-control-grid">
+                <label class="studio-slider">Horizontal <output id="studio-popup-x-output">50%</output><input id="studio-popup-x" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Vertical <output id="studio-popup-y-output">50%</output><input id="studio-popup-y" data-studio-control type="range" min="8" max="92" value="50" /></label>
+                <label class="studio-slider">Popup size <output id="studio-popup-scale-output">100%</output><input id="studio-popup-scale" data-studio-control type="range" min="65" max="135" value="100" /></label>
+                <label class="studio-slider">Display time <output id="studio-popup-duration-output">8 sec</output><input id="studio-popup-duration" data-studio-control type="range" min="2" max="15" value="8" /></label>
+              </div>
+            </section>
+          </div>
+          <p id="studio-status" class="studio-status" aria-live="polite">Adjust the preview, then choose Save &amp; Apply when you want the viewer overlay to use it.</p>
+        </section>
+
+        <section id="connector-view" class="view-panel hidden">
+          <div class="connector-stack">
+            <section class="connector-card">
+              <p class="eyebrow">LOCAL OVERLAY CONNECTOR</p>
+              <h2>One reusable live ledger</h2>
+              <p>The connector receives only the Whatnot buyer and assigned spot number, such as <b>17</b>. BreakSuite looks up block 17 in the saved board and removes that exact card from the overlay. Card names, stars, and diamonds are never used for matching.</p>
+              <div class="connector-endpoint"><span>Local endpoint</span><code>http://127.0.0.1:8878/api/ledger/number</code></div>
+              <div id="connector-status" class="connector-status" aria-live="polite">Checking local connector…</div>
+            </section>
+            <section class="connector-card connector-check-card">
+              <p class="eyebrow">READY CHECKLIST</p>
+              <h2>Display handoff</h2>
+              <div id="connector-checks" class="ready-checks" aria-live="polite"></div>
+              <div class="connector-test-row"><label for="connector-test-block">Simulate an Assigned spot<select id="connector-test-block" disabled><option>Save a board first</option></select></label><label for="connector-test-buyer">Test buyer<input id="connector-test-buyer" value="Test Buyer" maxlength="180" /></label><button class="secondary-button" id="send-connector-test" disabled>Send Test Assignment</button></div>
+              <div class="connector-test-actions"><button class="secondary-button" id="run-connector-stress-test" disabled>Run Full Stress Test · 15 Test Buyers</button><button class="secondary-button" id="reset-connector-test" disabled>Reset Test Assignments</button></div>
+              <p id="connector-test-result" class="maintenance-status" aria-live="polite">The one-card test sends the same buyer + spot-number information as an Assigned row. Full Stress Test clears prior simulated calls, then shares every ready saved block across up to 15 random Test Buyers. Neither test contacts Whatnot; Reset restores only simulated assignments.</p>
+            </section>
+          </div>
+        </section>
+
+        <section id="breaker-view" class="view-panel hidden">
+          <div class="breaker-heading">
+            <div><p class="eyebrow">INTERNAL BREAK CONTROL</p><h2>Breaker Center</h2><p>Track priority cards, buyer bags, confirmed buyer spend, and buyer activity from the saved live ledger. This page is for you only and is never shown in the OBS overlay.</p></div>
+            <div id="breaker-summary" class="breaker-summary" aria-live="polite"></div>
+          </div>
+          <section class="breaker-panel spot-odds-panel">
+            <div class="section-heading breaker-odds-heading"><div><p class="eyebrow">LIVE SPOT FORECAST</p><h2>Top-hit spot odds</h2><p>For the next randomly assigned available spot. These are board spot odds, not booster-pack pull odds.</p></div><div id="breaker-odds-total" class="breaker-odds-total" aria-live="polite"></div></div>
+            <div id="breaker-odds" class="breaker-odds" aria-live="polite"></div>
+          </section>
+          <section class="breaker-panel priority-panel">
+            <div class="section-heading"><div><h2>Priority cards remaining</h2><p>Choose a rarity group to see exactly what is left. Assigned cards disappear from this tracker and move into Buyer Bags below.</p></div></div>
+            <div id="breaker-priority-tabs" class="breaker-priority-tabs" aria-label="Priority rarity groups"></div>
+            <div id="breaker-priority-cards" class="breaker-priority-cards" aria-live="polite"></div>
+          </section>
+          <div class="breaker-columns">
+            <section class="breaker-panel buyer-bags-panel">
+              <div class="section-heading"><div><h2>Buyer Bags</h2><p>Each assigned buyer keeps their cards and confirmed Whatnot spend together for packing and buyer giveaways.</p></div></div>
+              <div id="breaker-bags" class="buyer-bags" aria-live="polite"></div>
+            </section>
+            <aside class="breaker-panel buyer-ranking-panel">
+              <p class="eyebrow">LIVE ACTIVITY</p><h2>Buyer spending</h2><p class="ranking-help">Ranks buyers by confirmed spend, then by assigned cards. Pending payments never count.</p>
+              <ol id="breaker-ranking" class="buyer-ranking" aria-live="polite"></ol>
+            </aside>
+          </div>
+        </section>
+
+        <section id="history-view" class="view-panel hidden">
+          <div class="history-heading">
+            <div><p class="eyebrow">PRIVATE BREAK ACCOUNTING</p><h2>Orders History</h2><p>Store a permanent text-only snapshot of a completed box: confirmed buyer, spot, card name, rarity, and amount paid. It never saves card pictures and does not change your live board, overlay, or Whatnot assignments.</p></div>
+            <div id="history-summary" class="history-summary" aria-live="polite"></div>
+          </div>
+          <section class="history-panel history-save-panel">
+            <div class="section-heading"><div><p class="eyebrow">STORE CURRENT BREAK</p><h2>Save the sold box</h2><p>Only confirmed Assigned spots are included. Pending payment, cancelled, refunded, and test spots are excluded. Save this after the break so you can trace sales and calculate the box result later.</p></div></div>
+            <form id="history-save-form" class="history-save-form">
+              <label>Break / box name<input id="history-break-name" maxlength="140" placeholder="Example: OP-16 Booster Box #1" /></label>
+              <label>Your box cost<input id="history-box-cost" inputmode="decimal" placeholder="Example: 120.00" /></label>
+              <label class="history-notes-label">Notes <span>(optional)</span><textarea id="history-notes" maxlength="1200" rows="3" placeholder="Case notes, pack notes, or anything you want to remember."></textarea></label>
+              <div class="history-save-actions"><button class="primary-button" type="submit">▣ Save Current Break to History</button><p id="history-save-status" class="history-status" aria-live="polite">The current live board stays open and unchanged after you save this record.</p></div>
+            </form>
+          </section>
+          <section class="history-panel">
+            <div class="section-heading"><div><p class="eyebrow">SAVED BOX RECORDS</p><h2>Buyer order history</h2><p>Each saved box keeps its total, cost, and a text-only list of card spots. Open a record to trace every buyer and assigned card.</p></div></div>
+            <div id="history-records" class="history-records" aria-live="polite"></div>
+          </section>
+        </section>
+
+        <section id="import-view" class="view-panel hidden">
+          <div class="setup-card import-card"><div class="setup-icon">⇣</div><p class="eyebrow">OFFICIAL BANDAI SOURCE</p><h2>Download and save the complete card catalog</h2><p>One click downloads the public card details from the official Bandai One Piece Card Game card list. Every card is saved into your local library as it downloads, together with its official image cache.</p><div class="info-strip"><span>✓</span> Official Bandai data only. No pricing, inventory, break assignments, or legacy catalog information.</div><button class="primary-button" id="run-import"><span>⇣</span> Download Official Cards</button><div class="import-status" id="import-status"><strong>Ready to download</strong><span>Your cards and images will stay saved after you close the app.</span></div><div class="import-progress hidden" id="import-progress"><div><span id="import-progress-label">Preparing official import…</span><b id="import-progress-count">0 cards</b></div><div class="progress-track"><i id="import-progress-bar"></i></div></div></div>
+        </section>
+
+        <section id="settings-view" class="view-panel hidden">
+          <div class="settings-stack">
+            <div class="settings-card"><p class="eyebrow">LOCAL APPLICATION</p><h2>Library settings</h2><dl><div><dt>Catalog source</dt><dd>Official Bandai One Piece Card Game</dd></div><div><dt>Database</dt><dd id="database-state">Checking local database…</dd></div><div><dt>Data policy</dt><dd>Read-only official catalog with optional saved-card shortcuts</dd></div></dl></div>
+            <div class="settings-card maintenance-card"><p class="eyebrow">LIBRARY REPAIR</p><h2>Remove duplicates and sync DON!! cards</h2><p>The repair keeps each distinct official image variant, removes repeated copies, and adds only missing DON!! printings from every supported set. It never re-imports the normal catalog or removes your saved-card shortcuts.</p><div class="maintenance-actions"><button class="secondary-button" id="repair-library">Repair &amp; Sync DON!! Cards</button><span class="maintenance-status" id="repair-status" aria-live="polite">The first update sync runs automatically in the background. You can run this again to check for newer DON!! printings.</span></div></div>
+            <div class="settings-card danger-card"><p class="eyebrow">START FRESH</p><h2>Clear the local library</h2><p>This removes every local card record, saved-card shortcut, and import history. Your downloaded official image cache is kept safely, and you can immediately import the catalog again.</p><form id="reset-library-form" class="reset-form"><label for="reset-library-confirmation">Type <b>DELETE</b> to confirm<input id="reset-library-confirmation" autocomplete="off" spellcheck="false" placeholder="DELETE" /></label><button class="danger-button" type="submit">Clear Library &amp; Start Fresh</button></form><p class="maintenance-status" id="reset-status" aria-live="polite"></p></div>
+          </div>
+        </section>
+      </main>
+    </div>
+    <script src="app.js"></script>
+  </body>
+</html>

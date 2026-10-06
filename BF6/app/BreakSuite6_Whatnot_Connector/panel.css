@@ -1,0 +1,13 @@
+:root { color-scheme: dark; --ink: #f4f7ff; --muted: #9eacc8; --line: #30405f; --blue: #101a31; --panel: #111b31; --gold: #ffd05a; --mint: #54e0c1; --danger: #ff9aa8; }
+* { box-sizing: border-box; }
+body { min-width: 320px; margin: 0; color: var(--ink); background: #081226; font-family: Inter, Arial, sans-serif; }
+.panel-shell { display: grid; gap: 12px; padding: 15px; }
+header { display: flex; align-items: center; gap: 10px; }.bolt { display: grid; width: 34px; height: 34px; place-items: center; color: #142136; border-radius: 10px; background: linear-gradient(145deg, #8ed5ff, #8d7af8); font-size: 23px; font-weight: 900; }header p, .eyebrow { margin: 0; color: #a68bff; font-size: 10px; font-weight: 850; letter-spacing: .13em; }header h1 { margin: 2px 0 0; font-size: 17px; }
+.ledger-banner { padding: 10px; color: #d2fff1; border: 1px solid rgba(84,224,193,.65); border-radius: 8px; background: rgba(25,115,91,.22); font-size: 12px; font-weight: 750; }.ledger-banner.warn { color: #ffe4a1; border-color: rgba(255,208,90,.55); background: rgba(112,78,13,.25); }
+.preflight, .delivery { padding: 14px; border: 1px solid var(--line); border-radius: 10px; background: linear-gradient(145deg, #121d34, #0d162a); }.preflight h2 { margin: 6px 0 4px; color: var(--gold); font-size: 16px; }.preflight h2.ready { color: var(--mint); }.preflight > p:not(.eyebrow) { margin: 0 0 12px; color: var(--muted); font-size: 12px; line-height: 1.4; }
+.checks { display: grid; gap: 6px; margin: 11px 0; }.check { display: flex; gap: 7px; color: #aebbd5; font-size: 11px; line-height: 1.35; }.check i { color: #7686a6; font-style: normal; }.check.ok { color: #c9f9ed; }.check.ok i { color: var(--mint); }.check.fail i { color: var(--danger); }
+button { width: 100%; min-height: 39px; border-radius: 8px; font-weight: 850; cursor: pointer; }.gold-button { color: #14182a; border: 0; background: linear-gradient(135deg, #ffe078, #ffbf47); }.outline-button { color: #f0f4ff; border: 1px solid #455779; background: #0b1427; }.actions { display: grid; gap: 8px; }.scan-note { min-height: 29px; margin: 9px 0 0; color: #afbdd5; font-size: 11px; line-height: 1.4; }.delivery strong { display: block; margin-top: 8px; color: #dfe8fa; font-size: 12px; line-height: 1.4; }footer { color: #7889a8; font-size: 10px; line-height: 1.4; text-align: center; }
+
+details { margin: 10px 0; color: var(--muted); font-size: 11px; }
+summary { cursor: pointer; padding: 6px 0; }
+button:disabled { opacity: .55; cursor: wait; }

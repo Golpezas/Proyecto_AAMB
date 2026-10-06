@@ -1,0 +1,28 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>BreakSuite6 Active Case Status</title>
+    <link rel="stylesheet" href="/active-case.css?v=360" />
+  </head>
+  <body class="no-active-case">
+    <main class="active-case-overlay" aria-live="polite">
+      <section id="active-case-shell" class="active-case-shell" hidden>
+        <div class="active-case-crest" aria-hidden="true"><span>✦</span><i></i></div>
+        <div class="active-case-copy">
+          <div class="active-case-heading"><span>ACTIVE CASE</span><small id="active-case-set">Waiting for case</small></div>
+          <h1 id="active-case-name">Case Tracker</h1>
+          <div class="active-case-progress"><i id="active-case-progress-bar"></i></div>
+        </div>
+        <div class="active-case-count"><span>BOXES OPENED</span><strong><b id="active-case-opened">0</b><i>/</i><em id="active-case-total">0</em></strong></div>
+        <div class="active-case-stats">
+          <div><span>NEXT</span><b id="active-case-next">Box 01</b></div>
+          <div><span>REMAINING</span><b id="active-case-remaining">0</b></div>
+          <div><span>TRACKED HITS</span><b id="active-case-hits">0</b></div>
+        </div>
+      </section>
+    </main>
+    <script src="/active-case.js?v=360"></script>
+  </body>
+</html>
