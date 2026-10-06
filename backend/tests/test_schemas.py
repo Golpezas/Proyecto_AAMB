@@ -46,6 +46,30 @@ def test_wallet_subscribe_request_rejects_bad_address():
     with pytest.raises(ValidationError):
         WalletSubscribeRequest(channel_handle="c", wallet_address="0xnope")
 
+def test_wallet_subscribe_request_valid_e164_phone():
+    req = WalletSubscribeRequest(
+        channel_handle="c", wallet_address="0x" + "a" * 40, phone="+15551234567"
+    )
+    assert req.phone == "+15551234567"
+
+def test_wallet_subscribe_request_rejects_bad_phone():
+    with pytest.raises(ValidationError):
+        WalletSubscribeRequest(
+            channel_handle="c", wallet_address="0x" + "a" * 40, phone="garbage"
+        )
+
+def test_wallet_subscribe_request_allows_none_phone():
+    req = WalletSubscribeRequest(
+        channel_handle="c", wallet_address="0x" + "a" * 40, phone=None
+    )
+    assert req.phone is None
+
+def test_subscribe_request_rejects_trailing_newline_phone():
+    with pytest.raises(ValidationError):
+        SubscribeRequest(
+            channel_handle="c", pin="123456", phone="+15551234567\n"
+        )
+
 def test_ping_create_defaults_to_push():
     ping = PingCreate(channel_id="ch_1", message="hello")
     assert ping.delivery_method == "push"

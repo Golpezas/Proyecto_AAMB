@@ -12,7 +12,7 @@ class SubscribeRequest(BaseModel):
     @field_validator("phone")
     @classmethod
     def validate_phone(cls, v: str) -> str:
-        if not re.match(r"^\+[1-9]\d{7,14}$", v):
+        if not re.fullmatch(r"\+[1-9]\d{7,14}", v):
             raise ValueError("Phone must be E.164 format, e.g. +15551234567")
         return v
 
@@ -20,6 +20,15 @@ class WalletSubscribeRequest(BaseModel):
     channel_handle: str
     wallet_address: str = Field(pattern=r"^0x[0-9a-fA-F]{40}$")
     phone: str | None = None
+
+    @field_validator("phone")
+    @classmethod
+    def validate_phone(cls, v: str | None) -> str | None:
+        if v is None:
+            return v
+        if not re.fullmatch(r"\+[1-9]\d{7,14}", v):
+            raise ValueError("Phone must be E.164 format, e.g. +15551234567")
+        return v
 
 class PingCreate(BaseModel):
     channel_id: str
