@@ -448,7 +448,7 @@ async def test_pin_endpoint_removed(api_client, auth_headers, seeded_channel):
         f"/api/v1/channels/{seeded_channel.id}/pin", json={"pin": "123456"},
         headers=auth_headers,
     )
-    assert resp.status_code == 405  # route gone
+    assert resp.status_code in (404, 405)  # route gone (404 if no sibling method shares the path template)
 ```
 
 (`auth_headers`/`seeded_channel` fixtures already exist in that file from Task 7.)
@@ -1211,31 +1211,36 @@ from unittest.mock import patch, AsyncMock
 
 from app.db.repositories import ChannelRepo, CreatorRepo, AnonymousLinkRepo, DeviceTokenRepo
 
-# Fixtures — defined in this file to avoid cross-test dependencies
+# Fixtures — defined in this file to avoid cross-test dependencies.
+# CRITICAL: the JWT `sub` and the seeded channel's creator_id must be the
+# SAME uuid — `CreatorRepo.create(email, handle)` generates its own id, so
+# use `CreatorRepo.upsert(sub, ...)` (repositories.py:47) with a shared sub.
 TEST_SECRET = "test-supabase-jwt-secret-do-not-use-in-prod"
 AUDIENCE = "authenticated"
 
-def mint_token(sub: str | None = None, email: str = "creator@example.com", *, secret: str = TEST_SECRET) -> str:
+def mint_token(sub: str, email: str = "creator@example.com", *, secret: str = TEST_SECRET) -> str:
     import jwt
-    payload = {"sub": sub or str(uuid.uuid4()), "aud": AUDIENCE}
-    if email: payload["email"] = email
-    return jwt.encode(payload, secret, algorithm="HS256")
+    return jwt.encode({"sub": sub, "aud": AUDIENCE, "email": email}, secret, algorithm="HS256")
 
 def bearer(token: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {token}"}
 
 @pytest.fixture
-def auth_headers():
-    return bearer(mint_token())
+def creator_sub() -> str:
+    return str(uuid.uuid4())
+
+@pytest.fixture
+def auth_headers(creator_sub):
+    return bearer(mint_token(creator_sub))
 
 @pytest.fixture
 def auth_headers2():
-    return bearer(mint_token(email="other@example.com"))
+    return bearer(mint_token(str(uuid.uuid4()), email="other@example.com"))
 
 @pytest.fixture
-async def seeded_channel_with_fans(db_session):
-    creator = await CreatorRepo(db_session).create(
-        email="c@example.com", handle="testchan"
+async def seeded_channel_with_fans(db_session, creator_sub):
+    creator = await CreatorRepo(db_session).upsert(
+        creator_sub, email="c@example.com", handle="testchan"
     )
     channel = await ChannelRepo(db_session).create(
         creator_id=creator.id, handle="testchan", signing_key="sk_test_123"
@@ -1252,6 +1257,8 @@ async def seeded_channel_with_fans(db_session):
     )
     return channel
 ```
+
+The same rule applies to **every** new test module that seeds a channel directly via repos (T22 worker, T24 go-live, T26 api-keys): define `creator_sub` locally, mint the JWT with it, and seed via `CreatorRepo.upsert(creator_sub, ...)`. Fixtures in `test_channels.py` are module-local and NOT importable from other test files — do not try to import them.
     with patch("app.api.pings.fanout_ping", new_callable=AsyncMock, return_value=2):
         resp = await api_client.post(
             "/api/v1/pings",
@@ -1772,14 +1779,14 @@ async def authorize_channel_access(
             return channel
         raise HTTPException(status_code=401, detail="Invalid channel key")
     if authorization is not None:
-        creator_id = await get_current_creator_id(authorization)  # plain async call
+        creator_id = get_current_creator_id(authorization)  # sync call, raw header value
         if str(channel.creator_id) != creator_id:
             raise HTTPException(status_code=403, detail="Not your channel")
         return channel
     raise HTTPException(status_code=401, detail="Missing credentials")
 ```
 
-(`get_current_creator_id` is a plain async function — call it directly with the raw `Authorization` header value; if its signature differs, wrap it without changing its behavior for existing JWT-only routes.)
+(`get_current_creator_id` at `backend/app/core/auth.py:82` is a **synchronous** function taking the raw `Authorization` header string — call it directly, no `await`. Its `Header(default=None)` default never applies on a direct call; it raises 401/500 via `_decode_creator_claims` exactly as on the JWT-only routes.)
 
 `api/api_keys.py`: `POST /channels/{channel_id}/api-key` and `DELETE …` — JWT (`get_current_creator_id` dependency) + owner check exactly like Task 24's `/live`; generate `"pin_sk_" + secrets.token_hex(24)`, store `sha256` hex digest via `set_api_key_hash`, return `{"api_key": key}`; DELETE sets hash to `None`. Register router in `create_app()`.
 
