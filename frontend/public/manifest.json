@@ -1,0 +1,7 @@
+{
+  "name": "PIN — Private Instant Notification",
+  "short_name": "PIN",
+  "start_url": "/",
+  "display": "standalone",
+  "gcm_sender_id": "103953800507"
+}
