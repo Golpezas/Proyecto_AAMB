@@ -7,7 +7,9 @@ A privacy-preserving notification platform: creators alert their audience
 
 **Creator** — A content creator (streamer, influencer, artist) who sends pings
 and go-live alerts to their audience. Owns a Channel. Authenticated via
-Supabase Auth (ADR 0005).
+Supabase Auth (ADR 0005) for management endpoints, or via a per-channel
+**Channel API Key** (`X-Channel-Key`) for machine callers such as the
+creator's own streaming tool (ADR 0006 addendum).
 
 **Fan** — An end-user who subscribes to a Creator's channel to receive
 notifications. Identified only by an embedded wallet address; the platform

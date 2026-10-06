@@ -67,6 +67,22 @@ Midnight strictly as an asynchronous notary — never in the delivery path.
    links, device tokens, event/job state — no real names, no phone numbers),
    Midnight (commitments/proofs only).
 
+## Addendum 2026-10-06 — BreakSuite6 integration & machine auth
+The client is a Whatnot card-break streamer whose daily tool is **BreakSuite6**
+(Electron, `BF6/`). BreakSuite6 has no audience-notification capability; PIN
+provides it. Consequences for this ADR:
+- The creator UX (ping composer, go-live toggle) lives **inside BreakSuite6**,
+  not in a Next.js dashboard (deferred to post-MVP).
+- **Machine callers authenticate with a per-channel API key**: `X-Channel-Key`
+  header, key format `pin_sk_<48 hex>`, only the SHA-256 hash stored in
+  `channels.api_key_hash`, scoped to exactly one channel and to the
+  machine-reachable endpoints (`POST /pings`, `POST /channels/{id}/live`).
+  Creator JWT (rule 4) is unchanged and remains the only auth for management
+  endpoints, including key generation/revocation.
+- BreakSuite6 fires go-live automatically when its connector's Prepare Show →
+  SHOW READY flow completes — fire-and-forget, mirroring invariant 6 (the
+  break must never wait on or fail because of PIN).
+
 ## Consequences
 - **Pros**: the privacy invariant becomes *stronger* (no fan phone numbers
   anywhere in our systems, not even encrypted); the operational core already

@@ -1,12 +1,18 @@
-# Ping Platform — Hybrid Pivot Implementation Plan (Tasks 18–30)
+# Ping Platform — Hybrid Pivot Implementation Plan (Tasks 18–31)
 
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-**Goal:** Reorient the platform to the hybrid Web 2.5 architecture (ADR 0006): wallet-signed fan identity, push-only delivery via OneSignal, GO LIVE alerts, and a Midnight notary stub — then ship the frontend and deployments.
+**Goal:** Reorient the platform to the hybrid Web 2.5 architecture (ADR 0006): wallet-signed fan identity, push-only delivery via OneSignal, GO LIVE alerts, and a Midnight notary stub — then ship the fan-facing frontend, the BreakSuite6 integration, and deployments.
 
-**Architecture:** Keep the proven FastAPI/Supabase core (Tasks 1–7). Remove all phone/PIN-code machinery. Fans act through EIP-191 signatures over canonical messages (no fan sessions). QStash fans out one job per active fan; the worker sends via OneSignal using stored device ids; go-live events additionally publish a best-effort notary job. Next.js frontend: creators use Supabase Auth JWT, fans use Privy embedded wallets + OneSignal Web SDK.
+**Architecture:** Keep the proven FastAPI/Supabase core (Tasks 1–7). Remove all phone/PIN-code machinery. Fans act through EIP-191 signatures over canonical messages (no fan sessions). QStash fans out one job per active fan; the worker sends via OneSignal using stored device ids; go-live events additionally publish a best-effort notary job. Next.js frontend: fans use Privy embedded wallets + OneSignal Web SDK.
 
-**Tech Stack:** FastAPI, Pydantic v2, SQLAlchemy 2.0 async, Supabase (PostgreSQL), eth-account (EIP-191 recovery), Upstash Redis/QStash, OneSignal (web push), Next.js 14, Tailwind, shadcn/ui, `@privy-io/react-auth`, `react-onesignal`, `@supabase/supabase-js`, Vercel + Render.
+**Revision 2026-10-06 (BreakSuite6 integration):** The client is a Whatnot card-break streamer whose daily tool is **BreakSuite6** (Electron app, `BF6/` — committed baseline `287537d`). BreakSuite6 has zero audience-notification capability; PIN provides it. Decisions:
+- The creator UX (ping composer + go-live toggle) lives **inside BreakSuite6** (Task 31), not in a Next.js dashboard — the old Task 26 dashboard is deferred to post-MVP.
+- BreakSuite6 authenticates to the backend with a **per-channel API key** (`X-Channel-Key` header, SHA-256 hash stored, plaintext shown once — Task 26). JWT creator auth stays for the (deferred) dashboard.
+- Go-live triggers automatically when the connector's **Prepare Show → SHOW READY** flow completes (hook on `/api/connector/reconcile` in BF6 `main.js`), with a settings toggle.
+- Fan acquisition: the client shares his `/join/<handle>` URL in his Whatnot profile/chat/show — the fan join page (Task 27) is the only fan-facing surface.
+
+**Tech Stack:** FastAPI, Pydantic v2, SQLAlchemy 2.0 async, Supabase (PostgreSQL), eth-account (EIP-191 recovery), Upstash Redis/QStash, OneSignal (web push), Next.js 14, Tailwind, shadcn/ui, `@privy-io/react-auth`, `react-onesignal`, Electron 37 (BreakSuite6), Vercel + Render.
 
 **Spec:** `CONTEXT.md`, `docs/adr/0006-hybrid-architecture.md` (primary), `docs/adr/0004-message-delivery.md`, `docs/adr/0005-creator-authentication.md`. ADR 0003 is superseded — do not implement it.
 
@@ -26,7 +32,8 @@
   - `PIN:unsubscribe:@alice:0xabc...def:1760000000`
   - `PIN:device:0xabc...def:0192f...:1760000000`
   - `PIN:device-revoke:0xabc...def:0192f...:1760000000`
-- Every task ends with **all tests passing** (`cd backend && python -m pytest -v`), `ruff check .` clean for touched files, and a commit
+- Machine callers (BreakSuite6) authenticate with `X-Channel-Key: pin_sk_<secret>`; only the SHA-256 hash is stored (`channels.api_key_hash`); the key authorizes exactly one channel and only `POST /pings` + `POST /channels/{id}/live`
+- Every task ends with **all tests passing** (`cd backend && python -m pytest -v`), `ruff check .` clean for touched files, and a commit. BreakSuite6 tasks end with `npm run verify` green in `BF6/app` and a commit touching `BF6/`
 - Router registration pattern: import + `app.include_router(...)` in `create_app()` in `backend/app/main.py` (see existing subscription/channels routers)
 - Test harness: use the `api_client` fixture (async httpx + ASGITransport) from `backend/tests/conftest.py`; per-task fixtures go in the task's test module or conftest
 
@@ -1574,7 +1581,7 @@ Register: import `publish` from queue_service into channels.py. Worker: add `Not
 
 Add `GoLiveRequest`/`GoLiveResponse`/`ChannelStatusResponse` to `models/schemas.py` (public API schemas live there; `GoLiveRequest` may stay local to channels.py like other request models).
 
-Also add the dashboard's channel lookup (needed by Task 26 — there is no list endpoint and `POST /channels` would collide on the `UNIQUE(creator_id)` constraint added in Task 19):
+Also add the creator's channel lookup (used by the deferred dashboard and by BreakSuite6 settings validation later — there is no list endpoint and `POST /channels` would collide on the `UNIQUE(creator_id)` constraint added in Task 19):
 
 ```python
 @router.get("/channels/mine", response_model=ChannelStatusResponse)
@@ -1646,11 +1653,11 @@ export default function Home() {
 
 ```bash
 NEXT_PUBLIC_API_URL=http://localhost:8000
-NEXT_PUBLIC_SUPABASE_URL=https://xxx.supabase.co
-NEXT_PUBLIC_SUPABASE_ANON_KEY=eyJ...
 NEXT_PUBLIC_PRIVY_APP_ID=...
 NEXT_PUBLIC_ONESIGNAL_APP_ID=...
 ```
+
+(No `NEXT_PUBLIC_SUPABASE_*` — fans authenticate by wallet signature only; the frontend never talks to Supabase Auth. Creator login was deferred with the dashboard.)
 
 - [ ] **Step 4: Verify** — `cd frontend && npm run dev` → page renders; `npm run build` passes.
 
@@ -1658,143 +1665,167 @@ NEXT_PUBLIC_ONESIGNAL_APP_ID=...
 
 ---
 
-### Task 26: Creator auth + dashboard
+### Task 26: Channel API keys (machine auth for BreakSuite6)
 
-**Files:** `frontend/lib/supabase.ts`, `frontend/lib/api.ts`, `frontend/app/login/page.tsx`, `frontend/app/dashboard/page.tsx`, `frontend/components/ping-composer.tsx`, `frontend/components/stats-card.tsx`, `frontend/components/live-toggle.tsx`
+**Files:**
+- Create: `backend/supabase/migrations/0008_channel_api_keys.sql`, `backend/app/api/api_keys.py`, `backend/app/core/channel_auth.py`
+- Modify: `backend/app/db/models.py` (Channel.api_key_hash), `backend/app/db/repositories.py` (ChannelRepo: `set_api_key_hash`, `get_by_api_key_hash`), `backend/app/api/pings.py` + `backend/app/api/channels.py` (`/live`) to accept dual auth, `backend/app/main.py` (router)
+- Test: `backend/tests/test_api_keys.py`
 
 **Interfaces:**
-- Consumes: `POST /api/v1/channels` (Task 7), `POST /api/v1/pings`, `GET /api/v1/channels/{id}/stats`, `POST /api/v1/channels/{id}/live`, `GET /api/v1/channels/mine` (Task 24), Supabase Auth JWT (ADR 0005)
-- Produces: authenticated dashboard; API client helper `api(path, {method, body})` attaching `Authorization: Bearer <access_token>`
-- **Constraint: do NOT modify `frontend/app/layout.tsx`** (Task 27 owns the root layout — Privy/OneSignal providers).
+- Consumes: creator JWT auth (Task 7), ping/live endpoints (Tasks 23/24)
+- Produces (Task 31 relies on these):
+  - `POST /api/v1/channels/{channel_id}/api-key` (JWT, owner only) → `{api_key: "pin_sk_<48 hex>"}` — **plaintext returned once**, never again
+  - `DELETE /api/v1/channels/{channel_id}/api-key` (JWT, owner only) → `{success: true}`
+  - `channel_auth.authorize_channel_access(session, channel_id, x_channel_key: str | None, authorization: str | None) -> Channel` — plain async helper (not a FastAPI dependency): `X-Channel-Key` whose SHA-256 matches the channel's `api_key_hash` **or** a creator JWT owning the channel; 401 missing/invalid, 403 wrong owner, 404 unknown channel
+  - `POST /api/v1/pings` and `POST /api/v1/channels/{id}/live` accept **either** credential; all other channel endpoints stay JWT-only
 
-- [ ] **Step 1: Supabase client + API helper**
+Key design: key = `"pin_sk_" + secrets.token_hex(24)`; store only `sha256(key).hexdigest()` (high-entropy → plain SHA-256, no bcrypt); partial unique index on `api_key_hash`.
 
-```ts
-// frontend/lib/supabase.ts
-import { createClient } from "@supabase/supabase-js";
-export const supabase = createClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
+- [ ] **Step 1: Failing tests** — `backend/tests/test_api_keys.py`
+
+Reuse the `mint_token`/`bearer` + seeded-channel pattern from `test_channels.py` (synthesize HS256; JWT autouse fixture). Mock `app.api.pings.fanout_ping` / `app.api.channels.fanout_ping`+`publish` as in Tasks 23/24.
+
+```python
+async def test_generate_key_returns_plaintext_once(api_client, auth_headers, seeded_channel):
+    resp = await api_client.post(f"/api/v1/channels/{seeded_channel.id}/api-key", headers=auth_headers)
+    assert resp.status_code == 200
+    key = resp.json()["api_key"]
+    assert key.startswith("pin_sk_") and len(key) == 7 + 48
+    # DB stores only the hash — plaintext must not be retrievable
+    # (assert via ChannelRepo: api_key_hash == sha256(key), and no column equals key)
+
+
+async def test_ping_with_channel_key(api_client, seeded_channel, db_session):
+    key = await _make_key(api_client, auth_headers_for(seeded_channel), seeded_channel)
+    with patch("app.api.pings.fanout_ping", new_callable=AsyncMock, return_value=0):
+        resp = await api_client.post("/api/v1/pings",
+            json={"channel_id": str(seeded_channel.id), "message": "hi"},
+            headers={"X-Channel-Key": key})
+    assert resp.status_code == 200
+
+
+async def test_key_scoped_to_own_channel(api_client, db_session):
+    # key minted for channel A used on channel B's /pings → 403
+
+
+async def test_regenerate_invalidates_old_key(api_client, auth_headers, seeded_channel): ...
+    # generate k1 → generate k2 → ping with k1 → 401; ping with k2 → 200
+
+
+async def test_revoke_key(api_client, auth_headers, seeded_channel): ...
+    # DELETE → ping with key → 401; same request with JWT → 200
+
+
+async def test_no_credentials_401(api_client, seeded_channel): ...
+    # POST /pings with neither X-Channel-Key nor Authorization → 401
+
+
+async def test_go_live_with_channel_key(api_client, seeded_channel): ...
+    # POST /channels/{id}/live {"live": true} with X-Channel-Key, fanout+publish mocked → 200
 ```
 
-```tsx
-// frontend/lib/api.ts
+(`_make_key`/`auth_headers_for` are small local helpers; `auth_headers_for` mints a token whose `sub` matches the seeded channel's creator — follow `test_channels.py`'s create-then-mint flow.)
+
+- [ ] **Step 2: Verify failure** → FAIL (404 on api-key route, 401 on key auth)
+
+- [ ] **Step 3: Migration `0008_channel_api_keys.sql`**
+
+```sql
+-- ADR 0006 (2026-10-06 revision): machine callers (BreakSuite6) use a
+-- per-channel API key; only the SHA-256 hash is stored.
+ALTER TABLE channels ADD COLUMN api_key_hash TEXT;
+CREATE UNIQUE INDEX idx_channels_api_key_hash
+    ON channels(api_key_hash) WHERE api_key_hash IS NOT NULL;
+```
+
+(Model: `api_key_hash: Mapped[str | None] = mapped_column(Text, nullable=True)`; repos: `set_api_key_hash(channel_id, hash: str | None)`, `get_by_api_key_hash(digest)`.)
+
+- [ ] **Step 4: `core/channel_auth.py` + `api/api_keys.py`**
+
+```python
+# backend/app/core/channel_auth.py
+# Dual auth for machine-reachable endpoints: a per-channel API key
+# (X-Channel-Key) or the owning creator's Supabase JWT. Everything else
+# stays JWT-only (ADR 0005 + 2026-10-06 revision).
+import hashlib
+
+from fastapi import HTTPException
+from sqlalchemy.ext.asyncio import AsyncSession
+
+from app.core.auth import get_current_creator_id
+from app.db.repositories import ChannelRepo
+
+
+async def authorize_channel_access(
+    session: AsyncSession,
+    channel_id: str,
+    x_channel_key: str | None,
+    authorization: str | None,
+):
+    channel = await ChannelRepo(session).get(channel_id)
+    if channel is None:
+        raise HTTPException(status_code=404, detail="Channel not found")
+    if x_channel_key is not None:
+        digest = hashlib.sha256(x_channel_key.encode()).hexdigest()
+        if channel.api_key_hash is not None and channel.api_key_hash == digest:
+            return channel
+        raise HTTPException(status_code=401, detail="Invalid channel key")
+    if authorization is not None:
+        creator_id = await get_current_creator_id(authorization)  # plain async call
+        if str(channel.creator_id) != creator_id:
+            raise HTTPException(status_code=403, detail="Not your channel")
+        return channel
+    raise HTTPException(status_code=401, detail="Missing credentials")
+```
+
+(`get_current_creator_id` is a plain async function — call it directly with the raw `Authorization` header value; if its signature differs, wrap it without changing its behavior for existing JWT-only routes.)
+
+`api/api_keys.py`: `POST /channels/{channel_id}/api-key` and `DELETE …` — JWT (`get_current_creator_id` dependency) + owner check exactly like Task 24's `/live`; generate `"pin_sk_" + secrets.token_hex(24)`, store `sha256` hex digest via `set_api_key_hash`, return `{"api_key": key}`; DELETE sets hash to `None`. Register router in `create_app()`.
+
+- [ ] **Step 5: Wire dual auth into pings + live**
+
+In `pings.py` `create_ping` and `channels.py` `set_live`: drop the `get_current_creator_id` dependency + manual owner check; accept `x_channel_key: Annotated[str | None, Header()] = None` and `authorization: Annotated[str | None, Header()] = None` params, then `channel = await authorize_channel_access(session, <id>, x_channel_key, authorization)` and use `channel` directly. Keep every other endpoint (stats, `/mine`, api-key management, `GET /pings/{id}`) JWT-only.
+
+- [ ] **Step 6: Run suite** → PASS (Tasks 23/24 tests still green — they use JWT `auth_headers`, which the dual-auth path must keep accepting)
+
+- [ ] **Step 7: Commit**
+
+```bash
+git add backend/ && git commit -m "feat: per-channel API keys for machine callers (BreakSuite6)"
+```
+
+(The Next.js creator dashboard from the original Task 26 — login page, composer, stats — is **deferred to post-MVP**: the creator UX lives in BreakSuite6. Original spec preserved in git history at `17a4d1e`. The `frontend/lib/api.ts` helper moved into Task 27, simplified: fans have no Supabase session, so the frontend does not use `supabase-js` at all.)
+
+---
+
+### Task 27: Fan join flow + push opt-in
+
+**Files:** `frontend/app/layout.tsx` (PrivyProvider), `frontend/app/join/[handle]/page.tsx`, `frontend/components/fan-actions.tsx`, `frontend/components/onesignal-provider.tsx`, `frontend/public/OneSignalSDKWorker.js`, `frontend/public/manifest.json`, `frontend/lib/signing.ts`, `frontend/lib/api.ts`
+
+**Interfaces:**
+- Consumes: `POST /subscribe`, `/unsubscribe`, `/devices` (Tasks 18/20), `@privy-io/react-auth`, `react-onesignal`
+- Produces: the full fan funnel; canonical message builder shared client-side
+
+- [ ] **Step 1: Dependencies + API helper**
+
+`npm i @privy-io/react-auth react-onesignal` in `frontend/`. Set `NEXT_PUBLIC_PRIVY_APP_ID` and `NEXT_PUBLIC_ONESIGNAL_APP_ID` in `.env.local`.
+
+```ts
+// frontend/lib/api.ts — fan calls carry no Authorization header at all:
+// wallet signatures in the body are the credential (ADR 0006 rule 4).
 const API_BASE = process.env.NEXT_PUBLIC_API_URL ?? "http://localhost:8000";
 
 export async function api(path: string, opts: { method?: string; body?: unknown } = {}) {
-  const { data } = await supabase.auth.getSession();
   const res = await fetch(`${API_BASE}/api/v1${path}`, {
     method: opts.method ?? "GET",
-    headers: {
-      "Content-Type": "application/json",
-      ...(data.session?.access_token ? { Authorization: `Bearer ${data.session.access_token}` } : {}),
-    },
+    headers: { "Content-Type": "application/json" },
     body: opts.body ? JSON.stringify(opts.body) : undefined,
   });
   if (!res.ok) throw new Error((await res.json()).detail ?? `HTTP ${res.status}`);
   return res.json();
 }
 ```
-
-- [ ] **Step 2: Login page**
-
-```tsx
-// frontend/app/login/page.tsx
-"use client";
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { supabase } from "@/lib/supabase";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-
-export default function LoginPage() {
-  const router = useRouter();
-  const [email, setEmail] = useState("");
-  const [password, setPassword] = useState("");
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleAuth(mode: "signup" | "login") {
-    setError(null);
-    const fn = mode === "signup" ? supabase.auth.signUp : supabase.auth.signInWithPassword;
-    const { error: err } = await fn({ email, password }); // signUp: fn({email, password})
-    if (err) return setError(err.message);
-    router.push("/dashboard");
-  }
-  // render email + password Input + two Buttons (Create account / Sign in)
-}
-```
-
-- [ ] **Step 3: Dashboard**
-
-Flow (no list endpoint exists; `GET /channels/mine` from Task 24 resolves the channel in one call):
-
-1. On mount, `api("/channels/mine")` (catch 404 → show create-channel form with `handle` input → `POST /channels` → keep the returned `channel_id` in component state).
-2. If a channel exists, render composer + stats + live toggle with its id. Do **not** store the channel id in localStorage — `/channels/mine` is authoritative on every load.
-
-Composer (binding):
-
-```tsx
-// frontend/components/ping-composer.tsx
-"use client";
-import { useState } from "react";
-import { Button } from "@/components/ui/button";
-import { Textarea } from "@/components/ui/textarea";
-import { api } from "@/lib/api";
-
-export function PingComposer({ channelId }: { channelId: string }) {
-  const [message, setMessage] = useState("");
-  const [sending, setSending] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-
-  async function handleSend() {
-    setSending(true);
-    setError(null);
-    try {
-      await api("/pings", { method: "POST", body: { channel_id: channelId, message } });
-      setMessage("");
-    } catch (e) {
-      setError(e instanceof Error ? e.message : "Failed");
-    } finally {
-      setSending(false);
-    }
-  }
-
-  return (
-    <div className="space-y-3">
-      <Textarea placeholder="What's happening? (max 160 chars)" maxLength={160}
-        value={message} onChange={(e) => setMessage(e.target.value)} />
-      {error && <p className="text-sm text-destructive">{error}</p>}
-      <div className="flex justify-between items-center">
-        <span className="text-sm text-muted-foreground">{message.length}/160</span>
-        <Button onClick={handleSend} disabled={sending || !message.trim()}>
-          {sending ? "Sending..." : "Send Ping"}
-        </Button>
-      </div>
-    </div>
-  );
-}
-```
-
-`stats-card.tsx` fetches `/channels/{id}/stats`; `live-toggle.tsx` reads `/channels/{id}` and POSTs `/channels/{id}/live` flipping `live`.
-
-- [ ] **Step 4: Verify** — `npm run dev` → login → create channel → composer sends (backend may be down: error path must render, not crash); `npm run build` passes.
-
-- [ ] **Step 5: Commit** — `git add frontend/ && git commit -m "feat: creator dashboard with auth, composer, stats, live toggle"`
-
----
-
-### Task 27: Fan join flow + push opt-in
-
-**Files:** `frontend/app/layout.tsx` (PrivyProvider), `frontend/app/join/[handle]/page.tsx`, `frontend/components/fan-actions.tsx`, `frontend/components/onesignal-provider.tsx`, `frontend/public/OneSignalSDKWorker.js`, `frontend/public/manifest.json`, `frontend/lib/signing.ts`
-
-**Interfaces:**
-- Consumes: `POST /subscribe`, `/unsubscribe`, `/devices` (Tasks 18/20), `@privy-io/react-auth`, `react-onesignal`
-- Produces: the full fan funnel; canonical message builder shared client-side
-
-- [ ] **Step 1: Dependencies**
-
-`npm i @privy-io/react-auth react-onesignal` in `frontend/`. Set `NEXT_PUBLIC_PRIVY_APP_ID` and `NEXT_PUBLIC_ONESIGNAL_APP_ID` in `.env.local`.
 
 - [ ] **Step 2: Root layout with PrivyProvider**
 
@@ -1985,7 +2016,7 @@ services:
 
 - [ ] **Step 2: Apply migrations to cloud Supabase**
 
-Run: `cd backend && supabase link --project-ref <ref>` then `supabase db push` (requires Supabase CLI login — **may need user credentials**; if unavailable, fall back to SQL editor: apply 0001, 0002, 0003, 0004, 0005, 0006, 0007 in order).
+Run: `cd backend && supabase link --project-ref <ref>` then `supabase db push` (requires Supabase CLI login — **may need user credentials**; if unavailable, fall back to SQL editor: apply 0001, 0002, 0003, 0004, 0005, 0006, 0007, 0008 in order).
 Expected: no errors; `SELECT tablename FROM pg_tables WHERE schemaname='public'` shows `creators, channels, fans, anonymous_links, pings, message_queue_jobs, device_tokens` and **no** `encrypted_phones`.
 
 - [ ] **Step 3: Live schema fidelity check (closes Task 4 defer #5)**
@@ -2012,7 +2043,7 @@ Set `DATABASE_URL=postgresql+asyncpg://...` (Supabase pooler) and run `python -m
 
 **Files:** `frontend/.env.example` update (all four vars), optional `frontend/vercel.json`
 
-- [ ] **Step 1: Env** — `.env.example` = `NEXT_PUBLIC_API_URL` (Render URL), `NEXT_PUBLIC_SUPABASE_URL`, `NEXT_PUBLIC_SUPABASE_ANON_KEY`, `NEXT_PUBLIC_PRIVY_APP_ID`, `NEXT_PUBLIC_ONESIGNAL_APP_ID`.
+- [ ] **Step 1: Env** — `.env.example` = `NEXT_PUBLIC_API_URL` (Render URL), `NEXT_PUBLIC_PRIVY_APP_ID`, `NEXT_PUBLIC_ONESIGNAL_APP_ID` (no Supabase vars — see Task 25).
 - [ ] **Step 2: Deploy** — `cd frontend && vercel --prod` (needs Vercel login — may need user). Verify landing + `/join/test` render.
 - [ ] **Step 3: OneSignal origin** — add the Vercel domain as allowed origin in OneSignal dashboard (manual step, note in PR).
 - [ ] **Step 4: Commit** — env example + vercel config.
@@ -2036,7 +2067,8 @@ Set `DATABASE_URL=postgresql+asyncpg://...` (Supabase pooler) and run `python -m
 7. worker called again with same key → `duplicate`
 8. fan A unsubscribes; creator sends ping 2 → worker returns `opted_out`
 9. go-live → `kind='live'` ping + notary publish called
-10. assert no wallet… (wallets are allowed) — assert **no phone-like strings** and no `signature` fields appear in any response body (`"\+?\d{7,}"` heuristic over captured responses)
+10. **machine path (Task 26)**: generate channel API key (JWT) → ping with `X-Channel-Key` → 200; go-live with `X-Channel-Key` → 200; wrong key → 401
+11. assert no wallet… (wallets are allowed) — assert **no phone-like strings** and no `signature` fields appear in any response body (`"\+?\d{7,}"` heuristic over captured responses)
 
 - [ ] **Step 2: Full suite + lint**
 
@@ -2053,10 +2085,101 @@ Fix deferred lint minors from the ledger: ruff config for I001, path-header comm
 - [ ] No phone/email PII path exists (grep: `phone|twilio|sms` in `backend/app` → only allowed comments)
 - [ ] `ruff check` clean; `npm run build` clean
 - [ ] `.env.example` files complete and accurate
-- [ ] Migrations 0001–0007 applied to cloud DB
+- [ ] Migrations 0001–0008 applied to cloud DB
 - [ ] README updated
 
 - [ ] **Step 6: Commit** — `git add -A && git commit -m "test: e2e flow, lint sweep, README"`
+
+---
+
+## Phase F — BreakSuite6 integration
+
+### Task 31: Notify panel + show-ready go-live hook (Electron)
+
+**Files:**
+- Create: `BF6/app/src/modules/PinClient.js`, `BF6/app/src/modules/PinClient.test.js`
+- Modify: `BF6/app/src/main.js` (IPC `pin:*`; auto go-live hook in the `/api/connector/reconcile` POST handler, ~main.js:7346), `BF6/app/src/preload.js` (expose `pin:*` on `window.breakSuite`), `BF6/app/src/renderer/index.html` (nav item + Notify view), `BF6/app/src/renderer/app.js` (view logic), `BF6/app/package.json` (`verify` script += `node src/modules/PinClient.test.js`)
+
+**Interfaces:**
+- Consumes: `POST {PIN_API_URL}/api/v1/pings` and `POST {PIN_API_URL}/api/v1/channels/{id}/live` with `X-Channel-Key` (Task 26); `GET {PIN_API_URL}/health`; BF6 settings persistence pattern (`app_metadata` key-value JSON, see `chaser-giveaway-v1` at main.js:255); `safeStorage` (already imported at main.js:1)
+- Produces:
+  - `PinClient` — `new PinClient({ baseUrl, channelId, apiKey })`; `sendPing(message) -> {id, status, total_recipients}`; `setLive(live: boolean) -> {is_live}`; `testConnection() -> {ok: boolean}`; throws `Error(detail)` on non-2xx
+  - Settings stored under `pin-settings-v1` in `app_metadata`: `{baseUrl, channelId, apiKeyEncrypted, autoGoLiveOnShowReady}` — `apiKeyEncrypted` via `safeStorage.encryptString` when `isEncryptionAvailable()`, plaintext + `insecureKeyStorage: true` flag otherwise
+  - IPC: `pin:get-settings`, `pin:save-settings`, `pin:send-ping`, `pin:set-live`
+
+- [ ] **Step 1: Failing tests** — `BF6/app/src/modules/PinClient.test.js` (node:test, matching the existing `.test.js` style — `node:assert/strict`; stub `globalThis.fetch`):
+
+```javascript
+const test = require('node:test');
+const assert = require('node:assert/strict');
+const { PinClient } = require('./PinClient');
+
+test('sendPing posts to /api/v1/pings with X-Channel-Key', async () => {
+  const calls = [];
+  globalThis.fetch = async (url, opts) => {
+    calls.push([url, opts]);
+    return { ok: true, status: 200, json: async () => ({ id: 'p1', status: 'queued', total_recipients: 3 }) };
+  };
+  const client = new PinClient({ baseUrl: 'https://api.example.com', channelId: 'ch1', apiKey: 'pin_sk_x' });
+  const result = await client.sendPing('Show at 5PM!');
+  assert.equal(result.total_recipients, 3);
+  const [url, opts] = calls[0];
+  assert.equal(url, 'https://api.example.com/api/v1/pings');
+  assert.equal(opts.method, 'POST');
+  assert.equal(opts.headers['X-Channel-Key'], 'pin_sk_x');
+  assert.deepEqual(JSON.parse(opts.body), { channel_id: 'ch1', message: 'Show at 5PM!' });
+});
+
+test('setLive posts to /channels/{id}/live', async () => { /* url + body {live: true} */ });
+
+test('non-2xx throws with detail message', async () => {
+  globalThis.fetch = async () => ({ ok: false, status: 402, json: async () => ({ detail: 'quota exceeded' }) });
+  await assert.rejects(() => new PinClient({ baseUrl: 'http://x', channelId: 'c', apiKey: 'k' }).sendPing('m'), /quota exceeded/);
+});
+
+test('testConnection hits /health', async () => { /* GET {baseUrl}/health → {ok:true} on 200 */ });
+```
+
+- [ ] **Step 2: Implement `PinClient.js`** — Node 18+ global `fetch`, no new dependencies (BF6 runtime deps stay at `cheerio` only). 10 s timeout via `AbortSignal.timeout(10000)`. Never log the API key.
+
+- [ ] **Step 3: main.js — settings + IPC**
+
+Follow the existing settings pattern (JSON in `app_metadata` like `chaser-giveaway-v1`, main.js:255). Add IPC handlers beside the other `ipcMain.handle` blocks:
+
+```javascript
+const { PinClient } = require('./modules/PinClient');
+const PIN_SETTINGS_KEY = 'pin-settings-v1';
+
+async function getPinSettings() { /* read app_metadata JSON, decrypt apiKey when possible */ }
+function buildPinClient(settings) {
+  if (!settings?.baseUrl || !settings?.channelId || !settings?.apiKey) return null;
+  return new PinClient(settings);
+}
+ipcMain.handle('pin:get-settings', async () => { /* never return the plaintext key — return hasKey: true */ });
+ipcMain.handle('pin:save-settings', async (_e, settings) => { /* encrypt key via safeStorage when available */ });
+ipcMain.handle('pin:send-ping', async (_e, message) => { const c = buildPinClient(await getPinSettings()); if (!c) throw new Error('PIN not configured'); return c.sendPing(message); });
+ipcMain.handle('pin:set-live', async (_e, live) => { /* same guard */ });
+```
+
+- [ ] **Step 4: Auto go-live on SHOW READY**
+
+In the `/api/connector/reconcile` POST handler (main.js ~7346 — the final step of the connector's Prepare Show flow, see `BreakSuite6_Whatnot_Connector/background.js:202-276`), after a successful response is computed: if settings `autoGoLiveOnShowReady` and a client is configured, fire `client.setLive(true)` **fire-and-forget** — `catch` and `console.error` only. The reconcile response must never wait on or fail because of PIN (mirrors ADR 0006 invariant 6: notifier failures never affect the break). Add a guard so it fires only on the `false→ready` transition, not on every reconcile.
+
+- [ ] **Step 5: preload.js** — expose `pin: { getSettings, saveSettings, sendPing, setLive }` via `ipcRenderer.invoke` (mirror existing namespaces like `chaser:*`).
+
+- [ ] **Step 6: Renderer — Notify view**
+
+Add a `.nav-item` "Notify" in `index.html` (nav block ~index.html:22-40) + matching `data-view` section. Contents: connection status line (result of `testConnection` on view open), `<textarea maxlength="160">` with char counter, **Send Ping** button, **Go Live / End Live** toggle showing current `is_live`, last-result line (`status`, `total_recipients`), and a settings fieldset (Backend URL, Channel ID, API Key `<input type="password">`, `autoGoLiveOnShowReady` checkbox, Save). Wire via `window.breakSuite.pin.*`. Reuse existing CSS classes from `styles.css` — no new design system.
+
+- [ ] **Step 7: Verify**
+
+Run: `cd BF6/app && npm run verify` → green (includes the new PinClient test after wiring it into the `verify` script). Optional smoke: `npm start` → Notify view renders; saving settings persists across restart.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add BF6/ && git commit -m "feat(bf6): PIN Notify panel with API-key ping composer and show-ready go-live hook"
+```
 
 ---
 
@@ -2074,7 +2197,9 @@ _[to fill]_
 _[to fill]_
 
 ### Next steps beyond MVP
+- Creator dashboard (Next.js): login, composer, stats — the original Task 26 spec (git history `17a4d1e`); creator UX lives in BreakSuite6 for MVP
 - Real Midnight Compact notary contract behind `NotaryPort`
 - Native iOS/Android apps (APNs/FCM direct) using the same device-token API
 - Creator wallet signing of go-live events; Privy→Supabase unified login
 - Job replay tooling for `failed`/stuck `processing` jobs
+- BreakSuite6: fan-join QR/link generator inside the Notify panel (copies `/join/<handle>` + renders QR for the stream overlay)
