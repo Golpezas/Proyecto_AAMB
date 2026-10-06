@@ -7,8 +7,10 @@ import os
 
 import bcrypt
 import pytest
+from sqlalchemy import func, select
 
 from app.core.config import settings
+from app.db.models import EncryptedPhone, Fan
 from app.db.repositories import (
     AnonymousLinkRepo,
     ChannelRepo,
@@ -112,3 +114,42 @@ async def test_subscribe_stores_encrypted_phone(
     assert decrypt_phone(row.phone_encrypted) == PHONE
     # and no ciphertext echo in the response either
     assert PHONE not in resp.text
+
+
+async def test_subscribe_failure_rolls_back_entire_flow(
+    api_client, seeded_channel, db_session, monkeypatch
+):
+    """Atomicity: a mid-flow failure must not orphan rows.
+
+    With the current (pre-fix) implementation each repo committed
+    independently, so a failure creating the AnonymousLink left the Fan
+    (and its ciphertext) behind. The unit-of-work service must roll back
+    everything it flushed before the failure.
+    """
+    async def boom(*args, **kwargs):
+        raise RuntimeError("link insert failed")
+
+    monkeypatch.setattr(AnonymousLinkRepo, "create", boom)
+
+    with pytest.raises(RuntimeError, match="link insert failed"):
+        await _subscribe(api_client, handle=seeded_channel.handle)
+
+    fan_count = (
+        await db_session.execute(select(func.count()).select_from(Fan))
+    ).scalar_one()
+    phone_count = (
+        await db_session.execute(select(func.count()).select_from(EncryptedPhone))
+    ).scalar_one()
+    assert fan_count == 0, "orphaned Fan must be rolled back"
+    assert phone_count == 0, "ciphertext must not outlive a failed subscribe"
+
+
+async def test_subscribe_validation_error_does_not_echo_phone(
+    api_client, seeded_channel
+):
+    """PII hardening: a 422 must not reflect the submitted phone value back."""
+    resp = await _subscribe(
+        api_client, handle=seeded_channel.handle, phone="garbage"
+    )
+    assert resp.status_code == 422
+    assert "garbage" not in resp.text

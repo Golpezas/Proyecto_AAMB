@@ -1,22 +1,18 @@
 # backend/app/api/subscription.py
 # Anonymous PIN-based subscription. The handler never returns (or logs) the
 # raw phone number or its ciphertext -- the response carries only the new
-# fan_id (PII isolation invariant).
+# fan_id (PII isolation invariant). The three row inserts happen in ONE
+# transaction via subscription_service.create_subscription.
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.repositories import (
-    AnonymousLinkRepo,
-    ChannelRepo,
-    EncryptedPhoneRepo,
-    FanRepo,
-)
+from app.db.repositories import ChannelRepo
 from app.db.session import get_session
 from app.models.schemas import SubscribeRequest, SubscribeResponse
-from app.services.crypto_service import encrypt_phone
 from app.services.pin_service import verify_pin
+from app.services.subscription_service import create_subscription
 
 router = APIRouter(prefix="/api/v1", tags=["subscriptions"])
 
@@ -35,13 +31,5 @@ async def subscribe(
     if not channel.pin_hash or not verify_pin(req.pin, channel.pin_hash):
         raise HTTPException(status_code=401, detail="Invalid PIN")
 
-    fan = await FanRepo(session).create()
-    await EncryptedPhoneRepo(session).create(
-        fan_id=fan.id,
-        phone_encrypted=encrypt_phone(req.phone),
-    )
-    await AnonymousLinkRepo(session).create(
-        channel_id=channel.id,
-        fan_id=fan.id,
-    )
+    fan = await create_subscription(session, channel.id, req.phone)
     return SubscribeResponse(success=True, fan_id=str(fan.id))

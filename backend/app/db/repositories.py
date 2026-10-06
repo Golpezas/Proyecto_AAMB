@@ -97,10 +97,15 @@ class FanRepo:
     async def get(self, id: str | uuid.UUID) -> Fan | None:
         return await self._session.get(Fan, _to_uuid(id))
 
-    async def create(self) -> Fan:
+    async def create(self, commit: bool = True) -> Fan:
         fan = Fan()
         self._session.add(fan)
-        await _commit(self._session)
+        if commit:
+            await _commit(self._session)
+        else:
+            # Unit-of-work mode: assign ids via flush but keep the caller's
+            # transaction open so sibling inserts commit (or roll back) as one.
+            await self._session.flush()
         await self._session.refresh(fan)
         return fan
 
@@ -108,9 +113,10 @@ class FanRepo:
 class EncryptedPhoneRepo:
     """Repo for the encrypted_phones table (PII).
 
-    Worker-only by convention: this is the ONLY code allowed to touch
-    EncryptedPhone rows. Phone ciphertexts must never appear in API
-    responses or logs -- only the messaging worker reads them at send time.
+    The READ/decrypt path is worker-only: only the messaging worker reads
+    rows and decrypts them at send time. The subscribe path writes
+    ciphertext through `create` but never decrypts it. Phone ciphertexts
+    must never appear in API responses or logs.
     """
 
     def __init__(self, session: AsyncSession) -> None:
@@ -121,6 +127,7 @@ class EncryptedPhoneRepo:
         fan_id: str | uuid.UUID,
         phone_encrypted: bytes,
         encryption_key_id: str = "v1",
+        commit: bool = True,
     ) -> EncryptedPhone:
         row = EncryptedPhone(
             fan_id=_to_uuid(fan_id),
@@ -128,7 +135,10 @@ class EncryptedPhoneRepo:
             encryption_key_id=encryption_key_id,
         )
         self._session.add(row)
-        await _commit(self._session)
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
         await self._session.refresh(row)
         return row
 
@@ -148,6 +158,7 @@ class AnonymousLinkRepo:
         channel_id: str | uuid.UUID,
         fan_id: str | uuid.UUID,
         wallet_address: str | None = None,
+        commit: bool = True,
     ) -> AnonymousLink:
         link = AnonymousLink(
             channel_id=_to_uuid(channel_id),
@@ -155,7 +166,10 @@ class AnonymousLinkRepo:
             wallet_address=wallet_address,
         )
         self._session.add(link)
-        await _commit(self._session)
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
         await self._session.refresh(link)
         return link
 
