@@ -81,6 +81,21 @@ class ChannelStatsResponse(BaseModel):
     pings_sent_this_period: int
     monthly_ping_limit: int
 
+
+class GoLiveRequest(BaseModel):
+    live: bool
+
+
+class GoLiveResponse(BaseModel):
+    is_live: bool
+
+
+class ChannelStatusResponse(BaseModel):
+    id: str
+    handle: str
+    is_live: bool
+    live_since: datetime | None = None
+
 class SendResponse(BaseModel):
     success: bool
     provider_id: str | None = None

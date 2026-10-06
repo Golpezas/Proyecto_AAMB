@@ -6,7 +6,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from pydantic import BaseModel
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.ports import PushProvider, SendResult
+from app.core.ports import NotaryPort, PushProvider, SendResult
 from app.db.repositories import (
     AnonymousLinkRepo,
     DeviceTokenRepo,
@@ -14,6 +14,7 @@ from app.db.repositories import (
     PingRepo,
 )
 from app.db.session import get_session
+from app.services.notary_service import get_notary
 from app.services.onesignal_provider import OneSignalProvider
 from app.services.rate_limiter import acquire_slot
 
@@ -27,6 +28,13 @@ class DeliverJob(BaseModel):
     message: str
     kind: str = "message"
     idempotency_key: str
+
+
+class NotaryJob(BaseModel):
+    event_id: str
+    channel_id: str
+    kind: str
+    timestamp: int
 
 
 def get_push_provider() -> PushProvider:
@@ -83,3 +91,15 @@ async def deliver(job: DeliverJob, session: Annotated[AsyncSession, Depends(get_
     await jobs.mark(job.idempotency_key, "failed", error=result.error)
     await _bump(session, job.ping_id, delivered=False)
     return {"status": "failed"}
+
+
+@router.post("/notary")
+async def notary(job: NotaryJob):
+    """Best-effort notary endpoint — never fails the go-live flow."""
+    notary_port: NotaryPort = get_notary()
+    try:
+        await notary_port.record_event(job.model_dump())
+        return {"status": "recorded"}
+    except Exception:  # noqa: BLE001
+        # Best-effort: log and return accepted, never fail
+        return {"status": "accepted"}

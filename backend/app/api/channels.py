@@ -1,5 +1,5 @@
 # backend/app/api/channels.py
-# Creator registration (channel creation).
+# Creator registration (channel creation) + go-live + channel status.
 #
 # Auth: Supabase Auth JWT verified in app.core.auth (ADR 0005). The caller's
 # `sub` IS `creators.id`, so ownership is checkable in the API even though the
@@ -9,22 +9,31 @@
 #   - responses never include signing_key (narrow response models)
 #   - one channel per creator (MVP rule, 409)
 #   - handle uniqueness across channels (409)
-import secrets
+import logging
+import time
 from typing import Annotated
 
 from fastapi import APIRouter, Depends, HTTPException
+from sqlalchemy import func
 from sqlalchemy.exc import IntegrityError
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.core.auth import CreatorClaims, get_current_creator
-from app.db.repositories import ChannelRepo, CreatorRepo
+from app.core.auth import CreatorClaims, get_current_creator, get_current_creator_id
+from app.db.repositories import ChannelRepo, CreatorRepo, PingRepo
 from app.db.session import get_session
 from app.models.schemas import (
     ChannelCreateRequest,
     ChannelCreateResponse,
+    ChannelStatusResponse,
+    GoLiveRequest,
+    GoLiveResponse,
 )
+from app.services.fanout_service import fanout_ping
+from app.services.queue_service import publish
 
 router = APIRouter(prefix="/api/v1", tags=["channels"])
+
+logger = logging.getLogger(__name__)
 
 
 @router.post("/channels", response_model=ChannelCreateResponse)
@@ -71,3 +80,87 @@ async def create_channel(
         subscription_tier=channel.subscription_tier or "free",
         monthly_ping_limit=channel.monthly_ping_limit or 100,
     )
+
+
+@router.get("/channels/mine", response_model=ChannelStatusResponse)
+async def get_my_channel(
+    session: Annotated[AsyncSession, Depends(get_session)],
+    creator_id: Annotated[str, Depends(get_current_creator_id)],
+) -> ChannelStatusResponse:
+    channel = await ChannelRepo(session).get_by_creator(creator_id)
+    if channel is None:
+        raise HTTPException(404, "No channel")
+    return ChannelStatusResponse(
+        id=str(channel.id),
+        handle=channel.handle,
+        is_live=channel.is_live,
+        live_since=channel.live_since,
+    )
+
+
+@router.get("/channels/{channel_id}", response_model=ChannelStatusResponse)
+async def get_channel(
+    channel_id: str,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    creator_id: Annotated[str, Depends(get_current_creator_id)],
+) -> ChannelStatusResponse:
+    channel = await ChannelRepo(session).get(channel_id)
+    if channel is None:
+        raise HTTPException(404, "Channel not found")
+    if str(channel.creator_id) != creator_id:
+        raise HTTPException(403, "Not your channel")
+    return ChannelStatusResponse(
+        id=str(channel.id),
+        handle=channel.handle,
+        is_live=channel.is_live,
+        live_since=channel.live_since,
+    )
+
+
+@router.post("/channels/{channel_id}/live", response_model=GoLiveResponse)
+async def set_live(
+    channel_id: str,
+    req: GoLiveRequest,
+    session: Annotated[AsyncSession, Depends(get_session)],
+    creator_id: Annotated[str, Depends(get_current_creator_id)],
+) -> GoLiveResponse:
+    channel = await ChannelRepo(session).get(channel_id)
+    if channel is None:
+        raise HTTPException(404, "Channel not found")
+    if str(channel.creator_id) != creator_id:
+        raise HTTPException(403, "Not your channel")
+
+    if req.live and not channel.is_live:
+        # Going live
+        channel.is_live = True
+        channel.live_since = func.now()
+        ping = await PingRepo(session).create(
+            channel_id=channel.id,
+            message=f"@{channel.handle} is LIVE!",
+            delivery_method="push",
+            kind="live",
+            status="processing",
+            commit=False,
+        )
+        count = await fanout_ping(session, ping.id, channel.id, ping.message, "live")
+        await PingRepo(session).update_counts(ping.id, total_recipients=count, status="queued")
+        # Best-effort notary publish
+        try:
+            await publish("/api/v1/worker/notary", {
+                "event_id": str(ping.id),
+                "channel_id": str(channel.id),
+                "kind": "go_live",
+                "timestamp": int(time.time()),
+            })
+        except Exception:  # noqa: BLE001
+            logger.warning("notary enqueue failed for ping %s", ping.id)
+    elif not req.live and channel.is_live:
+        # Going offline
+        channel.is_live = False
+        channel.live_since = None
+        await session.commit()
+
+    return GoLiveResponse(is_live=channel.is_live)
+
+
+import secrets  # moved here to avoid unused import warning at top
