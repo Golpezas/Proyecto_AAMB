@@ -44,12 +44,17 @@ Midnight strictly as an asynchronous notary — never in the delivery path.
    the old "hard cap prevents bill shock" rationale is retired.
 4. **Subscriptions are wallet-signed.** Fans subscribe by signing with a Privy
    embedded wallet (created invisibly). The 6-digit subscription PIN and
-   ADR 0003 Path A are deprecated (ADR 0003 superseded). Creators keep
-   Supabase Auth JWT for API calls (ADR 0005 unchanged); Privy bridges
-   Apple/Google/email login into both a wallet and a Supabase session on the
-   frontend (integration to be verified against Privy docs before frontend
-   tasks). Creator wallet-signing of GO LIVE events is a follow-up when the
-   real Compact contract lands — the notary stub trusts backend attestation.
+   ADR 0003 Path A are deprecated (ADR 0003 superseded). **Fan authentication
+   in general**: every state-changing fan request (subscribe, unsubscribe,
+   device register/revoke) carries an EIP-191 `personal_sign` signature over a
+   canonical message `PIN:<action>:<params>:<unix_ts>` with a ±300 s freshness
+   window; the backend recovers the signer (`eth-account`) and requires it to
+   equal the claimed wallet — no fan session/JWT. **Creator authentication**
+   stays Supabase Auth JWT (ADR 0005 unchanged): creators log in with
+   supabase-js directly (email/magic link → access token → `Bearer`); Privy is
+   used for fan wallets only. A unified Privy→Supabase login bridge and
+   creator wallet signing are follow-ups (real Compact contract) — until
+   then, GO LIVE events are attested by the authenticated backend.
 5. **Midnight as notary sidecar (event-time asynchronous).** When a GO LIVE
    event occurs, the fast path (queue → worker → push) runs immediately on
    Supabase/QStash/OneSignal. In parallel, a separate QStash job calls a

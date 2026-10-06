@@ -1,7 +1,12 @@
 # ADR 0002: Database Schema & RLS Policies
 
 ## Status
-Accepted
+**Partially superseded by ADR 0006 (Hybrid Architecture).** The schema of
+record is `backend/supabase/migrations/*.sql` (0001–0004+): phone columns,
+`pin_hash`, `encrypted_phones`, and `get_decrypted_phone()` are removed by the
+pivot; `device_tokens`, `fans.wallet_address`, and `pings.kind` are added.
+Sections about encrypted phone storage and SMS are historical. RLS policies
+(0002_rls_policies.sql) remain valid as defense-in-depth.
 
 ## Context
 We need a PostgreSQL schema that enforces PII isolation at the database level. The phone number must never be readable by the Creator, the API layer, or admin dashboards — only by the SMS worker at send time.

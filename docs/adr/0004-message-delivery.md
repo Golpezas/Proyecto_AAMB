@@ -51,10 +51,12 @@ QStash delayed job → NotaryPort → Midnight notary stub
         (pseudonymous channel id, event id, timestamp)
 ```
 
-### Rate Limiting (Token Bucket per Channel)
-Per-channel token bucket in Redis (Lua check-and-decrement) throttles fan-out
-pacing. The original Twilio carrier rationale is gone; the bucket now exists
-to prevent fan-out storms and stay within OneSignal API throughput limits.
+### Rate Limiting (Counter per Channel)
+A per-channel sliding-window counter in Redis (`INCR` + `EXPIRE` on first hit,
+120 sends/min/channel default) throttles fan-out pacing. Atomic Lua is not
+required — this is pacing, not a security control. The original Twilio carrier
+rationale is gone; the counter now exists to prevent fan-out storms and stay
+within OneSignal API throughput limits.
 
 ### Idempotency
 - `idempotency_key = f"{ping_id}:{fan_id}:{delivery_method}"`
@@ -73,10 +75,13 @@ to prevent fan-out storms and stay within OneSignal API throughput limits.
 Implemented via QStash `retries` + custom backoff in worker.
 
 ### OneSignal Send
-- Server-side OneSignal REST API, targeting the stored device tokens
-  (`include_player_ids`).
+- Server-side `POST https://api.onesignal.com/notifications`, header
+  `Authorization: Key <onesignal_rest_api_key>`.
+- Targeting: `include_aliases: {"onesignal_id": [<stored device ids>]}` with
+  `target_channel: "push"` (the stored ids come from
+  `device_tokens.token = OneSignal.User.onesignalId` per device).
 - Payloads contain only public content (creator handle, message text) —
-  OneSignal sees player ids and payloads, never fan identity.
+  OneSignal sees device ids and payloads, never fan identity.
 - Fans without a registered device token are marked `skipped` on the job
   (no delivery handle), not failed.
 
