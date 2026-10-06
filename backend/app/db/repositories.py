@@ -7,7 +7,7 @@ import uuid
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import AnonymousLink, Channel, Creator, EncryptedPhone, Fan, Ping
+from app.db.models import AnonymousLink, Channel, Creator, Fan, Ping
 
 
 def _to_uuid(value: str | uuid.UUID) -> uuid.UUID:
@@ -120,18 +120,6 @@ class ChannelRepo:
         await self._session.refresh(channel)
         return channel
 
-    async def set_pin_hash(
-        self, channel_id: str | uuid.UUID, pin_hash: str
-    ) -> Channel | None:
-        channel = await self.get(channel_id)
-        if channel is None:
-            return None
-        channel.pin_hash = pin_hash
-        await _commit(self._session)
-        await self._session.refresh(channel)
-        return channel
-
-
 class FanRepo:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
@@ -158,45 +146,6 @@ class FanRepo:
         return fan
 
 
-class EncryptedPhoneRepo:
-    """Repo for the encrypted_phones table (PII).
-
-    The READ/decrypt path is worker-only: only the messaging worker reads
-    rows and decrypts them at send time. The subscribe path writes
-    ciphertext through `create` but never decrypts it. Phone ciphertexts
-    must never appear in API responses or logs.
-    """
-
-    def __init__(self, session: AsyncSession) -> None:
-        self._session = session
-
-    async def create(
-        self,
-        fan_id: str | uuid.UUID,
-        phone_encrypted: bytes,
-        encryption_key_id: str = "v1",
-        commit: bool = True,
-    ) -> EncryptedPhone:
-        row = EncryptedPhone(
-            fan_id=_to_uuid(fan_id),
-            phone_encrypted=phone_encrypted,
-            encryption_key_id=encryption_key_id,
-        )
-        self._session.add(row)
-        if commit:
-            await _commit(self._session)
-        else:
-            await self._session.flush()
-        await self._session.refresh(row)
-        return row
-
-    async def get_by_fan_id(self, fan_id: str | uuid.UUID) -> EncryptedPhone | None:
-        res = await self._session.execute(
-            select(EncryptedPhone).where(EncryptedPhone.fan_id == _to_uuid(fan_id))
-        )
-        return res.scalar_one_or_none()
-
-
 class AnonymousLinkRepo:
     def __init__(self, session: AsyncSession) -> None:
         self._session = session
@@ -205,13 +154,11 @@ class AnonymousLinkRepo:
         self,
         channel_id: str | uuid.UUID,
         fan_id: str | uuid.UUID,
-        wallet_address: str | None = None,
         commit: bool = True,
     ) -> AnonymousLink:
         link = AnonymousLink(
             channel_id=_to_uuid(channel_id),
             fan_id=_to_uuid(fan_id),
-            wallet_address=wallet_address,
         )
         self._session.add(link)
         if commit:
@@ -229,7 +176,7 @@ class AnonymousLinkRepo:
             .where(
                 AnonymousLink.channel_id == _to_uuid(channel_id),
                 AnonymousLink.status == "active",
-                # Wallet-only links have fan_id NULL; never emit "None".
+                # Skip rows with no fan attached; never emit "None".
                 AnonymousLink.fan_id.is_not(None),
             )
             .order_by(AnonymousLink.fan_id)

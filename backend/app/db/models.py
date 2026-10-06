@@ -23,7 +23,6 @@ from sqlalchemy import (
     ForeignKey,
     Index,
     Integer,
-    LargeBinary,
     Text,
     UniqueConstraint,
     Uuid,
@@ -53,18 +52,17 @@ class Channel(Base):
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
     creator_id: Mapped[uuid.UUID | None] = mapped_column(
-        Uuid, ForeignKey("creators.id", ondelete="CASCADE"), nullable=True
+        Uuid, ForeignKey("creators.id", ondelete="CASCADE"), unique=True, nullable=True
     )
     handle: Mapped[str] = mapped_column(Text, unique=True, nullable=False)
     signing_key: Mapped[str] = mapped_column(Text, nullable=False)
-    pin_hash: Mapped[str | None] = mapped_column(Text, nullable=True)
     subscription_tier: Mapped[str | None] = mapped_column(
         Text, default="free", server_default="free"
     )
     monthly_ping_limit: Mapped[int | None] = mapped_column(
         Integer, default=100, server_default=text("100")
     )
-    sms_sent_this_period: Mapped[int | None] = mapped_column(
+    pings_sent_this_period: Mapped[int | None] = mapped_column(
         Integer, default=0, server_default=text("0")
     )
     period_start: Mapped[datetime | None] = mapped_column(
@@ -85,30 +83,11 @@ class Fan(Base):
     )
 
 
-class EncryptedPhone(Base):
-    __tablename__ = "encrypted_phones"
-
-    id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
-    fan_id: Mapped[uuid.UUID | None] = mapped_column(
-        Uuid, ForeignKey("fans.id", ondelete="CASCADE"), unique=True, nullable=True
-    )
-    phone_encrypted: Mapped[bytes] = mapped_column(LargeBinary, nullable=False)
-    encryption_key_id: Mapped[str] = mapped_column(Text, nullable=False)
-    created_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
-    updated_at: Mapped[datetime | None] = mapped_column(
-        DateTime(timezone=True), server_default=func.now()
-    )
-
-
 class AnonymousLink(Base):
     __tablename__ = "anonymous_links"
     __table_args__ = (
         UniqueConstraint("channel_id", "fan_id"),
-        UniqueConstraint("channel_id", "wallet_address"),
         Index("idx_anonymous_links_channel_status", "channel_id", "status"),
-        Index("idx_anonymous_links_wallet", "wallet_address"),
     )
 
     id: Mapped[uuid.UUID] = mapped_column(Uuid, primary_key=True, default=uuid.uuid4)
@@ -118,7 +97,6 @@ class AnonymousLink(Base):
     fan_id: Mapped[uuid.UUID | None] = mapped_column(
         Uuid, ForeignKey("fans.id", ondelete="CASCADE"), nullable=True
     )
-    wallet_address: Mapped[str | None] = mapped_column(Text, nullable=True)
     status: Mapped[str | None] = mapped_column(
         Text, default="active", server_default="active"
     )

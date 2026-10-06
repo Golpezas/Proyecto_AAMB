@@ -73,10 +73,9 @@ def test_creator_model():
 
 def test_channel_model_defaults():
     ch = Channel(id="ch1", creator_id="u1", handle="creator1", signing_key="sk_test")
-    assert ch.pin_hash is None
     assert ch.subscription_tier == "free"
     assert ch.monthly_ping_limit == 100
-    assert ch.sms_sent_this_period == 0
+    assert ch.pings_sent_this_period == 0
 
 def test_fan_model():
     f = Fan(id="f1")
@@ -85,7 +84,6 @@ def test_fan_model():
 def test_anonymous_link_model_defaults():
     link = AnonymousLink(id="l1", channel_id="ch1", fan_id="f1")
     assert link.status == "active"
-    assert link.wallet_address is None
     assert link.opted_out_at is None
 
 def test_anonymous_link_requires_fan_id():

@@ -1,5 +1,4 @@
 # backend/tests/test_channels.py
-# POST /api/v1/channels and POST /api/v1/channels/{id}/pin with Supabase JWT
 # creator auth. Uses the async `api_client` fixture (httpx + ASGITransport)
 # so the app and the in-memory SQLite StaticPool connection share one event
 # loop. The only thing monkeypatched is the JWT secret -- DB and auth
@@ -11,7 +10,6 @@ import pytest
 
 from app.core.config import settings
 from app.db.repositories import ChannelRepo, CreatorRepo
-from app.services.pin_service import verify_pin
 
 TEST_SECRET = "test-supabase-jwt-secret-do-not-use-in-prod"
 AUDIENCE = "authenticated"
@@ -68,12 +66,10 @@ async def test_create_channel_ok(api_client, auth_headers, db_session):
     assert data["monthly_ping_limit"] == 100
     assert data["id"]
     # secrets must never leave the server
-    assert "pin_hash" not in data
     assert "signing_key" not in data
 
     channel = await ChannelRepo(db_session).get_by_handle("mychannel")
     assert channel is not None
-    assert channel.pin_hash is None
     assert channel.signing_key  # generated, non-empty
     assert "mychannel" not in channel.signing_key
 
@@ -155,80 +151,13 @@ async def test_create_second_channel_same_creator(api_client, auth_headers):
     assert second.status_code == 409
 
 
-async def test_set_pin(api_client, auth_headers, db_session):
+async def test_pin_endpoint_removed(api_client, auth_headers):
     created = await create_channel(api_client, auth_headers)
     channel_id = created.json()["id"]
 
     resp = await api_client.post(
-        f"/api/v1/channels/{channel_id}/pin",
-        json={"pin": "123456"},
+        f"/api/v1/channels/{channel_id}/pin", json={"pin": "123456"},
         headers=auth_headers,
     )
-    assert resp.status_code == 200
-    assert resp.json() == {"success": True}
-    # never echo the plaintext PIN or the hash
-    assert "123456" not in resp.text
+    assert resp.status_code in (404, 405)
 
-    channel = await ChannelRepo(db_session).get(channel_id)
-    assert channel.pin_hash is not None
-    assert channel.pin_hash != "123456"
-    assert channel.pin_hash.startswith("$2")  # bcrypt
-    assert "123456" not in channel.pin_hash
-    assert verify_pin("123456", channel.pin_hash) is True
-    assert verify_pin("654321", channel.pin_hash) is False
-
-
-async def test_set_pin_other_creators_channel(
-    api_client, auth_headers, other_creator_headers
-):
-    created = await create_channel(api_client, auth_headers)
-    channel_id = created.json()["id"]
-
-    resp = await api_client.post(
-        f"/api/v1/channels/{channel_id}/pin",
-        json={"pin": "123456"},
-        headers=other_creator_headers,
-    )
-    assert resp.status_code == 403
-
-
-async def test_set_pin_unknown_channel(api_client, auth_headers):
-    resp = await api_client.post(
-        f"/api/v1/channels/{uuid.uuid4()}/pin",
-        json={"pin": "123456"},
-        headers=auth_headers,
-    )
-    assert resp.status_code == 404
-
-
-async def test_set_pin_malformed_channel_id(api_client, auth_headers):
-    resp = await api_client.post(
-        "/api/v1/channels/not-a-uuid/pin",
-        json={"pin": "123456"},
-        headers=auth_headers,
-    )
-    assert resp.status_code == 404
-
-
-async def test_set_pin_invalid_pin(api_client, auth_headers):
-    created = await create_channel(api_client, auth_headers)
-    channel_id = created.json()["id"]
-
-    resp = await api_client.post(
-        f"/api/v1/channels/{channel_id}/pin",
-        json={"pin": "abc"},
-        headers=auth_headers,
-    )
-    assert resp.status_code == 422
-    # 422 handler must not echo the submitted value
-    assert "abc" not in resp.text
-
-
-async def test_set_pin_without_auth(api_client, auth_headers):
-    created = await create_channel(api_client, auth_headers)
-    channel_id = created.json()["id"]
-
-    resp = await api_client.post(
-        f"/api/v1/channels/{channel_id}/pin", json={"pin": "123456"}, headers={}
-    )
-    assert resp.status_code == 401

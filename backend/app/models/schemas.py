@@ -60,35 +60,20 @@ class ChannelCreateRequest(BaseModel):
         return v
 
 class ChannelCreateResponse(BaseModel):
-    # Deliberately narrow: never serializes pin_hash or signing_key.
+    # Deliberately narrow: never serializes signing_key.
     id: str
     handle: str
     subscription_tier: str = "free"
     monthly_ping_limit: int = 100
-
-class PinSetRequest(BaseModel):
-    pin: str
-
-    @field_validator("pin")
-    @classmethod
-    def validate_pin(cls, v: str) -> str:
-        if not re.fullmatch(r"\d{6}", v):
-            raise ValueError("PIN must be exactly 6 digits")
-        return v
-
-class PinSetResponse(BaseModel):
-    # Never includes the plaintext PIN or its hash.
-    success: bool = True
 
 class Channel(BaseModel):
     id: str
     creator_id: str
     handle: str
     signing_key: str
-    pin_hash: str | None = None
     subscription_tier: str = "free"
     monthly_ping_limit: int = 100
-    sms_sent_this_period: int = 0
+    pings_sent_this_period: int = 0
     period_start: datetime | None = None
     created_at: datetime | None = None
 
@@ -100,7 +85,6 @@ class AnonymousLink(BaseModel):
     id: str
     channel_id: str
     fan_id: str
-    wallet_address: str | None = None
     status: str = "active"
     subscribed_at: datetime | None = None
     opted_out_at: datetime | None = None

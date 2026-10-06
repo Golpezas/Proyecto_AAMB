@@ -9,7 +9,6 @@ from app.db.repositories import (
     AnonymousLinkRepo,
     ChannelRepo,
     CreatorRepo,
-    EncryptedPhoneRepo,
     FanRepo,
     PingRepo,
 )
@@ -68,10 +67,9 @@ async def test_create_and_get_channel(creator_repo, channel_repo):
         creator_id=creator.id, handle="creator1", signing_key="sk_test_123"
     )
     assert channel.id is not None
-    assert channel.pin_hash is None
     assert channel.subscription_tier == "free"
     assert channel.monthly_ping_limit == 100
-    assert channel.sms_sent_this_period == 0
+    assert channel.pings_sent_this_period == 0
 
     fetched = await channel_repo.get(channel.id)
     assert fetched is not None
@@ -100,7 +98,6 @@ async def test_channel_handle_is_unique(creator_repo, channel_repo):
 @pytest.mark.asyncio
 async def test_session_recovers_after_failed_commit(creator_repo, channel_repo):
     creator = await creator_repo.create(email="c@example.com", handle="creator1")
-    creator_id = creator.id
     await _make_channel(channel_repo, creator_repo, creator=creator)
 
     with pytest.raises(IntegrityError):
@@ -115,22 +112,9 @@ async def test_session_recovers_after_failed_commit(creator_repo, channel_repo):
     other = await creator_repo.create(email="d@example.com", handle="creator2")
     assert other.id is not None
     second_channel = await channel_repo.create(
-        creator_id=creator_id, handle="creator2", signing_key="sk_test_456"
+        creator_id=other.id, handle="creator2", signing_key="sk_test_456"
     )
     assert second_channel.id is not None
-
-
-@pytest.mark.asyncio
-async def test_set_pin_hash_round_trip(creator_repo, channel_repo):
-    channel = await _make_channel(channel_repo, creator_repo)
-    pin_hash = "$2b$12$abcdefghijklmnopqrstuv"
-
-    updated = await channel_repo.set_pin_hash(channel.id, pin_hash)
-    assert updated.pin_hash == pin_hash
-
-    refreshed = await channel_repo.get(channel.id)
-    assert refreshed is not None
-    assert refreshed.pin_hash == pin_hash
 
 
 @pytest.mark.asyncio
@@ -164,15 +148,10 @@ async def test_create_anonymous_link_and_list_active_fans(
     fan2 = await fan_repo.create(wallet_address="0x" + "32" * 20)
 
     link1 = await link_repo.create(channel_id=channel.id, fan_id=fan1.id)
-    link2 = await link_repo.create(
-        channel_id=channel.id,
-        fan_id=fan2.id,
-        wallet_address="0x" + "ab" * 20,
-    )
+    link2 = await link_repo.create(channel_id=channel.id, fan_id=fan2.id)
     assert link1.id is not None
+    assert link2.id is not None
     assert link1.status == "active"
-    assert link1.wallet_address is None
-    assert link2.wallet_address == "0x" + "ab" * 20
 
     active = await link_repo.list_active_fan_ids(channel.id)
     assert set(active) == {str(fan1.id), str(fan2.id)}
@@ -180,16 +159,16 @@ async def test_create_anonymous_link_and_list_active_fans(
 
 
 @pytest.mark.asyncio
-async def test_list_active_fan_ids_skips_wallet_only_links(
+async def test_list_active_fan_ids_skips_fanless_links(
     creator_repo, channel_repo, fan_repo, link_repo, db_session
 ):
     channel = await _make_channel(channel_repo, creator_repo)
     fan = await fan_repo.create(wallet_address="0x" + "33" * 20)
     await link_repo.create(channel_id=channel.id, fan_id=fan.id)
 
-    # wallet-only subscription: no fan row, so fan_id is NULL
+    # link with no fan attached: fan_id NULL must never be emitted
     db_session.add(
-        AnonymousLink(channel_id=channel.id, wallet_address="0x" + "cd" * 20)
+        AnonymousLink(channel_id=channel.id)
     )
     await db_session.commit()
 
@@ -229,39 +208,6 @@ async def test_opt_out_removes_fan_from_active_list(
     active = await link_repo.list_active_fan_ids(channel.id)
     assert str(fan1.id) not in active
     assert str(fan2.id) in active
-
-
-@pytest.mark.asyncio
-async def test_create_and_get_encrypted_phone(fan_repo, db_session):
-    fan = await fan_repo.create(wallet_address="0x" + "37" * 20)
-    repo = EncryptedPhoneRepo(db_session)
-    blob = b"nonce+ciphertext-blob"
-
-    row = await repo.create(fan_id=fan.id, phone_encrypted=blob)
-    assert row.id is not None
-    assert row.fan_id == fan.id
-    assert row.phone_encrypted == blob
-    assert row.encryption_key_id
-
-    fetched = await repo.get_by_fan_id(fan.id)
-    assert fetched is not None
-    assert fetched.id == row.id
-    assert fetched.phone_encrypted == blob
-    assert await repo.get_by_fan_id(uuid.uuid4()) is None
-
-
-@pytest.mark.asyncio
-async def test_encrypted_phone_fan_id_unique(fan_repo, db_session):
-    fan = await fan_repo.create(wallet_address="0x" + "38" * 20)
-    fan_id = fan.id
-    repo = EncryptedPhoneRepo(db_session)
-    await repo.create(fan_id=fan_id, phone_encrypted=b"first")
-
-    with pytest.raises(IntegrityError):
-        await repo.create(fan_id=fan_id, phone_encrypted=b"second")
-
-    # rollback on the failed commit must leave the session usable
-    assert await repo.get_by_fan_id(fan_id) is not None
 
 
 @pytest.mark.asyncio
