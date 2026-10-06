@@ -9,6 +9,7 @@ class Settings(BaseSettings):
     database_url: str = ""
     upstash_redis_url: str = ""
     upstash_qstash_token: str = ""
+    public_api_url: str = ""  # base URL the QStash worker delivers back to
     onesignal_app_id: str = ""
     onesignal_rest_api_key: str = ""
 

@@ -4,10 +4,18 @@
 # need. IDs are accepted as str or uuid.UUID and normalized to UUID objects.
 import uuid
 
-from sqlalchemy import func, select
+from sqlalchemy import func, select, update
 from sqlalchemy.ext.asyncio import AsyncSession
 
-from app.db.models import AnonymousLink, Channel, Creator, DeviceToken, Fan, Ping
+from app.db.models import (
+    AnonymousLink,
+    Channel,
+    Creator,
+    DeviceToken,
+    Fan,
+    MessageQueueJob,
+    Ping,
+)
 
 
 def _to_uuid(value: str | uuid.UUID) -> uuid.UUID:
@@ -314,3 +322,75 @@ class PingRepo:
         await _commit(self._session)
         await self._session.refresh(ping)
         return ping
+
+
+class MessageQueueJobRepo:
+    def __init__(self, session: AsyncSession) -> None:
+        self._session = session
+
+    async def create(
+        self,
+        ping_id: str | uuid.UUID,
+        channel_id: str | uuid.UUID,
+        fan_id: str | uuid.UUID,
+        delivery_method: str,
+        payload: dict,
+        idempotency_key: str,
+        commit: bool = True,
+    ) -> MessageQueueJob:
+        job = MessageQueueJob(
+            ping_id=_to_uuid(ping_id),
+            channel_id=_to_uuid(channel_id),
+            fan_id=_to_uuid(fan_id),
+            delivery_method=delivery_method,
+            payload=payload,
+            idempotency_key=idempotency_key,
+        )
+        self._session.add(job)
+        if commit:
+            await _commit(self._session)
+        else:
+            # Unit-of-work mode: keep the caller's transaction open so
+            # sibling inserts commit (or roll back) as one.
+            await self._session.flush()
+        await self._session.refresh(job)
+        return job
+
+    async def get_by_idempotency_key(self, key: str) -> MessageQueueJob | None:
+        res = await self._session.execute(
+            select(MessageQueueJob).where(MessageQueueJob.idempotency_key == key)
+        )
+        return res.scalar_one_or_none()
+
+    async def claim(self, key: str, commit: bool = True) -> bool:
+        """Atomically move a queued job to processing; False if not queued."""
+        res = await self._session.execute(
+            update(MessageQueueJob)
+            .where(
+                MessageQueueJob.idempotency_key == key,
+                MessageQueueJob.status == "queued",
+            )
+            .values(status="processing")
+        )
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
+        return (res.rowcount or 0) > 0
+
+    async def mark(
+        self, key: str, status: str, error: str | None = None, commit: bool = True
+    ) -> MessageQueueJob | None:
+        job = await self.get_by_idempotency_key(key)
+        if job is None:
+            return None
+        job.status = status
+        job.error_message = error
+        if status not in ("queued", "processing"):
+            job.processed_at = func.now()
+        if commit:
+            await _commit(self._session)
+        else:
+            await self._session.flush()
+        await self._session.refresh(job)
+        return job
