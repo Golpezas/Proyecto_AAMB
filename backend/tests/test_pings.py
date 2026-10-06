@@ -1,5 +1,6 @@
 # backend/tests/test_pings.py
 import uuid
+from datetime import UTC, datetime, timedelta
 from unittest.mock import AsyncMock, patch
 
 import pytest
@@ -11,6 +12,7 @@ from app.db.repositories import (
     CreatorRepo,
     DeviceTokenRepo,
 )
+from app.services.quota_service import check_and_consume_quota
 
 # Fixtures — defined in this file to avoid cross-test dependencies.
 # CRITICAL: the JWT `sub` and the seeded channel's creator_id must be the
@@ -131,3 +133,33 @@ async def test_get_ping_and_stats(api_client, auth_headers, seeded_channel_with_
 async def test_get_ping_not_found(api_client, auth_headers):
     resp = await api_client.get(f"/api/v1/pings/{uuid.uuid4()}", headers=auth_headers)
     assert resp.status_code == 404
+
+
+async def test_quota_go_live_rollover_commits(db_session, creator_sub):
+    """Test that go-live (kind=live) triggers period rollover and persists it."""
+    from app.db.repositories import ChannelRepo, CreatorRepo
+    creator = await CreatorRepo(db_session).upsert(
+        creator_sub, email="c@example.com", handle="testchan"
+    )
+    channel = await ChannelRepo(db_session).create(
+        creator_id=creator.id, handle="testchan", signing_key="sk_test_123"
+    )
+    # Set period_start to 31 days ago (past the 30-day period)
+    old_start = datetime.now(UTC) - timedelta(days=31)
+    channel.period_start = old_start
+    channel.pings_sent_this_period = 5
+    await db_session.commit()
+
+    # Call quota check with kind="live" - should trigger rollover
+    channel, remaining = await check_and_consume_quota(db_session, channel, kind="live")
+
+    # Verify rollover was committed: period_start updated, pings_sent_this_period reset
+    await db_session.refresh(channel)
+    assert channel.pings_sent_this_period == 0
+    # Compare datetimes properly - ensure both are timezone-aware
+    new_start = channel.period_start
+    if new_start.tzinfo is None:
+        new_start = new_start.replace(tzinfo=UTC)
+    assert new_start > old_start
+    # Remaining quota should be based on fresh period (limit - 0)
+    assert remaining == channel.monthly_ping_limit

@@ -29,9 +29,13 @@ async def check_and_consume_quota(session: AsyncSession, channel: Channel, kind:
             start = start.replace(tzinfo=UTC)
         if (now - start).days >= PERIOD_DAYS:
             used = 0
+            channel.pings_sent_this_period = 0
             channel.period_start = now
     else:
         channel.period_start = now
+
+    # Persist rollover for BOTH kinds (message and live)
+    await session.commit()
 
     limit = channel.monthly_ping_limit or 0
 
