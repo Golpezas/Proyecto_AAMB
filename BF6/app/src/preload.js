@@ -165,5 +165,12 @@ contextBridge.exposeInMainWorld('breakSuite', {
   applyPlayableMarketResearch: (payload) => ipcRenderer.invoke('playable-market:apply-research', payload),
   removePlayableMarketCard: (cardId) => ipcRenderer.invoke('playable-market:remove-card', cardId),
   getDatabaseStatus: () => ipcRenderer.invoke('app:database-status'),
-  openExternal: (url) => ipcRenderer.invoke('app:open-external', url)
+  openExternal: (url) => ipcRenderer.invoke('app:open-external', url),
+  pin: {
+    getSettings: () => ipcRenderer.invoke('pin:get-settings'),
+    saveSettings: (settings) => ipcRenderer.invoke('pin:save-settings', settings),
+    testConnection: () => ipcRenderer.invoke('pin:test-connection'),
+    sendPing: (message) => ipcRenderer.invoke('pin:send-ping', message),
+    setLive: (live) => ipcRenderer.invoke('pin:set-live', live)
+  }
 });

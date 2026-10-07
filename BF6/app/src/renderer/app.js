@@ -336,10 +336,87 @@ const elements = {
   , saveTrackerHitWinner: document.querySelector('#save-tracker-hit-winner')
   , trackerHitWinnerList: document.querySelector('#tracker-hit-winner-list')
   , salesSignForm: document.querySelector('#sales-sign-form'), salesSignText: document.querySelector('#sales-sign-text'), salesSignBoard: document.querySelector('#sales-sign-board'), salesSignSize: document.querySelector('#sales-sign-size'), salesSignStatus: document.querySelector('#sales-sign-status'), salesSignPreview: document.querySelector('#sales-sign-preview'), copySalesSignOverlay: document.querySelector('#copy-sales-sign-overlay')
+  , pinConnectionStatus: document.querySelector('#pin-connection-status')
+  , pinMessage: document.querySelector('#pin-message')
+  , pinCharCount: document.querySelector('#pin-char-count')
+  , pinSendPing: document.querySelector('#pin-send-ping')
+  , pinToggleLive: document.querySelector('#pin-toggle-live')
+  , pinLiveState: document.querySelector('#pin-live-state')
+  , pinResult: document.querySelector('#pin-result')
+  , pinSettingsForm: document.querySelector('#pin-settings-form')
+  , pinBaseUrl: document.querySelector('#pin-base-url')
+  , pinChannelId: document.querySelector('#pin-channel-id')
+  , pinApiKey: document.querySelector('#pin-api-key')
+  , pinAutoGoLive: document.querySelector('#pin-auto-go-live')
+  , pinSettingsStatus: document.querySelector('#pin-settings-status')
 };
+
+let pinIsLive = null;
 
 function salesSignMarkup(sign) { const message = escapeHtml(sign.text).replace(/\n/g,'<br>'); const boardClass = sign.board === 'riftbound' ? 'riftbound-board' : (sign.board === 'secondary' ? 'secondary-board' : 'primary-board'); return `<div class="treasure-sales-sign ${boardClass} ${sign.size}"><div class="treasure-sales-message">${message}</div></div>`; }
 async function refreshSalesSign() { const sign = await window.breakSuite.getSalesSign(); elements.salesSignText.value = sign.text; elements.salesSignBoard.value = sign.board || 'primary'; elements.salesSignSize.value = sign.size; elements.salesSignPreview.innerHTML = salesSignMarkup(sign); }
+
+function updatePinCharCount() {
+  if (!elements.pinMessage || !elements.pinCharCount) return;
+  elements.pinCharCount.textContent = `${elements.pinMessage.value.length} / 160`;
+}
+
+function renderPinLiveState() {
+  if (!elements.pinLiveState || !elements.pinToggleLive) return;
+  if (pinIsLive === true) {
+    elements.pinLiveState.textContent = 'Channel is LIVE.';
+    elements.pinToggleLive.textContent = 'End Live';
+  } else if (pinIsLive === false) {
+    elements.pinLiveState.textContent = 'Channel is offline.';
+    elements.pinToggleLive.textContent = 'Go Live';
+  } else {
+    elements.pinLiveState.textContent = 'Live status unknown until you toggle.';
+    elements.pinToggleLive.textContent = 'Go Live';
+  }
+}
+
+async function refreshNotifyView() {
+  if (!window.breakSuite?.pin) {
+    if (elements.pinConnectionStatus) elements.pinConnectionStatus.textContent = 'PIN controls are unavailable in this build.';
+    return;
+  }
+  try {
+    const settings = await window.breakSuite.pin.getSettings();
+    if (elements.pinBaseUrl) elements.pinBaseUrl.value = settings.baseUrl || '';
+    if (elements.pinChannelId) elements.pinChannelId.value = settings.channelId || '';
+    if (elements.pinApiKey) elements.pinApiKey.value = '';
+    if (elements.pinApiKey) {
+      elements.pinApiKey.placeholder = settings.hasKey
+        ? 'Saved key kept (enter a new pin_sk_… to replace)'
+        : 'pin_sk_…';
+    }
+    if (elements.pinAutoGoLive) elements.pinAutoGoLive.checked = settings.autoGoLiveOnShowReady === true;
+    if (elements.pinSettingsStatus) {
+      elements.pinSettingsStatus.textContent = settings.hasKey
+        ? (settings.insecureKeyStorage
+          ? 'Settings loaded. API key is stored without Windows secure storage on this machine.'
+          : 'Settings loaded. API key stays encrypted on this Windows account.')
+        : 'Save backend URL, channel id, and API key before sending pings.';
+    }
+    updatePinCharCount();
+    renderPinLiveState();
+    if (!settings.hasKey || !settings.baseUrl || !settings.channelId) {
+      if (elements.pinConnectionStatus) elements.pinConnectionStatus.textContent = 'PIN is not configured yet.';
+      return;
+    }
+    if (elements.pinConnectionStatus) elements.pinConnectionStatus.textContent = 'Checking PIN connection…';
+    const connection = await window.breakSuite.pin.testConnection();
+    if (elements.pinConnectionStatus) {
+      elements.pinConnectionStatus.textContent = connection?.ok
+        ? '✓ Connected to PIN backend.'
+        : 'PIN backend did not respond OK.';
+    }
+  } catch (error) {
+    if (elements.pinConnectionStatus) {
+      elements.pinConnectionStatus.textContent = error.message || 'PIN connection check failed.';
+    }
+  }
+}
 
 function escapeHtml(value) {
   return String(value ?? '').replace(/[&<>'"]/g, character => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;' })[character]);
@@ -4899,7 +4976,7 @@ async function setView(view) {
   document.querySelectorAll('.nav-item').forEach(button => button.classList.toggle('active', button.dataset.view === view));
   document.querySelectorAll('.view-panel').forEach(panel => panel.classList.add('hidden'));
   document.querySelector(`#${contentView}-view`).classList.remove('hidden');
-  const copy = { 'library-onepiece': ['ONE PIECE CARD CATALOG', 'Your One Piece Card Library'], 'library-riftbound': ['RIFTBOUND CARD CATALOG', 'Your Riftbound Card Library'], 'playable-market': ['RIFTBOUND PLAYABLE INTELLIGENCE', 'Playable Market'], break: ['BREAK SETUP', 'Break Board'], studio: ['VIEWER OVERLAY CUSTOMIZATION', 'Frame Studio'], breaker: ['ONE PIECE INTERNAL BREAK CONTROL', 'Breaker Center'], 'riftbound-breaker': ['RIFTBOUND INTERNAL BREAK CONTROL', 'Riftbound Breaker Center'], history: ['PRIVATE BREAK ACCOUNTING', 'Orders History'], expenses: ['PRIVATE BUSINESS ACCOUNTING', 'Business Expenses'], buyers: ['LOYALTY & GIVEAWAY PLANNING', 'Buyer Analytics'], chaser: ['PRIVATE LOYALTY TRACKER', 'Chaser Tracker'], royal: ['SAVED BUYER LOYALTY', 'Royal Chasers'], tracker: ['CASE & BOX CONTROL', 'Box Tracker'], sniper: ['ONE PIECE MARKET HUNTER', 'Card Sniper'], sales: ['LIVE PROMOTION SIGN', 'Sold Singles'], connector: ['LIVE HANDOFF', 'Connector'], saved: ['ONE PIECE SHORTCUTS', 'One Piece Saved Cards'], import: ['OFFICIAL DATA', 'Import Manager'], settings: ['APPLICATION', 'Settings'] }[view];
+  const copy = { 'library-onepiece': ['ONE PIECE CARD CATALOG', 'Your One Piece Card Library'], 'library-riftbound': ['RIFTBOUND CARD CATALOG', 'Your Riftbound Card Library'], 'playable-market': ['RIFTBOUND PLAYABLE INTELLIGENCE', 'Playable Market'], break: ['BREAK SETUP', 'Break Board'], studio: ['VIEWER OVERLAY CUSTOMIZATION', 'Frame Studio'], breaker: ['ONE PIECE INTERNAL BREAK CONTROL', 'Breaker Center'], 'riftbound-breaker': ['RIFTBOUND INTERNAL BREAK CONTROL', 'Riftbound Breaker Center'], history: ['PRIVATE BREAK ACCOUNTING', 'Orders History'], expenses: ['PRIVATE BUSINESS ACCOUNTING', 'Business Expenses'], buyers: ['LOYALTY & GIVEAWAY PLANNING', 'Buyer Analytics'], chaser: ['PRIVATE LOYALTY TRACKER', 'Chaser Tracker'], royal: ['SAVED BUYER LOYALTY', 'Royal Chasers'], tracker: ['CASE & BOX CONTROL', 'Box Tracker'], sniper: ['ONE PIECE MARKET HUNTER', 'Card Sniper'], sales: ['LIVE PROMOTION SIGN', 'Sold Singles'], connector: ['LIVE HANDOFF', 'Connector'], notify: ['AUDIENCE ALERTS', 'Notify'], saved: ['ONE PIECE SHORTCUTS', 'One Piece Saved Cards'], import: ['OFFICIAL DATA', 'Import Manager'], settings: ['APPLICATION', 'Settings'] }[view];
   elements.kicker.textContent = copy[0];
   elements.title.textContent = copy[1];
   elements.importButton.style.visibility = (view === 'import' || view === 'sniper' || view === 'playable-market') ? 'hidden' : 'visible';
@@ -4944,6 +5021,11 @@ async function setView(view) {
     renderBoxTrackers();
   });
   if (view === 'sales') refreshSalesSign().catch(error => { elements.salesSignStatus.textContent = error.message; });
+  if (view === 'notify') refreshNotifyView().catch(error => {
+    if (elements.pinConnectionStatus) {
+      elements.pinConnectionStatus.textContent = error.message || 'PIN Notify could not be loaded.';
+    }
+  });
   if (view === 'studio') loadFrameStudio().catch(error => {
     elements.studioStatus.textContent = error.message || 'The saved overlay style could not be loaded.';
     setMappingEditorStatus(error.message || 'The saved board mapping could not be loaded.');
@@ -4997,6 +5079,59 @@ elements.cardListInput?.addEventListener('keydown', event => {
 });
 elements.salesSignForm?.addEventListener('submit', async event => { event.preventDefault(); const sign = await window.breakSuite.saveSalesSign({ text: elements.salesSignText.value, board: elements.salesSignBoard.value, size: elements.salesSignSize.value }); const boardLabel = sign.board === 'riftbound' ? 'Riftbound recall board' : (sign.board === 'secondary' ? 'Secondary pirate board' : 'Primary pirate board'); elements.salesSignStatus.textContent = `✓ ${boardLabel} saved.`; elements.salesSignPreview.innerHTML = salesSignMarkup(sign); });
 elements.copySalesSignOverlay?.addEventListener('click', async () => { const result = await window.breakSuite.copySalesSignOverlay(); elements.salesSignStatus.textContent = `✓ OBS link copied: ${result.url}`; });
+elements.pinMessage?.addEventListener('input', updatePinCharCount);
+elements.pinSettingsForm?.addEventListener('submit', async event => {
+  event.preventDefault();
+  if (!window.breakSuite?.pin) return;
+  elements.pinSettingsStatus.textContent = 'Saving PIN settings…';
+  try {
+    await window.breakSuite.pin.saveSettings({
+      baseUrl: elements.pinBaseUrl.value,
+      channelId: elements.pinChannelId.value,
+      apiKey: elements.pinApiKey.value,
+      autoGoLiveOnShowReady: elements.pinAutoGoLive.checked
+    });
+    elements.pinApiKey.value = '';
+    elements.pinSettingsStatus.textContent = '✓ PIN settings saved.';
+    await refreshNotifyView();
+  } catch (error) {
+    elements.pinSettingsStatus.textContent = error.message || 'PIN settings could not be saved.';
+  }
+});
+elements.pinSendPing?.addEventListener('click', async () => {
+  if (!window.breakSuite?.pin) return;
+  const message = elements.pinMessage.value.trim();
+  if (!message) {
+    elements.pinResult.textContent = 'Enter a ping message first.';
+    return;
+  }
+  elements.pinSendPing.disabled = true;
+  elements.pinResult.textContent = 'Sending ping…';
+  try {
+    const result = await window.breakSuite.pin.sendPing(message);
+    elements.pinResult.textContent = `✓ Ping ${result.status || 'queued'} · ${result.total_recipients ?? 0} recipient${Number(result.total_recipients) === 1 ? '' : 's'}.`;
+  } catch (error) {
+    elements.pinResult.textContent = error.message || 'Ping could not be sent.';
+  } finally {
+    elements.pinSendPing.disabled = false;
+  }
+});
+elements.pinToggleLive?.addEventListener('click', async () => {
+  if (!window.breakSuite?.pin) return;
+  const nextLive = pinIsLive !== true;
+  elements.pinToggleLive.disabled = true;
+  elements.pinResult.textContent = nextLive ? 'Going live…' : 'Ending live…';
+  try {
+    const result = await window.breakSuite.pin.setLive(nextLive);
+    pinIsLive = result?.is_live === true;
+    renderPinLiveState();
+    elements.pinResult.textContent = pinIsLive ? '✓ Channel marked live.' : '✓ Channel marked offline.';
+  } catch (error) {
+    elements.pinResult.textContent = error.message || 'Live status could not be updated.';
+  } finally {
+    elements.pinToggleLive.disabled = false;
+  }
+});
 elements.rarity.addEventListener('change', async () => {
   state.rarity = elements.rarity.value;
   await refreshCards();

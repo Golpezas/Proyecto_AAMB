@@ -35,6 +35,7 @@
           <button class="nav-item" data-view="tracker"><span>▦</span> Box Tracker</button>
           <button class="nav-item" data-view="sales"><span>✦</span> Sold Singles</button>
           <button class="nav-item" data-view="connector"><span>↯</span> Connector</button>
+          <button class="nav-item" data-view="notify"><span>⌁</span> Notify</button>
           <button class="nav-item" data-view="saved"><span>♥</span> One Piece Saved Cards</button>
           <button class="nav-item" data-view="import"><span>⇣</span> Import Manager</button>
           <button class="nav-item" data-view="settings"><span>⚙</span> Settings</button>
@@ -365,6 +366,37 @@
               <div class="connector-test-row"><label for="connector-test-block">Simulate an Assigned spot<select id="connector-test-block" disabled><option>Save a board first</option></select></label><label for="connector-test-buyer">Test buyer<input id="connector-test-buyer" value="Test Buyer" maxlength="180" /></label><button class="secondary-button" id="send-connector-test" disabled>Send Test Assignment</button></div>
               <div class="connector-test-actions"><button class="secondary-button" id="run-connector-stress-test" disabled>Run Full Stress Test · 15 Test Buyers</button><button class="secondary-button" id="reset-connector-test" disabled>Reset Test Assignments</button></div>
               <p id="connector-test-result" class="maintenance-status" aria-live="polite">The one-card test sends the same buyer + spot-number information as an Assigned row. Full Stress Test clears prior simulated calls, then shares every ready saved block across up to 15 random Test Buyers. Neither test contacts Whatnot; Reset restores only simulated assignments.</p>
+            </section>
+          </div>
+        </section>
+
+        <section id="notify-view" class="view-panel hidden">
+          <div class="connector-stack">
+            <section class="connector-card">
+              <p class="eyebrow">PIN AUDIENCE ALERTS</p>
+              <h2>Notify subscribed fans</h2>
+              <p>Send a short ping or mark the channel live. Fans who joined your PIN link get push alerts. This never touches Break Board, payments, or the Whatnot connector ledger.</p>
+              <div id="pin-connection-status" class="connector-status" aria-live="polite">Open this page to check the PIN connection…</div>
+              <label for="pin-message">Ping message<textarea id="pin-message" maxlength="160" rows="4" spellcheck="true" placeholder="Show starting in 5 minutes…"></textarea></label>
+              <div class="connector-test-actions">
+                <span id="pin-char-count" class="maintenance-status">0 / 160</span>
+                <button class="primary-button" id="pin-send-ping" type="button">Send Ping</button>
+                <button class="secondary-button" id="pin-toggle-live" type="button">Go Live</button>
+              </div>
+              <p id="pin-live-state" class="maintenance-status" aria-live="polite">Live status unknown until you toggle.</p>
+              <p id="pin-result" class="maintenance-status" aria-live="polite"></p>
+            </section>
+            <section class="connector-card">
+              <p class="eyebrow">CHANNEL CONNECTION</p>
+              <h2>PIN settings</h2>
+              <form id="pin-settings-form" class="open-case-form">
+                <label for="pin-base-url">Backend URL<input id="pin-base-url" type="url" autocomplete="off" spellcheck="false" placeholder="https://your-api.onrender.com" required /></label>
+                <label for="pin-channel-id">Channel ID<input id="pin-channel-id" autocomplete="off" spellcheck="false" placeholder="uuid of your channel" required /></label>
+                <label for="pin-api-key">API Key<input id="pin-api-key" type="password" autocomplete="off" spellcheck="false" placeholder="pin_sk_… (leave blank to keep saved key)" /></label>
+                <label class="pm-replace"><input id="pin-auto-go-live" type="checkbox" /><span><b>Auto go-live on Prepare Show</b><small>On the first successful Assigned reconcile for a saved board, PIN marks the channel live. If PIN fails, the break continues.</small></span></label>
+                <button class="primary-button" type="submit">Save PIN Settings</button>
+              </form>
+              <p id="pin-settings-status" class="maintenance-status" aria-live="polite"></p>
             </section>
           </div>
         </section>

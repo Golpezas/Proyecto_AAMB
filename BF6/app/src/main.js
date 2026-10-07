@@ -170,6 +170,8 @@ const {
   linearOverlayProfileForPresetSlot,
   overlayPreviewCards
 } = require('./modules/RiftboundLinearOverlay');
+const { PinClient } = require('./modules/PinClient');
+const { createPinAutoGoLiveController } = require('./modules/PinAutoGoLive');
 
 let mainWindow;
 let overlayWindow;
@@ -254,6 +256,7 @@ let orderHitTrackerCache = null;
 const VIP_MIN_SPEND_CENTS = 1000;
 const CHASER_TRACKER_KEY = 'chaser-giveaway-v1';
 const ROYAL_CHASER_TRACKER_KEY = 'royal-chaser-v1';
+const PIN_SETTINGS_KEY = 'pin-settings-v1';
 const RIFTBOUND_API_KEY_METADATA = 'riftbound-riot-api-key-v1';
 const RIFTBOUND_CONTENT_URL = 'https://americas.api.riotgames.com/riftbound/content/v1/contents';
 const RIFTBOUND_GALLERY_URL = 'https://content.publishing.riotgames.com/publishing-content/v2.0/public/channel/riftbound_website/list/riftbound_gallery_cards';
@@ -6473,6 +6476,115 @@ function riftboundApiKey() {
   }
 }
 
+function readPinSettingsRecord() {
+  const raw = getMetadata(PIN_SETTINGS_KEY);
+  if (!raw) return null;
+  try {
+    const parsed = JSON.parse(raw);
+    return parsed && typeof parsed === 'object' ? parsed : null;
+  } catch {
+    return null;
+  }
+}
+
+function decryptPinApiKey(record) {
+  if (!record?.apiKeyEncrypted) return '';
+  if (record.insecureKeyStorage) return String(record.apiKeyEncrypted);
+  if (!safeStorage.isEncryptionAvailable()) {
+    throw new Error('Windows secure storage is not available. Save the PIN API key again.');
+  }
+  try {
+    return safeStorage.decryptString(Buffer.from(record.apiKeyEncrypted, 'base64'));
+  } catch {
+    throw new Error('The saved PIN API key could not be unlocked on this Windows account. Save the key again.');
+  }
+}
+
+function getPinSettings() {
+  const record = readPinSettingsRecord();
+  if (!record) {
+    return {
+      baseUrl: '',
+      channelId: '',
+      apiKey: '',
+      autoGoLiveOnShowReady: false,
+      insecureKeyStorage: false
+    };
+  }
+  return {
+    baseUrl: String(record.baseUrl || ''),
+    channelId: String(record.channelId || ''),
+    apiKey: decryptPinApiKey(record),
+    autoGoLiveOnShowReady: record.autoGoLiveOnShowReady === true,
+    insecureKeyStorage: record.insecureKeyStorage === true
+  };
+}
+
+function publicPinSettings() {
+  const settings = getPinSettings();
+  return {
+    baseUrl: settings.baseUrl,
+    channelId: settings.channelId,
+    hasKey: Boolean(settings.apiKey),
+    autoGoLiveOnShowReady: settings.autoGoLiveOnShowReady,
+    insecureKeyStorage: settings.insecureKeyStorage
+  };
+}
+
+function encryptPinApiKey(apiKey) {
+  if (safeStorage.isEncryptionAvailable()) {
+    return {
+      apiKeyEncrypted: safeStorage.encryptString(apiKey).toString('base64'),
+      insecureKeyStorage: false
+    };
+  }
+  return { apiKeyEncrypted: apiKey, insecureKeyStorage: true };
+}
+
+function savePinSettings(payload = {}) {
+  const existing = getPinSettings();
+  const baseUrl = String(payload.baseUrl ?? existing.baseUrl ?? '').trim().replace(/\/+$/, '');
+  const channelId = String(payload.channelId ?? existing.channelId ?? '').trim();
+  const incomingKey = String(payload.apiKey ?? '').trim();
+  const apiKey = incomingKey || existing.apiKey;
+  const autoGoLiveOnShowReady = payload.autoGoLiveOnShowReady === true;
+  if (!baseUrl || !channelId) {
+    throw new Error('Enter the PIN backend URL and channel id before saving.');
+  }
+  if (!apiKey) {
+    throw new Error('Enter the channel API key (pin_sk_…) before saving.');
+  }
+  const storedKey = encryptPinApiKey(apiKey);
+  setMetadata(PIN_SETTINGS_KEY, JSON.stringify({
+    baseUrl,
+    channelId,
+    apiKeyEncrypted: storedKey.apiKeyEncrypted,
+    insecureKeyStorage: storedKey.insecureKeyStorage,
+    autoGoLiveOnShowReady
+  }));
+  return publicPinSettings();
+}
+
+function buildPinClient(settings = getPinSettings()) {
+  if (!settings?.baseUrl || !settings?.channelId || !settings?.apiKey) return null;
+  return new PinClient({
+    baseUrl: settings.baseUrl,
+    channelId: settings.channelId,
+    apiKey: settings.apiKey
+  });
+}
+
+function currentPinLedgerKey() {
+  return String(database?.prepare('SELECT MAX(saved_at) AS value FROM active_break_board_cards').get()?.value || '').trim();
+}
+
+const pinAutoGoLive = createPinAutoGoLiveController({
+  getSettings: getPinSettings,
+  buildClient: buildPinClient,
+  getLedgerKey: currentPinLedgerKey,
+  logError: console.error
+});
+
 async function saveRiftboundPayload(payload, sender, startedAt) {
   const normalized = normalizeRiftboundPayload(payload);
   if (!normalized.cards.length) {
@@ -7347,7 +7459,10 @@ function startConnectorServer() {
       try {
         const payload = await readJsonRequest(request);
         assertCurrentConnectorLedger(payload);
-        return sendJson(response, 200, { ok: true, ...reconcileConnectorAssignments(payload) });
+        const reconciliation = reconcileConnectorAssignments(payload);
+        // PIN go-live is best-effort and must never delay or fail the connector.
+        pinAutoGoLive.maybeAfterReconcileSuccess();
+        return sendJson(response, 200, { ok: true, ...reconciliation });
       } catch (error) {
         const message = error instanceof Error ? error.message : 'The connector could not reconcile the Assigned list.';
         const isUnready = /Save Board|not on the saved live ledger/.test(message);
@@ -7651,6 +7766,23 @@ function registerIpc() {
   ipcMain.handle('playable-market:prepare-research', (_event, setCode) => PlayableMarket.prepareResearch(database, setCode));
   ipcMain.handle('playable-market:apply-research', (_event, payload) => PlayableMarket.applyResearch(database, payload));
   ipcMain.handle('playable-market:remove-card', (_event, cardId) => PlayableMarket.removeTrackedCard(database, cardId));
+  ipcMain.handle('pin:get-settings', () => publicPinSettings());
+  ipcMain.handle('pin:save-settings', (_event, settings) => savePinSettings(settings));
+  ipcMain.handle('pin:test-connection', async () => {
+    const client = buildPinClient();
+    if (!client) throw new Error('PIN not configured');
+    return client.testConnection();
+  });
+  ipcMain.handle('pin:send-ping', async (_event, message) => {
+    const client = buildPinClient();
+    if (!client) throw new Error('PIN not configured');
+    return client.sendPing(message);
+  });
+  ipcMain.handle('pin:set-live', async (_event, live) => {
+    const client = buildPinClient();
+    if (!client) throw new Error('PIN not configured');
+    return client.setLive(live);
+  });
   ipcMain.handle('app:database-status', () => ({ ready: Boolean(database), path: databaseFile() }));
   ipcMain.handle('app:open-external', (_event, url) => {
     if (typeof url === 'string' && /^https:\/\//.test(url)) return shell.openExternal(url);

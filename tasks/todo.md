@@ -1,37 +1,40 @@
-# Todo — Ping Platform MVP
+# Fases — PIN (tablero de avance)
 
-**Plan:** `docs/superpowers/plans/2026-06-10-ping-platform-mvp.md`
+Actualizado 7 oct 2026. HEAD remoto sigue en `d0fba52`; trabajo Fase 4–7 local **sin commit** hasta que Antonio lo pida.
 
-## Fase 1: Scaffolding
-- [ ] Task 1: Backend project structure (FastAPI + config + health)
-- [ ] Task 2: Database schema + RLS migrations
-- [ ] Task 3: Domain models (Pydantic)
+## Política de prueba
 
-## Fase 2: Core Backend API
-- [ ] Task 4: Database access layer (repositories)
-- [ ] Task 5: PIN subscription endpoint
-- [ ] Task 6: Phone encryption service (AES-256-GCM)
-- [ ] Task 7: Channel creation + PIN setup
+- **Nosotros:** solo local — `npm run test:pin`, `pytest` (OneSignal/QStash mockeados). Sin Whatnot live, sin push real, sin emulador Android.
+- **Cliente:** prueba real con `tasks/client-checklist.md` cuando haya URL o build.
+- No hace falta skill/MCP de Android ni browser para esta etapa.
 
-## Fase 3: Message Queue & Delivery
-- [ ] Task 8: Queue abstraction (Upstash QStash)
-- [ ] Task 9: Worker endpoint (delivery + rate limiting)
-- [ ] Task 10: Ping creation endpoint (fan-out)
+## Cerrado (código listo)
 
-## Fase 4: Frontend
-- [ ] Task 11: Next.js + shadcn/ui setup
-- [ ] Task 12: Creator dashboard
-- [ ] Task 13: Fan subscription page (onboarding)
+| Fase | Qué | Evidencia local |
+| --- | --- | --- |
+| 0–3 | Núcleo + pivote + API + `/join` | En `main` `d0fba52` |
+| 4 | Panel Notify + PinClient | `npm run test:pin` |
+| 5 | Auto go-live tras reconcile (1× por ledger) | `PinAutoGoLive.test.js` |
+| 7a | E2E API local | `pytest tests/test_e2e_flow.py` PASS |
 
-## Fase 5: Deployment
-- [ ] Task 14: Backend → Render
-- [ ] Task 15: Frontend → Vercel
+## Abierto
 
-## Fase 6: Verification
-- [ ] Task 16: E2E integration test
-- [ ] Task 17: Final verification checklist
+### Fase 6 — Publicar (login de Antonio)
 
----
+Scaffold listo: `render.yaml`, `backend/.env.example`, `frontend/.env.example`.
 
-## Review Section
-_[Completar al finalizar]_
+- [ ] Aplicar migraciones `0001`–`0008` en Supabase
+- [ ] Deploy API en Render → `/health`
+- [ ] Deploy web en Vercel + orígenes OneSignal
+- [ ] Crear canal + API key + handle `/join/<handle>` para el cliente
+
+### Fase 7b — Handoff
+
+- [x] Checklist del cliente (`tasks/client-checklist.md`)
+- [x] README actualizado (sin SMS/Twilio)
+- [ ] Commit de Fase 4–7a cuando Antonio lo pida
+- [ ] Cliente ejecuta checklist
+
+## Aparrado
+
+Dashboard web creador, Midnight real, apps nativas, QR overlay, replay de jobs.
